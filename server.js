@@ -13,7 +13,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Use persistent disk on Render, local folders in dev
-const DATA_DIR = process.env.NODE_ENV === 'production' ? '/data' : __dirname;
+// Use ./data directory within the project (works on Render without persistent disk)
+const DATA_DIR = path.join(__dirname, 'data');
 const UPLOADS_DIR = path.join(DATA_DIR, 'uploads');
 const REPORTS_DIR = path.join(DATA_DIR, 'reports');
 
