@@ -1,0 +1,11 @@
+<svg id="Component_101_2" data-name="Component 101 – 2" xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50">
+  <rect id="Rectangle_1016" data-name="Rectangle 1016" width="50" height="50" rx="10" fill="#fe0135"/>
+  <g id="hAsKRj.tif" transform="translate(1.092 1.109)">
+    <g id="Group_4440" data-name="Group 4440" transform="translate(-0.09 -0.11)">
+      <path id="Path_9671" data-name="Path 9671" d="M261.612,84.855a8.133,8.133,0,1,1,8.063,8.169A8.149,8.149,0,0,1,261.612,84.855Z" transform="translate(-237.087 -69.545)" fill="#fefdfd"/>
+      <path id="Path_9672" data-name="Path 9672" d="M84.935,261.63a8.132,8.132,0,1,1-8.126,8.127A8.118,8.118,0,0,1,84.935,261.63Z" transform="translate(-69.604 -237.102)" fill="#fefdfd"/>
+      <path id="Path_9673" data-name="Path 9673" d="M84.856,93.2H77.362c-.64,0-.613,0-.556-.624a18.928,18.928,0,0,1,.565-3.317A16.85,16.85,0,0,1,92.558,76.938c.433-.021.51.095.509.5q-.021,7.61,0,15.221c0,.471-.146.558-.58.554C89.946,93.192,87.4,93.2,84.856,93.2Z" transform="translate(-69.575 -69.716)" fill="#fefdfd"/>
+      <path id="Path_9674" data-name="Path 9674" d="M269.678,261.53c2.561,0,5.122.007,7.683-.007.342,0,.459.065.428.435a16.61,16.61,0,0,1-9.144,14,16.043,16.043,0,0,1-6.678,1.823c-.366.024-.437-.082-.437-.427q.017-7.683,0-15.367c0-.366.084-.47.464-.468C264.556,261.539,267.117,261.53,269.678,261.53Z" transform="translate(-237.014 -237.002)" fill="#fefdfd"/>
+    </g>
+  </g>
+</svg>

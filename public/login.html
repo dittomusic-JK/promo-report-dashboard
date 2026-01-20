@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Promo Report Dashboard</title>
+  <style>
+    @font-face {
+      font-family: 'Satoshi';
+      src: url('/assets/Satoshi-Variable.woff2') format('woff2');
+      font-weight: 100 900;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Neusa';
+      src: url('/assets/Neusa-ExtraBold.otf') format('opentype');
+      font-weight: 800;
+      font-display: swap;
+    }
+    
+    :root {
+      --promo-pink: #F64780;
+      --chayellow: #E0FF4F;
+      --gunmetal: #0C262A;
+      --x-black: #070707;
+      --alt-grey: #3A2F3B;
+      --soft-pink: #FFEAEA;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Satoshi', -apple-system, sans-serif;
+      background: var(--gunmetal);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .login-container {
+      width: 100%;
+      max-width: 420px;
+      padding: 40px;
+    }
+    
+    .logo-section {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    
+    .logo-section img {
+      height: 48px;
+      margin-bottom: 16px;
+    }
+    
+    .logo-section h1 {
+      font-family: 'Neusa', sans-serif;
+      font-size: 28px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #fff;
+    }
+    
+    .login-card {
+      background: var(--alt-grey);
+      border-radius: 16px;
+      padding: 40px;
+    }
+    
+    .login-card h2 {
+      font-family: 'Neusa', sans-serif;
+      font-size: 20px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      color: var(--chayellow);
+    }
+    
+    .login-card p {
+      color: rgba(255,255,255,0.6);
+      font-size: 14px;
+      margin-bottom: 32px;
+    }
+    
+    .form-group {
+      margin-bottom: 24px;
+    }
+    
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 8px;
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 14px 16px;
+      background: var(--gunmetal);
+      border: 2px solid transparent;
+      border-radius: 8px;
+      color: #fff;
+      font-family: 'Satoshi', sans-serif;
+      font-size: 16px;
+      transition: border-color 0.2s;
+    }
+    
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--promo-pink);
+    }
+    
+    .form-group input::placeholder {
+      color: rgba(255,255,255,0.3);
+    }
+    
+    .btn {
+      width: 100%;
+      padding: 14px 24px;
+      background: var(--promo-pink);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Neusa', sans-serif;
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(246, 71, 128, 0.4);
+    }
+    
+    .btn:active {
+      transform: translateY(0);
+    }
+    
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    .error-message {
+      background: rgba(246, 71, 128, 0.15);
+      border: 1px solid var(--promo-pink);
+      color: var(--promo-pink);
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 24px;
+      display: none;
+    }
+    
+    .error-message.show {
+      display: block;
+    }
+    
+    .footer {
+      text-align: center;
+      margin-top: 32px;
+    }
+    
+    .footer img {
+      height: 24px;
+      opacity: 0.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="logo-section">
+      <img src="/assets/promo-logo.svg" alt="Promo">
+      <h1>Report Dashboard</h1>
+    </div>
+    
+    <div class="login-card">
+      <h2>Sign In</h2>
+      <p>Enter the password to access the dashboard</p>
+      
+      <div class="error-message" id="errorMessage">
+        Invalid password. Please try again.
+      </div>
+      
+      <form id="loginForm">
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="password" placeholder="Enter password" autocomplete="current-password" required>
+        </div>
+        
+        <button type="submit" class="btn" id="submitBtn">Sign In</button>
+      </form>
+    </div>
+    
+    <div class="footer">
+      <img src="/assets/ditto-logo.svg" alt="Ditto Music">
+    </div>
+  </div>
+  
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const password = document.getElementById('password').value;
+      const submitBtn = document.getElementById('submitBtn');
+      const errorMessage = document.getElementById('errorMessage');
+      
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Signing in...';
+      errorMessage.classList.remove('show');
+      
+      try {
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password })
+        });
+        
+        if (res.ok) {
+          window.location.href = '/';
+        } else {
+          errorMessage.classList.add('show');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Sign In';
+        }
+      } catch (err) {
+        errorMessage.textContent = 'Connection error. Please try again.';
+        errorMessage.classList.add('show');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Sign In';
+      }
+    });
+  </script>
+</body>
+</html>

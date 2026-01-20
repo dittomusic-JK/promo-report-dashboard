@@ -1,0 +1,166 @@
+{
+  "id": "ba1a53c0",
+  "createdAt": "2026-01-20T15:21:09.738Z",
+  "artistName": "Samantha L Keller",
+  "releaseTitle": "Materializing Dog",
+  "dateRange": "Dec 21, 2025 - Jan 20, 2025",
+  "smartLink": "https://ditto.fm/materializing-dog",
+  "heroArtwork": "https://cloudinary-cdn.ffm.to/s--y5oSpK3H--/f_webp/https%3A%2F%2Fimagestore.ffm.to%2Flink%2Fa970c12dde8bb4b8b0f52a1bb0bc4e12.jpeg",
+  "analytics": {
+    "totalVisits": 956,
+    "uniqueUsers": 854,
+    "clicksToService": 885,
+    "impressions": 220462,
+    "videoViews": 242424,
+    "referrals": [],
+    "services": [
+      {
+        "name": "Spotify",
+        "icon": "🟢",
+        "clicks": 879,
+        "percentage": "99.3%"
+      },
+      {
+        "name": "YouTube Music",
+        "icon": "🔴",
+        "clicks": 2,
+        "percentage": "0.2%"
+      },
+      {
+        "name": "Amazon Music (Streaming)",
+        "icon": "📦",
+        "clicks": 2,
+        "percentage": "0.2%"
+      },
+      {
+        "name": "Pandora",
+        "icon": "🎵",
+        "clicks": 1,
+        "percentage": "0.1%"
+      }
+    ],
+    "countries": [
+      {
+        "name": "United Kingdom",
+        "visits": 956,
+        "percentage": "100.0%"
+      },
+      {
+        "name": "United States",
+        "visits": 956,
+        "percentage": "100.0%"
+      },
+      {
+        "name": "Australia",
+        "visits": 956,
+        "percentage": "100.0%"
+      },
+      {
+        "name": "Canada",
+        "visits": 956,
+        "percentage": "100.0%"
+      },
+      {
+        "name": "Germany",
+        "visits": 956,
+        "percentage": "100.0%"
+      },
+      {
+        "name": "France",
+        "visits": 956,
+        "percentage": "100.0%"
+      },
+      {
+        "name": "Ireland",
+        "visits": 956,
+        "percentage": "100.0%"
+      },
+      {
+        "name": "Spain",
+        "visits": 956,
+        "percentage": "100.0%"
+      },
+      {
+        "name": "Portugal",
+        "visits": 956,
+        "percentage": "100.0%"
+      }
+    ]
+  },
+  "prPlacements": [
+    {
+      "name": "radioarmazem.net",
+      "title": "This site asks for consent to use your data",
+      "description": "Não Vendemos Chiado!",
+      "articleUrl": "https://radioarmazem.net/noticia/127748/samantha-l-keller-estreia-com-o-contemplativo-single-folk-materializing-dog#google_vignette",
+      "logoImage": "https://radioarmazem.net/noticia/127748/imagens/0fbae22d6d473df591e9cd6a8ae99f00.png",
+      "heroImage": "https://radioarmazem.net/imagens/4ad335b76aa30695dc724d0d37e235a7.png",
+      "screenshotImage": "/uploads/article-1768922407985.png",
+      "fbLikes": "1.2k",
+      "twitter": "11.4k",
+      "instagram": "21.k"
+    },
+    {
+      "name": "Illustrate Magazine",
+      "title": "Materializing Dog by Samantha L. Keller & Kathleen Krenitsky: Review | Illustrate Magazine",
+      "description": "Materializing Dog by Samantha L. Keller & Kathleen Krenitsky: Review",
+      "articleUrl": "https://illustratemagazine.com/materializing-dog-by-samantha-l-keller-kathleen-krenitsky-review/",
+      "logoImage": "https://illustratemagazine.com/wp-content/uploads/2022/05/Illustrate-Magazine-Logo.jpg",
+      "heroImage": "https://illustratemagazine.com/wp-content/uploads/2025/12/516517103_10164030510372718_4729088221477786731_n.jpg",
+      "screenshotImage": "/uploads/article-1768922415315.png",
+      "fbLikes": "1.",
+      "twitter": "2k",
+      "instagram": "4k"
+    },
+    {
+      "name": "Essentiallypop",
+      "title": "'Materializing Dog' Is The, Fun, Heartfelt, And Meditative Debut From Singer Samantha L. Keller ",
+      "description": "Out now, 'Materializing Dog' is the new single from vocal powerhouse, Samantha L. Keller.",
+      "articleUrl": "https://essentiallypop.com/epop/2026/01/materializing-dog-is-the-fun-heartfelt-and-meditative-debut-from-singer-samantha-l-keller/",
+      "logoImage": "https://i0.wp.com/essentiallypop.com/epop/wp-content/uploads/2022/12/cropped-Untitled-design-12.jpg?fit=192%2C192&ssl=1",
+      "heroImage": "https://i0.wp.com/essentiallypop.com/epop/wp-content/uploads/2026/01/Samantha-L-Keller.jpg?fit=1200%2C1200&ssl=1",
+      "screenshotImage": "/uploads/article-1768922420845.png",
+      "fbLikes": "1.5k",
+      "twitter": "12k",
+      "instagram": "15k"
+    }
+  ],
+  "playlists": [
+    {
+      "name": "#PitPlaylist: Synthetic Soul",
+      "curator": "The Pit London",
+      "curatorAvatar": "https://i.scdn.co/image/ab6775700000b8a89e91b6c8b80e94d241b68138",
+      "followers": "257",
+      "spotifyUrl": "https://open.spotify.com/playlist/4KlAzUaLiPhAHC3NJKlwm7",
+      "coverImage": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da845cd643fb9855d5a9670f9573"
+    },
+    {
+      "name": "The Indie Hitlist",
+      "curator": "Ditto Music",
+      "curatorAvatar": "https://i.scdn.co/image/ab6775700000b8a802c7feeb7ee2a8da87c9d507",
+      "followers": "8,980",
+      "spotifyUrl": "https://open.spotify.com/playlist/3Kg4EKpK8OtkhDvIOVm5cc",
+      "coverImage": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da84c0ee07232bc57c432a83fab5"
+    },
+    {
+      "name": "Music Victory 🎶✌ Folk 🕺💃",
+      "curator": "Music Victory 🎶✌",
+      "curatorAvatar": "https://i.scdn.co/image/ab6775700000b8a8db80cebbfde9175f6bcff761",
+      "followers": "3,078",
+      "spotifyUrl": "https://open.spotify.com/playlist/73BgIA9J1B4C53oxwnkG45",
+      "coverImage": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da84580102b9d04d4f214cefe127"
+    },
+    {
+      "name": "Folk /Singer Songwriter",
+      "curator": "Music Connoisseur",
+      "curatorAvatar": "https://i.scdn.co/image/ab6775700000b8a897c4646c0b79a47cbc0f3353",
+      "followers": "2,202",
+      "spotifyUrl": "https://open.spotify.com/playlist/11sgRMh5AECjsbZ1dl4ggi",
+      "coverImage": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da847998b210d58f9b5e3e6cae1f"
+    }
+  ],
+  "totalPlaylists": "4",
+  "spotifyAudience": "11.6k",
+  "surveyUrl": "https://docs.google.com/spreadsheets/d/1iUeRqifNrEBGWgPaP1qRJXByU5HVsrSUu2P7mxGbdC8/edit?gid=2086074999#gid=2086074999",
+  "blogDatabaseUrl": "https://docs.google.com/forms/d/e/1FAIpQLSeCfCFAqNQS6z52k85qbXP9nQU-dehXErrZr2KmzLaZ96P1xg/viewform"
+}

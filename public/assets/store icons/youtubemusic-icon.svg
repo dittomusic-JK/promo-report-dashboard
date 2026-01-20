@@ -1,0 +1,10 @@
+<svg id="Component_110_3" data-name="Component 110 – 3" xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50">
+  <rect id="Rectangle_1029" data-name="Rectangle 1029" width="50" height="50" rx="10" fill="#f8f8f8"/>
+  <g id="youtube-music" transform="translate(4.6 5)">
+    <g id="Group" transform="translate(0.4)">
+      <ellipse id="XMLID_791_" cx="19.92" cy="20" rx="19.92" ry="20" fill="red"/>
+      <path id="XMLID_42_" d="M26.856,15.02A11.586,11.586,0,1,1,15.271,26.605,11.613,11.613,0,0,1,26.856,15.02Zm0-1.12A12.705,12.705,0,1,0,39.512,26.605,12.672,12.672,0,0,0,26.856,13.9Z" transform="translate(-6.936 -6.605)" fill="#fff"/>
+      <path id="XMLID_274_" d="M31.1,42.119l12.837-7.958L31.1,26.9Z" transform="translate(-16.766 -14.509)" fill="#fff"/>
+    </g>
+  </g>
+</svg>

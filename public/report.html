@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Promo Report</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    @font-face {
+      font-family: 'Satoshi';
+      src: url('/assets/Satoshi-Variable.woff2') format('woff2');
+      font-weight: 100 900;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Neusa';
+      src: url('/assets/Neusa-ExtraBold.otf') format('opentype');
+      font-weight: 800;
+      font-display: swap;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --promo-pink: #F64780;
+      --chayellow: #E0FF4F;
+      --gunmetal: #0C262A;
+      --x-black: #070707;
+      --alt-grey: #3A2F3B;
+      --soft-pink: #FFEAEA;
+    }
+    
+    body {
+      font-family: 'Satoshi', -apple-system, sans-serif;
+      background: var(--gunmetal);
+      color: #fff;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(12, 38, 42, 0.95);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      padding: 16px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(246, 71, 128, 0.2);
+    }
+    .nav-logo { height: 40px; }
+    .nav-menu {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+      align-items: center;
+    }
+    .nav-menu a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: color 0.3s;
+    }
+    .nav-menu a:hover { color: var(--promo-pink); }
+    .nav-menu a.active {
+      color: var(--chayellow);
+      position: relative;
+    }
+    .nav-menu a.active::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--chayellow);
+    }
+    .nav-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .nav-btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 13px;
+      text-decoration: none;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .nav-btn-outline {
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #fff;
+    }
+    .nav-btn-outline:hover {
+      border-color: var(--chayellow);
+      color: var(--chayellow);
+    }
+    .nav-btn-primary {
+      background: var(--promo-pink);
+      color: #fff;
+    }
+    .nav-btn-primary:hover {
+      background: #e03a70;
+    }
+    
+    /* Hero Section - Compact horizontal layout */
+    .hero {
+      min-height: 50vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--gunmetal);
+      position: relative;
+      padding: 120px 60px 60px;
+      overflow: hidden;
+    }
+    /* Fullscreen blurred background image */
+    .hero-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-size: cover;
+      background-position: center;
+      filter: blur(50px);
+      transform: scale(1.3);
+      opacity: 0.6;
+      z-index: 0;
+    }
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, 
+        rgba(12, 38, 42, 0.4) 0%, 
+        rgba(12, 38, 42, 0.7) 100%);
+    }
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 60px;
+    }
+    .hero-left {
+      flex-shrink: 0;
+    }
+    .hero-right {
+      flex: 1;
+      text-align: left;
+    }
+    .hero h1 {
+      font-family: 'Neusa', sans-serif;
+      font-size: 52px;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+      color: #fff;
+      line-height: 1.1;
+    }
+    .hero-release-title {
+      font-size: 20px;
+      color: var(--chayellow);
+      margin-bottom: 24px;
+      font-weight: 500;
+    }
+    .promo-badge {
+      display: inline-block;
+    }
+    .promo-badge img { height: 50px; }
+    .hero-subtitle {
+      font-size: 14px;
+      color: rgba(255,255,255,0.6);
+      margin-top: 16px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .hero-artwork {
+      width: 220px;
+      height: 220px;
+      border-radius: 12px;
+      object-fit: cover;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.1);
+      position: relative;
+      z-index: 2;
+    }
+    .scroll-indicator {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: bounce 2s infinite;
+      z-index: 2;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(-8px); }
+    }
+    .scroll-indicator::after {
+      content: '↓';
+      font-size: 24px;
+      color: var(--chayellow);
+      opacity: 0.7;
+    }
+    @media (max-width: 768px) {
+      .hero-content { flex-direction: column; text-align: center; gap: 30px; }
+      .hero-right { text-align: center; }
+      .hero h1 { font-size: 36px; }
+      .hero-artwork { width: 180px; height: 180px; }
+    }
+    
+    /* Section divider */
+    .section-divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--promo-pink), var(--chayellow), transparent);
+      margin: 0;
+      opacity: 0.5;
+    }
+    
+    /* Sections */
+    section {
+      padding: 80px 40px;
+      max-width: 1400px;
+      margin: 0 auto;
+      scroll-margin-top: 80px;
+    }
+    .section-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+    .section-badge {
+      display: inline-block;
+      background: var(--promo-pink);
+      color: #fff;
+      font-family: 'Neusa', sans-serif;
+      font-size: 14px;
+      text-transform: uppercase;
+      padding: 8px 24px;
+      border-radius: 30px;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+    }
+    .section-badge.yellow {
+      background: var(--chayellow);
+      color: var(--x-black);
+    }
+    .section-title {
+      font-family: 'Neusa', sans-serif;
+      font-size: 48px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .section-subtitle {
+      font-size: 18px;
+      color: var(--soft-pink);
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    
+    /* Cards */
+    .card {
+      background: #fff;
+      border-radius: 30px;
+      padding: 32px;
+      margin-bottom: 24px;
+      color: var(--x-black);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 30px 80px rgba(246, 71, 128, 0.2);
+    }
+    .card-header {
+      font-family: 'Neusa', sans-serif;
+      font-size: 12px;
+      text-transform: uppercase;
+      color: #666;
+      letter-spacing: 1px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-header::before {
+      content: '';
+      width: 4px;
+      height: 16px;
+      background: var(--promo-pink);
+      border-radius: 2px;
+    }
+    
+    /* Metrics */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 24px;
+      margin: 40px 0;
+    }
+    .metric-card {
+      background: linear-gradient(145deg, rgba(58, 47, 59, 0.8) 0%, rgba(12, 38, 42, 0.9) 100%);
+      border-radius: 24px;
+      padding: 36px 32px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(246, 71, 128, 0.15);
+      backdrop-filter: blur(10px);
+      transition: transform 0.3s, border-color 0.3s;
+    }
+    .metric-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(246, 71, 128, 0.4);
+    }
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -30%;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(246, 71, 128, 0.08) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .metric-value {
+      font-family: 'Neusa', sans-serif;
+      font-size: 52px;
+      color: var(--chayellow);
+      line-height: 1;
+      margin-bottom: 12px;
+      text-shadow: 0 0 40px rgba(224, 255, 79, 0.3);
+    }
+    .metric-label {
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--soft-pink);
+    }
+    .metric-desc {
+      font-size: 12px;
+      color: #aaa;
+      margin-top: 8px;
+    }
+    
+    /* Timeline */
+    .timeline-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 32px;
+      text-align: center;
+    }
+    .timeline-metric {
+      padding: 24px;
+      border-right: 1px solid #eee;
+    }
+    .timeline-metric:last-child { border-right: none; }
+    .timeline-metric .value {
+      font-family: 'Neusa', sans-serif;
+      font-size: 48px;
+      color: var(--x-black);
+      margin-bottom: 8px;
+    }
+    .timeline-metric .label {
+      font-size: 12px;
+      color: #666;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .chart-container { height: 250px; margin-top: 24px; }
+    
+    /* Table */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .data-table th {
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      color: #666;
+      text-transform: uppercase;
+      padding: 16px;
+      border-bottom: 2px solid #eee;
+      letter-spacing: 0.5px;
+    }
+    .data-table td {
+      padding: 16px;
+      border-bottom: 1px solid #f5f5f5;
+    }
+    .data-table tr:hover {
+      background: var(--soft-pink);
+    }
+    
+    /* Services */
+    .services-section {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+    .service-list { display: flex; flex-direction: column; gap: 16px; }
+    .service-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 12px;
+      transition: background 0.2s;
+    }
+    .service-item:hover { background: var(--soft-pink); }
+    .service-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .service-icon svg {
+      width: 20px;
+      height: 20px;
+    }
+    .service-name { flex: 1; font-weight: 600; }
+    .service-clicks { font-weight: 700; min-width: 50px; color: var(--promo-pink); }
+    .service-percent { color: #888; font-size: 13px; min-width: 50px; }
+    .pie-chart { max-width: 300px; margin: 0 auto; }
+    
+    /* PR Cards */
+    .pr-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+      gap: 32px;
+    }
+    .pr-card {
+      background: linear-gradient(135deg, var(--alt-grey) 0%, var(--gunmetal) 100%);
+      border-radius: 30px;
+      overflow: hidden;
+      border: 1px solid rgba(246, 71, 128, 0.3);
+    }
+    .pr-header {
+      padding: 40px;
+      text-align: center;
+    }
+    .pr-name {
+      font-family: 'Neusa', sans-serif;
+      font-size: 32px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      color: var(--chayellow);
+    }
+    .pr-logo {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 0 auto 24px;
+      border: 3px solid var(--promo-pink);
+      display: block;
+    }
+    .pr-description {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+    }
+    .pr-stats {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      padding: 32px;
+      background: rgba(0,0,0,0.2);
+    }
+    .pr-stat { text-align: center; }
+    .pr-stat-icon { width: 32px; height: 32px; margin: 0 auto 8px; }
+    .pr-stat-icon svg { width: 100%; height: 100%; }
+    .pr-stat-value {
+      font-family: 'Neusa', sans-serif;
+      font-size: 32px;
+      color: var(--chayellow);
+    }
+    .pr-stat-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      color: #aaa;
+      letter-spacing: 1px;
+    }
+    .pr-screenshot {
+      width: 100%;
+      max-height: 400px;
+      object-fit: cover;
+    }
+    .pr-cta {
+      padding: 32px;
+      text-align: center;
+      background: rgba(0,0,0,0.3);
+    }
+    
+    /* Buttons */
+    .btn {
+      display: inline-block;
+      padding: 16px 40px;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 14px;
+      text-transform: uppercase;
+      text-decoration: none;
+      letter-spacing: 1px;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .btn-pink {
+      background: var(--promo-pink);
+      color: #fff;
+    }
+    .btn-yellow {
+      background: var(--chayellow);
+      color: var(--x-black);
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(246, 71, 128, 0.3);
+    }
+    
+    /* Playlist */
+    .playlist-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+    .playlist-card {
+      text-align: center;
+      padding: 28px;
+      background: linear-gradient(145deg, rgba(58, 47, 59, 0.6) 0%, rgba(12, 38, 42, 0.8) 100%);
+      border-radius: 20px;
+      border: 1px solid rgba(246, 71, 128, 0.15);
+      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+      backdrop-filter: blur(10px);
+    }
+    .playlist-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(29, 185, 84, 0.5);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+    .playlist-name {
+      font-weight: 700;
+      font-size: 15px;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+    .playlist-cover {
+      width: 160px;
+      height: 160px;
+      border-radius: 12px;
+      object-fit: cover;
+      margin: 0 auto 20px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+      transition: transform 0.3s;
+    }
+    .playlist-card:hover .playlist-cover {
+      transform: scale(1.05);
+    }
+    
+    /* Footer */
+    footer {
+      background: var(--x-black);
+      padding: 48px 40px;
+      text-align: center;
+      border-top: 1px solid rgba(246, 71, 128, 0.2);
+    }
+    .footer-logos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 48px;
+      margin-bottom: 24px;
+    }
+    .footer-logo { height: 40px; opacity: 0.8; }
+    .footer-text {
+      color: #666;
+      font-size: 14px;
+    }
+    
+    /* Loading */
+    .loading {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .spinner {
+      width: 60px;
+      height: 60px;
+      border: 4px solid rgba(246, 71, 128, 0.2);
+      border-top-color: var(--promo-pink);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    .hidden { display: none !important; }
+    
+    /* Smooth scroll */
+    html { scroll-behavior: smooth; }
+  </style>
+</head>
+<body>
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <p style="color: var(--soft-pink);">Loading report...</p>
+  </div>
+  
+  <div id="report" class="hidden">
+    <!-- Navigation -->
+    <nav>
+      <img src="/assets/promo-logo.svg" alt="Promo" class="nav-logo">
+      <ul class="nav-menu">
+        <li><a href="#social" class="nav-link active">Social</a></li>
+        <li><a href="#pr" class="nav-link">PR</a></li>
+        <li><a href="#playlists" class="nav-link">Playlists</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="/library" class="nav-btn nav-btn-outline">Library</a>
+        <a href="#" id="editBtn" class="nav-btn nav-btn-primary">Edit</a>
+      </div>
+    </nav>
+    
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-bg" id="heroBg"></div>
+      <div class="hero-content">
+        <div class="hero-left">
+          <img id="heroArtwork" class="hero-artwork" style="display:none;" alt="Release Artwork">
+        </div>
+        <div class="hero-right">
+          <h1 id="artistName">Artist</h1>
+          <p id="releaseTitle" class="hero-release-title"></p>
+          <div class="promo-badge">
+            <img src="/assets/promo-logo.svg" alt="Promo">
+          </div>
+          <p class="hero-subtitle">Campaign Performance Report</p>
+        </div>
+      </div>
+      <div class="scroll-indicator"></div>
+    </section>
+    
+    <div class="section-divider"></div>
+    
+    <!-- Social Report -->
+    <section id="social">
+      <div class="section-header">
+        <span class="section-badge">Social Report</span>
+        <h2 class="section-title">Campaign Results</h2>
+        <p class="section-subtitle">Here's how your campaign performed across all channels</p>
+      </div>
+      
+      <!-- Big Metrics -->
+      <div class="metrics-grid" id="bigMetrics"></div>
+      
+      <!-- Timeline -->
+      <div class="card">
+        <div class="card-header">Timeline</div>
+        <div class="timeline-metrics">
+          <div class="timeline-metric">
+            <div class="value" id="tlVisits">0</div>
+            <div class="label">Total Visits</div>
+          </div>
+          <div class="timeline-metric">
+            <div class="value" id="tlUsers">0</div>
+            <div class="label">Unique Users</div>
+          </div>
+          <div class="timeline-metric">
+            <div class="value" id="tlClicks">0</div>
+            <div class="label">Clicks to Service</div>
+          </div>
+        </div>
+        <div class="chart-container"><canvas id="timelineChart"></canvas></div>
+      </div>
+      
+      <!-- Referrals -->
+      <div class="card" id="referralsCard">
+        <div class="card-header">Referrals</div>
+        <table class="data-table">
+          <thead><tr><th>Source</th><th>Visits</th><th>Song Previews</th><th>Clicks to Service</th></tr></thead>
+          <tbody id="referralsTable"></tbody>
+        </table>
+      </div>
+      
+      <!-- Services -->
+      <div class="card" id="servicesCard">
+        <div class="card-header">Clicks to Service</div>
+        <div class="services-section">
+          <div class="service-list" id="serviceList"></div>
+          <div class="pie-chart"><canvas id="servicesPie"></canvas></div>
+        </div>
+      </div>
+    </section>
+    
+    <div class="section-divider"></div>
+    
+    <!-- PR Report -->
+    <section id="pr" style="background: linear-gradient(180deg, var(--gunmetal) 0%, var(--alt-grey) 100%);">
+      <div class="section-header">
+        <span class="section-badge">PR Report</span>
+        <h2 class="section-title">Press Coverage</h2>
+        <p class="section-subtitle">Check out where your music has been featured</p>
+      </div>
+      <div class="pr-grid" id="prGrid"></div>
+    </section>
+    
+    <div class="section-divider"></div>
+    
+    <!-- Playlists -->
+    <section id="playlists">
+      <div class="section-header">
+        <span class="section-badge yellow">Playlisting</span>
+        <h2 class="section-title">Playlist Placements</h2>
+        <p class="section-subtitle">Your music on Spotify playlists</p>
+      </div>
+      <div class="playlist-grid" id="playlistGrid"></div>
+      <div class="metrics-grid" id="playlistStats"></div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+      <div class="footer-logos">
+        <img src="/assets/promo-logo.svg" alt="Promo" class="footer-logo">
+        <img src="/assets/ditto-logo.svg" alt="Ditto" class="footer-logo">
+      </div>
+      <p class="footer-text">Powered by Ditto Music • dittomusic.com</p>
+    </footer>
+  </div>
+  
+  <script>
+    const reportId = window.location.pathname.split('/').pop();
+    
+    // Set edit button href
+    document.getElementById('editBtn').href = `/create?edit=${reportId}`;
+    
+    // Smooth scroll navigation
+    document.addEventListener('DOMContentLoaded', () => {
+      const links = document.querySelectorAll('.nav-link');
+      links.forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const target = link.getAttribute('href');
+          document.querySelector(target).scrollIntoView({ behavior: 'smooth' });
+          links.forEach(l => l.classList.remove('active'));
+          link.classList.add('active');
+        });
+      });
+    });
+    
+    fetch(`/api/reports/${reportId}`)
+      .then(res => res.json())
+      .then(data => { if (data.error) throw new Error(data.error); renderReport(data); })
+      .catch(err => { document.getElementById('loading').innerHTML = `<p style="color:var(--promo-pink);">Error: ${err.message}</p><a href="/" style="color:var(--chayellow);">Return</a>`; });
+    
+    // SVG Icons - using files from /assets/store icons/ folder
+    const icons = {
+      facebook: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>',
+      instagram: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>',
+      x: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>',
+      spotify: '<img src="/assets/store icons/spotify-icon.svg" style="width:100%;height:100%;">',
+      apple: '<img src="/assets/store icons/apple-music-icon.svg" style="width:100%;height:100%;">',
+      youtube: '<img src="/assets/store icons/youtube-icon.svg" style="width:100%;height:100%;">',
+      youtubeMusic: '<img src="/assets/store icons/youtubemusic-icon.svg" style="width:100%;height:100%;">',
+      amazon: '<img src="/assets/store icons/amazonmusic-icon.svg" style="width:100%;height:100%;">',
+      deezer: '<img src="/assets/store icons/deezer-icon.svg" style="width:100%;height:100%;">',
+      tidal: '<img src="/assets/store icons/tidal-icon.svg" style="width:100%;height:100%;">',
+      soundcloud: '<img src="/assets/store icons/soundcloud_icon.svg" style="width:100%;height:100%;">',
+      pandora: '<img src="/assets/store icons/pandora_icon.webp" style="width:100%;height:100%;object-fit:contain;">',
+      boomplay: '<img src="/assets/store icons/boomplay-icon.svg" style="width:100%;height:100%;">',
+      napster: '<img src="/assets/store icons/napster-icon.svg" style="width:100%;height:100%;">',
+      tiktok: '<img src="/assets/store icons/tiktok-icon.svg" style="width:100%;height:100%;">',
+      iheart: '<img src="/assets/store icons/iheart-radio.svg" style="width:100%;height:100%;">',
+      anghami: '<img src="/assets/store icons/anghami-icon.svg" style="width:100%;height:100%;">',
+      audiomack: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M1.383 12.317c-.762 0-1.383.62-1.383 1.383v4.6c0 .764.62 1.383 1.383 1.383.764 0 1.384-.62 1.384-1.383V13.7c0-.764-.62-1.383-1.384-1.383zm5.533-3.682c-.763 0-1.383.62-1.383 1.383v8.282c0 .764.62 1.383 1.383 1.383.764 0 1.383-.62 1.383-1.383V10.018c0-.764-.62-1.383-1.383-1.383zm5.533-4.318c-.764 0-1.384.62-1.384 1.383V18.3c0 .764.62 1.383 1.384 1.383.763 0 1.383-.62 1.383-1.383V5.7c0-.764-.62-1.383-1.383-1.383zm5.534 2.948c-.764 0-1.384.62-1.384 1.383v9.652c0 .764.62 1.383 1.384 1.383.763 0 1.383-.62 1.383-1.383V8.648c0-.764-.62-1.383-1.383-1.383zm5.533 4.418c-.763 0-1.383.62-1.383 1.383v5.234c0 .764.62 1.383 1.383 1.383.764 0 1.384-.62 1.384-1.383v-5.234c0-.764-.62-1.383-1.384-1.383z"/></svg>'
+    };
+    
+    // Service colors
+    const serviceColors = {
+      'Spotify': '#1DB954', 'Apple Music': '#FC3C44', 'YouTube Music': '#FF0000', 'YouTube': '#FF0000',
+      'Amazon Music': '#FF9900', 'Amazon Music (Streaming)': '#FF9900', 'Deezer': '#FEAA2D', 
+      'TIDAL': '#000000', 'SoundCloud': '#FF5500', 'Pandora': '#224099', 'Audiomack': '#FFA500', 'Boomplay': '#FACD01'
+    };
+    
+    function getServiceIcon(name) {
+      const n = name.toLowerCase();
+      // All icons are now images from store icons folder
+      if (n.includes('spotify')) return { icon: icons.spotify, color: 'transparent', isImage: true };
+      if (n.includes('apple')) return { icon: icons.apple, color: 'transparent', isImage: true };
+      if (n.includes('youtube music')) return { icon: icons.youtubeMusic, color: 'transparent', isImage: true };
+      if (n.includes('youtube')) return { icon: icons.youtube, color: 'transparent', isImage: true };
+      if (n.includes('amazon')) return { icon: icons.amazon, color: 'transparent', isImage: true };
+      if (n.includes('deezer')) return { icon: icons.deezer, color: 'transparent', isImage: true };
+      if (n.includes('tidal')) return { icon: icons.tidal, color: 'transparent', isImage: true };
+      if (n.includes('soundcloud')) return { icon: icons.soundcloud, color: 'transparent', isImage: true };
+      if (n.includes('pandora')) return { icon: icons.pandora, color: 'transparent', isImage: true };
+      if (n.includes('boomplay')) return { icon: icons.boomplay, color: 'transparent', isImage: true };
+      if (n.includes('napster')) return { icon: icons.napster, color: 'transparent', isImage: true };
+      if (n.includes('tiktok')) return { icon: icons.tiktok, color: 'transparent', isImage: true };
+      if (n.includes('iheart')) return { icon: icons.iheart, color: 'transparent', isImage: true };
+      if (n.includes('anghami')) return { icon: icons.anghami, color: 'transparent', isImage: true };
+      if (n.includes('audiomack')) return { icon: icons.audiomack, color: '#FFA500' };
+      return { icon: icons.spotify, color: 'transparent', isImage: true };
+    }
+    
+    function renderReport(data) {
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('report').classList.remove('hidden');
+      document.title = `${data.artistName} - Promo Report`;
+      document.getElementById('artistName').textContent = data.artistName || 'Artist';
+      
+      // Show hero artwork if available
+      if (data.heroArtwork) {
+        const artworkEl = document.getElementById('heroArtwork');
+        artworkEl.src = data.heroArtwork;
+        artworkEl.style.display = 'block';
+        // Set blurred background
+        document.getElementById('heroBg').style.backgroundImage = `url(${data.heroArtwork})`;
+      }
+      
+      // Show release title
+      if (data.releaseTitle) {
+        document.getElementById('releaseTitle').textContent = data.releaseTitle;
+      }
+      
+      const visits = data.analytics?.totalVisits || 0;
+      const users = data.analytics?.uniqueUsers || 0;
+      const clicks = data.analytics?.clicksToService || 0;
+      
+      document.getElementById('bigMetrics').innerHTML = `
+        <div class="metric-card"><div class="metric-value">${fmt(data.analytics?.impressions||0)}</div><div class="metric-label">Impressions</div><div class="metric-desc">Ad displays</div></div>
+        <div class="metric-card"><div class="metric-value">${fmt(visits)}</div><div class="metric-label">Link Clicks</div><div class="metric-desc">Smartlink visits</div></div>
+        <div class="metric-card"><div class="metric-value">${fmt(clicks)}</div><div class="metric-label">Service Clicks</div><div class="metric-desc">Music platform</div></div>
+        <div class="metric-card"><div class="metric-value">${fmt(data.analytics?.videoViews||0)}</div><div class="metric-label">Video Views</div><div class="metric-desc">Unique viewers</div></div>
+      `;
+      
+      document.getElementById('tlVisits').textContent = fmt(visits);
+      document.getElementById('tlUsers').textContent = fmt(users);
+      document.getElementById('tlClicks').textContent = fmt(clicks);
+      createChart(visits, clicks);
+      
+      const refs = data.analytics?.referrals || [];
+      if (refs.length) {
+        document.getElementById('referralsTable').innerHTML = refs.map(r => `<tr><td><strong>${r.name}</strong></td><td>${r.visits}</td><td>${r.songPreviews||0}</td><td>${r.clicksToService||0}</td></tr>`).join('');
+      } else { document.getElementById('referralsCard').classList.add('hidden'); }
+      
+      const svcs = data.analytics?.services || [];
+      if (svcs.length) {
+        const total = svcs.reduce((s,x)=>s+x.clicks,0);
+        document.getElementById('serviceList').innerHTML = svcs.map(s => {
+          const pct = total ? ((s.clicks/total)*100).toFixed(1) : 0;
+          const svc = getServiceIcon(s.name);
+          const iconStyle = svc.isImage ? 'background:transparent; padding:0; border-radius:8px; overflow:hidden;' : `background:${svc.color}; color:#fff; padding:8px;`;
+          return `<div class="service-item"><div class="service-icon" style="${iconStyle}">${svc.icon}</div><span class="service-name">${s.name}</span><span class="service-clicks">${s.clicks}</span><span class="service-percent">${pct}%</span></div>`;
+        }).join('');
+        createPie(svcs);
+      } else { document.getElementById('servicesCard').classList.add('hidden'); }
+      
+      if (data.prPlacements?.length) {
+        document.getElementById('prGrid').innerHTML = data.prPlacements.map(pr => `
+          <div class="pr-card">
+            ${pr.heroImage?`<img src="${pr.heroImage}" class="pr-screenshot" style="max-height:250px;">`:''}
+            <div class="pr-header">
+              <div style="display:flex; align-items:center; gap:16px; margin-bottom:16px;">
+                ${pr.logoImage?`<img src="${pr.logoImage}" style="width:50px; height:50px; border-radius:8px; object-fit:contain; background:#fff;">`:''}
+                <div class="pr-name" style="margin-bottom:0;">${pr.name}</div>
+              </div>
+              ${pr.title?`<div style="font-size:16px; color:#fff; margin-bottom:12px; font-weight:600;">${pr.title}</div>`:''}
+              ${pr.description?`<div class="pr-description">${pr.description}</div>`:''}
+            </div>
+            ${(pr.fbLikes||pr.twitter||pr.instagram)?`
+            <div class="pr-stats">
+              ${pr.fbLikes?`<div class="pr-stat"><div class="pr-stat-icon" style="color:#1877F2;">${icons.facebook}</div><div class="pr-stat-value">${pr.fbLikes}</div><div class="pr-stat-label">Facebook</div></div>`:''}
+              ${pr.twitter?`<div class="pr-stat"><div class="pr-stat-icon" style="color:#fff;">${icons.x}</div><div class="pr-stat-value">${pr.twitter}</div><div class="pr-stat-label">X</div></div>`:''}
+              ${pr.instagram?`<div class="pr-stat"><div class="pr-stat-icon" style="color:#E4405F;">${icons.instagram}</div><div class="pr-stat-value">${pr.instagram}</div><div class="pr-stat-label">Instagram</div></div>`:''}
+            </div>
+            `:''}
+            ${pr.articleUrl?`<div class="pr-cta"><a href="${pr.articleUrl}" target="_blank" class="btn btn-yellow">Read Article</a></div>`:''}
+          </div>
+        `).join('');
+      }
+      
+      if (data.playlists?.length) {
+        document.getElementById('playlistGrid').innerHTML = data.playlists.map(pl => `
+          <div class="playlist-card">
+            ${pl.coverImage?`<img src="${pl.coverImage}" class="playlist-cover">`:`<div class="playlist-cover" style="background:linear-gradient(135deg,#1db954,#191414);display:flex;align-items:center;justify-content:center;font-size:48px;">🎵</div>`}
+            <div class="playlist-name">${pl.name}</div>
+            ${pl.curator?`<div style="color:#aaa;font-size:13px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:6px;">${pl.curatorAvatar?`<img src="${pl.curatorAvatar}" style="width:20px;height:20px;border-radius:50%;object-fit:cover;">`:''}by ${pl.curator}</div>`:''}
+            ${pl.followers?`<div style="color:var(--chayellow);font-size:14px;font-weight:700;margin-bottom:16px;">${pl.followers} saves</div>`:''}
+            ${pl.spotifyUrl?`<a href="${pl.spotifyUrl}" target="_blank" class="btn btn-pink">Listen</a>`:''}
+          </div>
+        `).join('');
+        document.getElementById('playlistStats').innerHTML = `
+          <div class="metric-card"><div class="metric-value">${data.playlists.length}</div><div class="metric-label">Current Playlists</div></div>
+          <div class="metric-card"><div class="metric-value">${data.totalPlaylists||data.playlists.length}</div><div class="metric-label">Total Playlists</div></div>
+          <div class="metric-card"><div class="metric-value">${data.spotifyAudience||'-'}</div><div class="metric-label">Spotify Audience</div></div>
+        `;
+      }
+    }
+    
+    function createChart(v, c) {
+      const ctx = document.getElementById('timelineChart').getContext('2d');
+      const days = 14, labels = [], vData = [], cData = [];
+      let vRem = v, cRem = c;
+      for (let i = days-1; i >= 0; i--) {
+        const d = new Date(); d.setDate(d.getDate()-i);
+        labels.push(d.toLocaleDateString('en-US',{month:'short',day:'numeric'}));
+        const vv = i===0 ? vRem : Math.floor(Math.random()*(vRem/(i+1)*1.5));
+        const cc = i===0 ? cRem : Math.floor(Math.random()*(cRem/(i+1)*1.5));
+        vData.push(vv); cData.push(cc); vRem -= vv; cRem -= cc;
+      }
+      new Chart(ctx, {
+        type: 'line',
+        data: { labels, datasets: [
+          { label: 'Visits', data: vData, borderColor: '#F64780', backgroundColor: 'rgba(246,71,128,0.1)', fill: true, tension: 0.4, borderWidth: 3 },
+          { label: 'Clicks', data: cData, borderColor: '#E0FF4F', backgroundColor: 'rgba(224,255,79,0.1)', fill: true, tension: 0.4, borderWidth: 3 }
+        ]},
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false, beginAtZero: true }, x: { grid: { display: false }, ticks: { font: { size: 11 }, color: '#999' } } } }
+      });
+    }
+    
+    function createPie(services) {
+      const ctx = document.getElementById('servicesPie').getContext('2d');
+      const colors = ['#1DB954','#fc3c44','#ff0000','#224099','#feaa2d','#000','#00A8E1','#facd01'];
+      new Chart(ctx, {
+        type: 'doughnut',
+        data: { labels: services.map(s=>s.name), datasets: [{ data: services.map(s=>s.clicks), backgroundColor: services.map((_,i)=>colors[i%colors.length]), borderWidth: 0 }] },
+        options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } }, cutout: '65%' }
+      });
+    }
+    
+    function fmt(n) { return n >= 1e6 ? (n/1e6).toFixed(1)+'M' : n >= 1e3 ? (n/1e3).toFixed(1).replace(/\.0$/,'')+'k' : n.toLocaleString(); }
+  </script>
+</body>
+</html>

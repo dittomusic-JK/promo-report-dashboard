@@ -1,0 +1,12 @@
+<svg id="Component_110_2" data-name="Component 110 – 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="50" height="50" viewBox="0 0 50 50">
+  <defs>
+    <linearGradient id="linear-gradient" x1="0.703" y1="0.011" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#4f9afc"/>
+      <stop offset="1" stop-color="#0465e3"/>
+    </linearGradient>
+  </defs>
+  <rect id="Rectangle_992" data-name="Rectangle 992" width="50" height="50" rx="10" fill="url(#linear-gradient)"/>
+  <g id="Facebook_f_logo__2019_" data-name="Facebook_f_logo_(2019)" transform="translate(-1.407 -1.481)">
+    <path id="Path_4134" data-name="Path 4134" d="M4213.816,2800.274l1.1-7.166h-6.873v-4.65c0-1.959.958-3.873,4.04-3.873h3.126v-6.1a38.1,38.1,0,0,0-5.549-.484c-5.661,0-9.363,3.43-9.363,9.645v5.463H4194v7.166h6.294l.159,17.727h7.538l.049-17.727Z" transform="translate(-4178.196 -2766.519)" fill="#fff"/>
+  </g>
+</svg>

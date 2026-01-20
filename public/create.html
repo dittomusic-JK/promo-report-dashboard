@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Report - Promo</title>
+  <style>
+    @font-face {
+      font-family: 'Satoshi';
+      src: url('/assets/Satoshi-Variable.woff2') format('woff2');
+      font-weight: 100 900;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Neusa';
+      src: url('/assets/Neusa-ExtraBold.otf') format('opentype');
+      font-weight: 800;
+      font-display: swap;
+    }
+    
+    :root {
+      --promo-pink: #F64780;
+      --chayellow: #E0FF4F;
+      --gunmetal: #0C262A;
+      --x-black: #070707;
+      --alt-grey: #3A2F3B;
+      --soft-pink: #FFEAEA;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Satoshi', -apple-system, sans-serif;
+      background: var(--gunmetal);
+      color: #fff;
+      min-height: 100vh;
+      padding: 0;
+    }
+    
+    /* Navigation */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 40px;
+      background: var(--x-black);
+      border-bottom: 1px solid rgba(246, 71, 128, 0.2);
+    }
+    .nav-logo {
+      height: 36px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 32px;
+    }
+    .nav-links a {
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: #fff; }
+    .nav-links a.active { color: var(--chayellow); }
+    .main-content {
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+    h1 {
+      font-family: 'Neusa', sans-serif;
+      font-size: 32px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 40px;
+    }
+    
+    /* Form Sections */
+    .section {
+      background: var(--alt-grey);
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .section-number {
+      background: var(--promo-pink);
+      color: #fff;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Neusa', sans-serif;
+      font-size: 14px;
+    }
+    .section h2 {
+      font-family: 'Neusa', sans-serif;
+      font-size: 18px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    /* Form Elements */
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 8px;
+    }
+    input, textarea, select {
+      width: 100%;
+      background: var(--gunmetal);
+      border: 2px solid transparent;
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: #fff;
+      font-size: 14px;
+      font-family: 'Satoshi', sans-serif;
+      transition: border-color 0.2s;
+    }
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: var(--promo-pink);
+    }
+    input::placeholder, textarea::placeholder {
+      color: rgba(255,255,255,0.3);
+    }
+    textarea { resize: vertical; min-height: 80px; }
+    
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .row-3 {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+    
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-family: 'Neusa', sans-serif;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    .btn-primary {
+      background: var(--promo-pink);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(246, 71, 128, 0.4);
+    }
+    .btn-secondary {
+      background: var(--gunmetal);
+      color: #fff;
+    }
+    .btn-secondary:hover {
+      background: rgba(12, 38, 42, 0.8);
+    }
+    .btn-yellow {
+      background: var(--chayellow);
+      color: var(--x-black);
+    }
+    .btn-yellow:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(224, 255, 79, 0.3);
+    }
+    .btn-small {
+      padding: 8px 16px;
+      font-size: 12px;
+    }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    /* Feature.fm Import */
+    .import-row {
+      display: flex;
+      gap: 12px;
+    }
+    .import-row input {
+      flex: 1;
+    }
+    .import-status {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 13px;
+    }
+    .import-status.success {
+      background: rgba(224, 255, 79, 0.1);
+      border: 1px solid var(--chayellow);
+      color: var(--chayellow);
+    }
+    .import-status.error {
+      background: rgba(246, 71, 128, 0.1);
+      border: 1px solid var(--promo-pink);
+      color: var(--promo-pink);
+    }
+    .import-status.loading {
+      background: rgba(246, 71, 128, 0.1);
+      border: 1px solid var(--promo-pink);
+      color: var(--promo-pink);
+    }
+    
+    /* Analytics Preview */
+    .analytics-preview {
+      display: none;
+      margin-top: 20px;
+      padding: 20px;
+      background: var(--gunmetal);
+      border-radius: 12px;
+    }
+    .analytics-preview.show { display: block; }
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .metric {
+      text-align: center;
+      padding: 16px;
+      background: var(--alt-grey);
+      border-radius: 8px;
+    }
+    .metric-value {
+      font-family: 'Neusa', sans-serif;
+      font-size: 28px;
+      color: var(--promo-pink);
+    }
+    .metric-label {
+      font-size: 11px;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+    
+    /* Placement Cards */
+    .placement-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .placement-card {
+      background: var(--gunmetal);
+      border-radius: 12px;
+      padding: 20px;
+      border: 1px dashed rgba(255,255,255,0.2);
+    }
+    .placement-card.filled {
+      border-style: solid;
+      border-color: rgba(246, 71, 128, 0.3);
+    }
+    .placement-card h4 {
+      font-size: 14px;
+      margin-bottom: 16px;
+      color: rgba(255,255,255,0.5);
+    }
+    .image-upload {
+      width: 100%;
+      height: 100px;
+      background: var(--alt-grey);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 2px dashed rgba(255,255,255,0.2);
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .image-upload:hover {
+      border-color: var(--promo-pink);
+    }
+    .image-upload img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .image-upload span {
+      color: rgba(255,255,255,0.5);
+      font-size: 12px;
+    }
+    .image-upload input {
+      display: none;
+    }
+    
+    /* Footer Actions */
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 40px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    /* Loading Overlay */
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(12, 38, 42, 0.95);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .loading-overlay.show { display: flex; }
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid rgba(246, 71, 128, 0.2);
+      border-top-color: var(--promo-pink);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <nav>
+    <img src="/assets/promo-logo.svg" alt="Promo" class="nav-logo">
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/library">Library</a>
+    </div>
+  </nav>
+  
+  <div class="main-content">
+  <div class="container">
+    <h1 id="pageTitle">Create Promo Report</h1>
+    <p class="subtitle" id="pageSubtitle">Fill in the details to generate a branded campaign report</p>
+    
+    <form id="reportForm">
+      <!-- Section 1: Basic Info -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-number">1</div>
+          <h2>Campaign Info</h2>
+        </div>
+        
+        <div class="row">
+          <div class="form-group">
+            <label>Artist Name *</label>
+            <input type="text" name="artistName" required placeholder="e.g. Samantha L. Keller">
+          </div>
+          <div class="form-group">
+            <label>Release Title *</label>
+            <input type="text" name="releaseTitle" required placeholder="e.g. Materializing Dog">
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="form-group">
+            <label>Campaign Date Range</label>
+            <input type="text" name="dateRange" placeholder="e.g. Dec 21, 2025 - Jan 20, 2026">
+          </div>
+          <div class="form-group">
+            <label>Smart Link URL</label>
+            <div class="import-row">
+              <input type="url" name="smartLink" id="smartLinkInput" placeholder="https://ditto.fm/your-release">
+              <button type="button" class="btn btn-secondary btn-small" onclick="fetchArtwork()">Get Artwork</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>Release Artwork (for hero section)</label>
+          <div style="display:flex; gap:16px; align-items:flex-start;">
+            <div class="image-upload" id="artworkUpload" onclick="document.getElementById('artworkInput').click()" style="width:150px; height:150px; flex-shrink:0;">
+              <input type="file" id="artworkInput" accept="image/*" onchange="handleArtworkUpload(this)">
+              <span id="artworkPlaceholder">+ Upload</span>
+            </div>
+            <div id="artworkPreview" style="display:none; padding:12px; background:#1f1f1f; border-radius:8px; flex:1;">
+              <div style="color:#00ff99; font-size:13px;">✓ Artwork loaded</div>
+              <div id="artworkInfo" style="color:#aaaacc; font-size:12px; margin-top:4px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Section 2: Feature.fm Analytics -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-number">2</div>
+          <h2>Social Report (Feature.fm Analytics)</h2>
+        </div>
+        
+        <div class="form-group">
+          <label>Feature.fm Analytics URL</label>
+          <div class="import-row">
+            <input type="url" id="ffmUrl" placeholder="https://console.feature.fm/analytics/...">
+            <button type="button" class="btn btn-secondary" id="importBtn">Import Data</button>
+          </div>
+          <div id="importStatus" class="import-status" style="display: none;"></div>
+        </div>
+        
+        <p style="color: #aaaacc; font-size: 13px; margin-bottom: 20px;">Or enter metrics manually:</p>
+        
+        <div class="row row-3">
+          <div class="form-group">
+            <label>Total Visits</label>
+            <input type="number" name="totalVisits" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label>Unique Users</label>
+            <input type="number" name="uniqueUsers" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label>Clicks to Service</label>
+            <input type="number" name="clicksToService" placeholder="0">
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="form-group">
+            <label>Impressions (from ad platform)</label>
+            <input type="number" name="impressions" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label>Video Views (from ad platform)</label>
+            <input type="number" name="videoViews" placeholder="0">
+          </div>
+        </div>
+        
+        <div id="analyticsPreview" class="analytics-preview"></div>
+      </div>
+      
+      <!-- Section 3: PR Placements -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-number">3</div>
+          <h2>PR Placements</h2>
+        </div>
+        
+        <p style="color: #aaaacc; font-size: 13px; margin-bottom: 20px;">Paste article URLs - we'll fetch the logo, excerpt, and hero image automatically. Add social stats manually.</p>
+        
+        <div id="prInputs">
+          <!-- PR 1 -->
+          <div class="pr-input-card" data-index="0" style="background:#1f1f1f; border-radius:12px; padding:20px; margin-bottom:16px; border:1px dashed #313135;">
+            <div class="form-group">
+              <label>PR Placement 1 - Article URL</label>
+              <div class="import-row">
+                <input type="url" class="pr-url" data-index="0" placeholder="https://blog.com/your-article...">
+                <button type="button" class="btn btn-secondary btn-small" onclick="fetchArticle(0)">Fetch</button>
+              </div>
+            </div>
+            <div class="pr-preview" id="prPreview0" style="display:none;"></div>
+            <div class="pr-socials" id="prSocials0" style="display:none; margin-top:16px;">
+              <label style="margin-bottom:12px; display:block;">Publication Social Stats (optional)</label>
+              <div class="row row-3">
+                <div class="form-group" style="margin-bottom:0;">
+                  <input type="text" class="pr-fb" data-index="0" placeholder="FB Likes (e.g. 1.2k)">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <input type="text" class="pr-twitter" data-index="0" placeholder="Twitter (e.g. 11.4k)">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <input type="text" class="pr-instagram" data-index="0" placeholder="Instagram (e.g. 21.1k)">
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- PR 2 -->
+          <div class="pr-input-card" data-index="1" style="background:#1f1f1f; border-radius:12px; padding:20px; margin-bottom:16px; border:1px dashed #313135;">
+            <div class="form-group">
+              <label>PR Placement 2 - Article URL</label>
+              <div class="import-row">
+                <input type="url" class="pr-url" data-index="1" placeholder="https://blog.com/your-article...">
+                <button type="button" class="btn btn-secondary btn-small" onclick="fetchArticle(1)">Fetch</button>
+              </div>
+            </div>
+            <div class="pr-preview" id="prPreview1" style="display:none;"></div>
+            <div class="pr-socials" id="prSocials1" style="display:none; margin-top:16px;">
+              <label style="margin-bottom:12px; display:block;">Publication Social Stats (optional)</label>
+              <div class="row row-3">
+                <div class="form-group" style="margin-bottom:0;">
+                  <input type="text" class="pr-fb" data-index="1" placeholder="FB Likes (e.g. 1.2k)">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <input type="text" class="pr-twitter" data-index="1" placeholder="Twitter (e.g. 11.4k)">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <input type="text" class="pr-instagram" data-index="1" placeholder="Instagram (e.g. 21.1k)">
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- PR 3 -->
+          <div class="pr-input-card" data-index="2" style="background:#1f1f1f; border-radius:12px; padding:20px; margin-bottom:16px; border:1px dashed #313135;">
+            <div class="form-group">
+              <label>PR Placement 3 - Article URL</label>
+              <div class="import-row">
+                <input type="url" class="pr-url" data-index="2" placeholder="https://blog.com/your-article...">
+                <button type="button" class="btn btn-secondary btn-small" onclick="fetchArticle(2)">Fetch</button>
+              </div>
+            </div>
+            <div class="pr-preview" id="prPreview2" style="display:none;"></div>
+            <div class="pr-socials" id="prSocials2" style="display:none; margin-top:16px;">
+              <label style="margin-bottom:12px; display:block;">Publication Social Stats (optional)</label>
+              <div class="row row-3">
+                <div class="form-group" style="margin-bottom:0;">
+                  <input type="text" class="pr-fb" data-index="2" placeholder="FB Likes (e.g. 1.2k)">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <input type="text" class="pr-twitter" data-index="2" placeholder="Twitter (e.g. 11.4k)">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <input type="text" class="pr-instagram" data-index="2" placeholder="Instagram (e.g. 21.1k)">
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- PR 4 -->
+          <div class="pr-input-card" data-index="3" style="background:#1f1f1f; border-radius:12px; padding:20px; margin-bottom:16px; border:1px dashed #313135;">
+            <div class="form-group">
+              <label>PR Placement 4 - Article URL</label>
+              <div class="import-row">
+                <input type="url" class="pr-url" data-index="3" placeholder="https://blog.com/your-article...">
+                <button type="button" class="btn btn-secondary btn-small" onclick="fetchArticle(3)">Fetch</button>
+              </div>
+            </div>
+            <div class="pr-preview" id="prPreview3" style="display:none;"></div>
+            <div class="pr-socials" id="prSocials3" style="display:none; margin-top:16px;">
+              <label style="margin-bottom:12px; display:block;">Publication Social Stats (optional)</label>
+              <div class="row row-3">
+                <div class="form-group" style="margin-bottom:0;">
+                  <input type="text" class="pr-fb" data-index="3" placeholder="FB Likes (e.g. 1.2k)">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <input type="text" class="pr-twitter" data-index="3" placeholder="Twitter (e.g. 11.4k)">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <input type="text" class="pr-instagram" data-index="3" placeholder="Instagram (e.g. 21.1k)">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Section 4: Playlist Placements -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-number">4</div>
+          <h2>Playlist Placements</h2>
+        </div>
+        
+        <p style="color: #aaaacc; font-size: 13px; margin-bottom: 20px;">Just paste Spotify playlist URLs - we'll fetch the name, curator, saves, and artwork automatically!</p>
+        
+        <div class="row">
+          <div class="form-group">
+            <label>Total Playlists (overall campaign)</label>
+            <input type="number" name="totalPlaylists" placeholder="e.g. 5">
+          </div>
+          <div class="form-group">
+            <label>Total Spotify Audience</label>
+            <input type="text" name="spotifyAudience" placeholder="e.g. 11.6k">
+          </div>
+        </div>
+        
+        <div id="playlistInputs">
+          <div class="playlist-input-row" data-index="0">
+            <div class="form-group">
+              <label>Playlist 1</label>
+              <div class="import-row">
+                <input type="url" class="playlist-url" data-index="0" placeholder="https://open.spotify.com/playlist/...">
+                <button type="button" class="btn btn-secondary btn-small" onclick="fetchPlaylist(0)">Fetch</button>
+              </div>
+              <div class="playlist-preview" id="playlistPreview0" style="display:none; margin-top:12px; padding:16px; background:#1f1f1f; border-radius:12px; display:flex; gap:16px; align-items:center;"></div>
+            </div>
+          </div>
+          <div class="playlist-input-row" data-index="1">
+            <div class="form-group">
+              <label>Playlist 2</label>
+              <div class="import-row">
+                <input type="url" class="playlist-url" data-index="1" placeholder="https://open.spotify.com/playlist/...">
+                <button type="button" class="btn btn-secondary btn-small" onclick="fetchPlaylist(1)">Fetch</button>
+              </div>
+              <div class="playlist-preview" id="playlistPreview1" style="display:none;"></div>
+            </div>
+          </div>
+          <div class="playlist-input-row" data-index="2">
+            <div class="form-group">
+              <label>Playlist 3</label>
+              <div class="import-row">
+                <input type="url" class="playlist-url" data-index="2" placeholder="https://open.spotify.com/playlist/...">
+                <button type="button" class="btn btn-secondary btn-small" onclick="fetchPlaylist(2)">Fetch</button>
+              </div>
+              <div class="playlist-preview" id="playlistPreview2" style="display:none;"></div>
+            </div>
+          </div>
+          <div class="playlist-input-row" data-index="3">
+            <div class="form-group">
+              <label>Playlist 4</label>
+              <div class="import-row">
+                <input type="url" class="playlist-url" data-index="3" placeholder="https://open.spotify.com/playlist/...">
+                <button type="button" class="btn btn-secondary btn-small" onclick="fetchPlaylist(3)">Fetch</button>
+              </div>
+              <div class="playlist-preview" id="playlistPreview3" style="display:none;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Section 5: Survey Link -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-number">5</div>
+          <h2>Survey & Links</h2>
+        </div>
+        
+        <div class="row">
+          <div class="form-group">
+            <label>Feedback Survey URL</label>
+            <input type="url" name="surveyUrl" placeholder="https://...">
+          </div>
+          <div class="form-group">
+            <label>Blog Contact Database URL</label>
+            <input type="url" name="blogDatabaseUrl" placeholder="https://...">
+          </div>
+        </div>
+      </div>
+      
+      <!-- Actions -->
+      <div class="actions">
+        <a href="/library" class="btn btn-secondary" id="cancelBtn">Cancel</a>
+        <button type="submit" class="btn btn-primary" id="submitBtn">Generate Report</button>
+      </div>
+    </form>
+  </div>
+  </div>
+  
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+    <p>Generating your report...</p>
+  </div>
+  
+  <script>
+    // Store uploaded images and fetched playlists
+    const uploadedImages = {
+      pr: {},
+      prScreenshot: {},
+      playlist: {}
+    };
+    
+    // Store hero artwork
+    let heroArtwork = null;
+    
+    // Fetch artwork from smart link
+    async function fetchArtwork() {
+      const url = document.getElementById('smartLinkInput').value;
+      if (!url) return alert('Please enter a smart link URL first');
+      
+      const previewEl = document.getElementById('artworkPreview');
+      const uploadEl = document.getElementById('artworkUpload');
+      previewEl.style.display = 'block';
+      previewEl.innerHTML = '<div style="color:#9e77ff;">Fetching artwork...</div>';
+      
+      try {
+        const res = await fetch('/api/scrape-smartlink', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url })
+        });
+        
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+        
+        if (data.artwork) {
+          heroArtwork = data.artwork;
+          uploadEl.innerHTML = `<img src="${data.artwork}" alt="Artwork">`;
+          previewEl.innerHTML = `
+            <div style="color:#00ff99; font-size:13px;">✓ Artwork loaded from smart link</div>
+            ${data.title ? `<div style="color:#aaaacc; font-size:12px; margin-top:4px;">${data.title}</div>` : ''}
+          `;
+        } else {
+          throw new Error('No artwork found');
+        }
+      } catch (err) {
+        previewEl.innerHTML = `<div style="color:#ef4444;">✗ ${err.message}. Please upload manually.</div>`;
+      }
+    }
+    
+    // Handle manual artwork upload
+    async function handleArtworkUpload(input) {
+      const file = input.files[0];
+      if (!file) return;
+      
+      const formData = new FormData();
+      formData.append('image', file);
+      
+      try {
+        const res = await fetch('/api/upload', { method: 'POST', body: formData });
+        const data = await res.json();
+        
+        if (data.url) {
+          heroArtwork = data.url;
+          document.getElementById('artworkUpload').innerHTML = `<img src="${data.url}" alt="Artwork">`;
+          document.getElementById('artworkPreview').style.display = 'block';
+          document.getElementById('artworkPreview').innerHTML = '<div style="color:#00ff99; font-size:13px;">✓ Artwork uploaded</div>';
+        }
+      } catch (err) {
+        alert('Failed to upload artwork');
+      }
+    }
+    
+    // Store fetched playlist data
+    const fetchedPlaylists = {};
+    
+    // Store fetched PR article data
+    const fetchedPR = {};
+    
+    // Fetch PR article data
+    async function fetchArticle(index) {
+      const input = document.querySelector(`.pr-url[data-index="${index}"]`);
+      const url = input.value;
+      if (!url) return alert('Please enter an article URL');
+      
+      const previewEl = document.getElementById(`prPreview${index}`);
+      const socialsEl = document.getElementById(`prSocials${index}`);
+      previewEl.style.display = 'block';
+      previewEl.innerHTML = '<span style="color:#9e77ff;">Fetching article data...</span>';
+      
+      try {
+        const res = await fetch('/api/scrape-article', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url })
+        });
+        
+        const data = await res.json();
+        
+        if (data.error) throw new Error(data.error);
+        
+        // Store the data
+        fetchedPR[index] = data;
+        
+        // Show preview
+        previewEl.innerHTML = `
+          <div style="display:flex; gap:16px; align-items:flex-start; padding:16px; background:#2a2a2c; border-radius:12px; margin-top:12px;">
+            <div style="flex-shrink:0;">
+              <img src="${data.logo || ''}" style="width:60px; height:60px; border-radius:8px; object-fit:contain; background:#313135;" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 60 60%22><rect fill=%22%23313135%22 width=%2260%22 height=%2260%22/><text x=%2230%22 y=%2235%22 text-anchor=%22middle%22 fill=%22%23666%22 font-size=%2224%22>📰</text></svg>'">
+            </div>
+            <div style="flex:1; min-width:0;">
+              <div style="font-weight:700; font-size:14px; color:#9e77ff; margin-bottom:4px;">${data.siteName || 'Unknown Site'}</div>
+              <div style="font-size:13px; margin-bottom:8px; color:#fff;">${data.title || 'Article'}</div>
+              <div style="font-size:12px; color:#aaaacc; line-height:1.4;">${(data.excerpt || '').substring(0, 150)}${(data.excerpt || '').length > 150 ? '...' : ''}</div>
+            </div>
+            <button type="button" class="btn btn-secondary btn-small" onclick="removePR(${index})" style="flex-shrink:0;">✕</button>
+          </div>
+          ${data.heroImage ? `<img src="${data.heroImage}" style="width:100%; height:150px; object-fit:cover; border-radius:8px; margin-top:12px;" onerror="this.style.display='none'">` : ''}
+        `;
+        
+        // Show socials inputs
+        socialsEl.style.display = 'block';
+        
+        // Update card styling
+        const card = document.querySelector(`.pr-input-card[data-index="${index}"]`);
+        card.style.borderStyle = 'solid';
+        card.style.borderColor = '#9e77ff33';
+        
+      } catch (err) {
+        previewEl.innerHTML = `<span style="color:#ef4444;">✗ ${err.message}</span>`;
+      }
+    }
+    
+    function removePR(index) {
+      delete fetchedPR[index];
+      const input = document.querySelector(`.pr-url[data-index="${index}"]`);
+      input.value = '';
+      const previewEl = document.getElementById(`prPreview${index}`);
+      const socialsEl = document.getElementById(`prSocials${index}`);
+      previewEl.style.display = 'none';
+      previewEl.innerHTML = '';
+      socialsEl.style.display = 'none';
+      const card = document.querySelector(`.pr-input-card[data-index="${index}"]`);
+      card.style.borderStyle = 'dashed';
+      card.style.borderColor = '#313135';
+    }
+    
+    // Fetch Spotify playlist data
+    async function fetchPlaylist(index) {
+      const input = document.querySelector(`.playlist-url[data-index="${index}"]`);
+      const url = input.value;
+      if (!url) return alert('Please enter a Spotify playlist URL');
+      
+      const previewEl = document.getElementById(`playlistPreview${index}`);
+      previewEl.style.display = 'flex';
+      previewEl.innerHTML = '<span style="color:#9e77ff;">Fetching playlist data...</span>';
+      
+      try {
+        const res = await fetch('/api/scrape-spotify-playlist', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url })
+        });
+        
+        const data = await res.json();
+        
+        if (data.error) throw new Error(data.error);
+        
+        // Store the data
+        fetchedPlaylists[index] = data;
+        
+        // Show preview
+        previewEl.innerHTML = `
+          <img src="${data.coverImage || ''}" style="width:80px; height:80px; border-radius:8px; object-fit:cover; background:#313135;" onerror="this.style.background='#313135'">
+          <div style="flex:1;">
+            <div style="font-weight:700; font-size:16px; margin-bottom:4px;">${data.name || 'Unknown'}</div>
+            <div style="color:#aaaacc; font-size:13px; display:flex; align-items:center; gap:6px;">
+              ${data.curatorAvatar ? `<img src="${data.curatorAvatar}" style="width:18px; height:18px; border-radius:50%; object-fit:cover;">` : ''}
+              by ${data.curator || 'Unknown'}
+            </div>
+            <div style="color:#00ff99; font-size:12px; margin-top:4px;">✓ ${data.followers || '0'} saves</div>
+          </div>
+          <button type="button" class="btn btn-secondary btn-small" onclick="removePlaylist(${index})">✕</button>
+        `;
+        previewEl.style.padding = '16px';
+        previewEl.style.background = '#1f1f1f';
+        previewEl.style.borderRadius = '12px';
+        previewEl.style.alignItems = 'center';
+        previewEl.style.gap = '16px';
+        
+      } catch (err) {
+        previewEl.innerHTML = `<span style="color:#ef4444;">✗ ${err.message}</span>`;
+      }
+    }
+    
+    function removePlaylist(index) {
+      delete fetchedPlaylists[index];
+      const input = document.querySelector(`.playlist-url[data-index="${index}"]`);
+      input.value = '';
+      const previewEl = document.getElementById(`playlistPreview${index}`);
+      previewEl.style.display = 'none';
+      previewEl.innerHTML = '';
+    }
+    
+    // Handle image upload
+    async function handleImageUpload(input, type, index) {
+      const file = input.files[0];
+      if (!file) return;
+      
+      const formData = new FormData();
+      formData.append('image', file);
+      
+      try {
+        const res = await fetch('/api/upload', { method: 'POST', body: formData });
+        const data = await res.json();
+        
+        if (data.url) {
+          uploadedImages[type][index] = data.url;
+          
+          // Update preview
+          const container = input.parentElement;
+          container.innerHTML = `<img src="${data.url}" alt="Uploaded">`;
+        }
+      } catch (err) {
+        console.error('Upload failed:', err);
+        alert('Failed to upload image');
+      }
+    }
+    
+    // Import Feature.fm data
+    document.getElementById('importBtn').addEventListener('click', async () => {
+      const url = document.getElementById('ffmUrl').value;
+      if (!url) return alert('Please enter a Feature.fm URL');
+      
+      const statusEl = document.getElementById('importStatus');
+      statusEl.style.display = 'block';
+      statusEl.className = 'import-status loading';
+      statusEl.textContent = 'Importing data from Feature.fm... (this may take 15-30 seconds)';
+      
+      try {
+        const res = await fetch('/api/scrape-ffm', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url })
+        });
+        
+        const data = await res.json();
+        
+        if (data.error) throw new Error(data.error);
+        
+        // Populate form fields
+        if (data.overview) {
+          document.querySelector('[name="totalVisits"]').value = data.overview.totalVisits || '';
+          document.querySelector('[name="uniqueUsers"]').value = data.overview.uniqueUsers || '';
+          document.querySelector('[name="clicksToService"]').value = data.overview.clicksToService || '';
+        }
+        
+        if (data.release) {
+          if (data.release.title && !document.querySelector('[name="releaseTitle"]').value) {
+            document.querySelector('[name="releaseTitle"]').value = data.release.title;
+          }
+          if (data.release.link && !document.querySelector('[name="smartLink"]').value) {
+            document.querySelector('[name="smartLink"]').value = data.release.link;
+          }
+        }
+        
+        // Store the full data for the report
+        window.ffmData = data;
+        
+        statusEl.className = 'import-status success';
+        statusEl.textContent = `✓ Imported: ${data.overview?.totalVisits || 0} visits, ${data.overview?.clicksToService || 0} clicks to service`;
+        
+      } catch (err) {
+        statusEl.className = 'import-status error';
+        statusEl.textContent = `✗ Import failed: ${err.message}`;
+      }
+    });
+    
+    // Edit mode support
+    let editMode = false;
+    let editReportId = null;
+    
+    // Check for edit mode on page load
+    document.addEventListener('DOMContentLoaded', async () => {
+      const params = new URLSearchParams(window.location.search);
+      editReportId = params.get('edit');
+      
+      if (editReportId) {
+        editMode = true;
+        document.getElementById('pageTitle').textContent = 'Edit Report';
+        document.getElementById('pageSubtitle').textContent = 'Update the report details';
+        document.getElementById('submitBtn').textContent = 'Update Report';
+        document.getElementById('cancelBtn').href = `/report/${editReportId}`;
+        
+        // Load existing report data
+        try {
+          const res = await fetch(`/api/reports/${editReportId}`);
+          if (!res.ok) throw new Error('Report not found');
+          const report = await res.json();
+          
+          // Populate form fields
+          document.querySelector('[name="artistName"]').value = report.artistName || '';
+          document.querySelector('[name="releaseTitle"]').value = report.releaseTitle || '';
+          document.querySelector('[name="dateRange"]').value = report.dateRange || '';
+          document.querySelector('[name="smartLink"]').value = report.smartLink || '';
+          document.querySelector('[name="totalPlaylists"]').value = report.totalPlaylists || '';
+          document.querySelector('[name="spotifyAudience"]').value = report.spotifyAudience || '';
+          document.querySelector('[name="surveyUrl"]').value = report.surveyUrl || '';
+          document.querySelector('[name="blogDatabaseUrl"]').value = report.blogDatabaseUrl || '';
+          
+          // Analytics
+          if (report.analytics) {
+            document.querySelector('[name="totalVisits"]').value = report.analytics.totalVisits || '';
+            document.querySelector('[name="uniqueUsers"]').value = report.analytics.uniqueUsers || '';
+            document.querySelector('[name="clicksToService"]').value = report.analytics.clicksToService || '';
+            document.querySelector('[name="impressions"]').value = report.analytics.impressions || '';
+            document.querySelector('[name="videoViews"]').value = report.analytics.videoViews || '';
+            
+            // Store FFM data for countries/services/referrals
+            window.ffmData = {
+              referrals: report.analytics.referrals || [],
+              services: report.analytics.services || [],
+              countries: report.analytics.countries || []
+            };
+          }
+          
+          // Hero artwork
+          if (report.heroArtwork) {
+            heroArtwork = report.heroArtwork;
+            document.getElementById('artworkUpload').innerHTML = `<img src="${report.heroArtwork}" alt="Artwork">`;
+            document.getElementById('artworkPreview').style.display = 'block';
+            document.getElementById('artworkPreview').innerHTML = '<div style="color:#00ff99; font-size:13px;">✓ Existing artwork loaded</div>';
+          }
+          
+          // PR Placements
+          if (report.prPlacements) {
+            report.prPlacements.forEach((pr, i) => {
+              if (i >= 4) return;
+              fetchedPR[i] = {
+                siteName: pr.name,
+                title: pr.title,
+                excerpt: pr.description,
+                articleUrl: pr.articleUrl,
+                logo: pr.logoImage,
+                heroImage: pr.heroImage,
+                screenshot: pr.screenshotImage
+              };
+              
+              // Show preview
+              const previewEl = document.getElementById(`prPreview${i}`);
+              const socialsEl = document.getElementById(`prSocials${i}`);
+              const urlInput = document.querySelector(`.pr-url[data-index="${i}"]`);
+              
+              if (urlInput) urlInput.value = pr.articleUrl || '';
+              if (previewEl) {
+                previewEl.style.display = 'block';
+                previewEl.innerHTML = `
+                  <div style="display:flex; gap:16px; align-items:flex-start; padding:16px; background:#2a2a2c; border-radius:12px; margin-top:12px;">
+                    <div style="flex-shrink:0;">
+                      <img src="${pr.logoImage || ''}" style="width:60px; height:60px; border-radius:8px; object-fit:contain; background:#313135;" onerror="this.style.background='#313135'">
+                    </div>
+                    <div style="flex:1; min-width:0;">
+                      <div style="font-weight:700; font-size:14px; color:#9e77ff; margin-bottom:4px;">${pr.name || 'Unknown Site'}</div>
+                      <div style="font-size:13px; margin-bottom:8px; color:#fff;">${pr.title || 'Article'}</div>
+                      <div style="color:#00ff99; font-size:12px;">✓ Loaded from saved report</div>
+                    </div>
+                    <button type="button" class="btn btn-secondary btn-small" onclick="removePR(${i})">✕</button>
+                  </div>
+                `;
+              }
+              if (socialsEl) {
+                socialsEl.style.display = 'grid';
+                const fbInput = document.querySelector(`.pr-fb[data-index="${i}"]`);
+                const twitterInput = document.querySelector(`.pr-twitter[data-index="${i}"]`);
+                const instagramInput = document.querySelector(`.pr-instagram[data-index="${i}"]`);
+                if (fbInput) fbInput.value = pr.fbLikes || '';
+                if (twitterInput) twitterInput.value = pr.twitter || '';
+                if (instagramInput) instagramInput.value = pr.instagram || '';
+              }
+            });
+          }
+          
+          // Playlists
+          if (report.playlists) {
+            report.playlists.forEach((pl, i) => {
+              if (i >= 4) return;
+              fetchedPlaylists[i] = pl;
+              
+              const previewEl = document.getElementById(`playlistPreview${i}`);
+              const urlInput = document.querySelector(`.playlist-url[data-index="${i}"]`);
+              
+              if (urlInput) urlInput.value = pl.spotifyUrl || '';
+              if (previewEl) {
+                previewEl.style.display = 'flex';
+                previewEl.innerHTML = `
+                  <img src="${pl.coverImage || ''}" style="width:80px; height:80px; border-radius:8px; object-fit:cover; background:#313135;" onerror="this.style.background='#313135'">
+                  <div style="flex:1;">
+                    <div style="font-weight:700; font-size:16px; margin-bottom:4px;">${pl.name || 'Unknown'}</div>
+                    <div style="color:#aaaacc; font-size:13px; display:flex; align-items:center; gap:6px;">
+                      ${pl.curatorAvatar ? `<img src="${pl.curatorAvatar}" style="width:18px; height:18px; border-radius:50%; object-fit:cover;">` : ''}
+                      by ${pl.curator || 'Unknown'}
+                    </div>
+                    <div style="color:#00ff99; font-size:12px; margin-top:4px;">✓ ${pl.followers || '0'} saves</div>
+                  </div>
+                  <button type="button" class="btn btn-secondary btn-small" onclick="removePlaylist(${i})">✕</button>
+                `;
+                previewEl.style.padding = '16px';
+                previewEl.style.background = '#1f1f1f';
+                previewEl.style.borderRadius = '12px';
+                previewEl.style.alignItems = 'center';
+                previewEl.style.gap = '16px';
+              }
+            });
+          }
+          
+        } catch (err) {
+          console.error('Failed to load report:', err);
+          alert('Failed to load report for editing');
+          window.location.href = '/library';
+        }
+      }
+    });
+    
+    // Form submission
+    document.getElementById('reportForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(e.target);
+      const data = {
+        artistName: formData.get('artistName'),
+        releaseTitle: formData.get('releaseTitle'),
+        dateRange: formData.get('dateRange'),
+        smartLink: formData.get('smartLink'),
+        heroArtwork: heroArtwork,
+        analytics: {
+          totalVisits: parseInt(formData.get('totalVisits')) || 0,
+          uniqueUsers: parseInt(formData.get('uniqueUsers')) || 0,
+          clicksToService: parseInt(formData.get('clicksToService')) || 0,
+          impressions: parseInt(formData.get('impressions')) || 0,
+          videoViews: parseInt(formData.get('videoViews')) || 0,
+          referrals: window.ffmData?.referrals || [],
+          services: window.ffmData?.services || [],
+          countries: window.ffmData?.countries || []
+        },
+        prPlacements: [],
+        playlists: [],
+        totalPlaylists: formData.get('totalPlaylists'),
+        spotifyAudience: formData.get('spotifyAudience'),
+        surveyUrl: formData.get('surveyUrl'),
+        blogDatabaseUrl: formData.get('blogDatabaseUrl')
+      };
+      
+      // Collect PR placements from fetched data
+      for (let i = 0; i < 4; i++) {
+        if (fetchedPR[i]) {
+          const pr = fetchedPR[i];
+          const fbInput = document.querySelector(`.pr-fb[data-index="${i}"]`);
+          const twitterInput = document.querySelector(`.pr-twitter[data-index="${i}"]`);
+          const instagramInput = document.querySelector(`.pr-instagram[data-index="${i}"]`);
+          
+          data.prPlacements.push({
+            name: pr.siteName,
+            title: pr.title,
+            description: pr.excerpt,
+            articleUrl: pr.articleUrl,
+            logoImage: pr.logo,
+            heroImage: pr.heroImage,
+            screenshotImage: pr.screenshot,
+            fbLikes: fbInput?.value || '',
+            twitter: twitterInput?.value || '',
+            instagram: instagramInput?.value || ''
+          });
+        }
+      }
+      
+      // Collect playlists from fetched data
+      for (let i = 0; i < 4; i++) {
+        if (fetchedPlaylists[i]) {
+          const pl = fetchedPlaylists[i];
+          data.playlists.push({
+            name: pl.name,
+            curator: pl.curator,
+            curatorAvatar: pl.curatorAvatar,
+            followers: pl.followers,
+            spotifyUrl: pl.spotifyUrl,
+            coverImage: pl.coverImage
+          });
+        }
+      }
+      
+      // Show loading
+      document.getElementById('loadingOverlay').classList.add('show');
+      document.querySelector('#loadingOverlay p').textContent = editMode ? 'Updating your report...' : 'Generating your report...';
+      
+      try {
+        const url = editMode ? `/api/reports/${editReportId}` : '/api/reports';
+        const method = editMode ? 'PUT' : 'POST';
+        
+        const res = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        
+        const result = await res.json();
+        
+        // Redirect to report
+        window.location.href = result.url;
+        
+      } catch (err) {
+        document.getElementById('loadingOverlay').classList.remove('show');
+        alert(`Failed to ${editMode ? 'update' : 'create'} report: ` + err.message);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<svg id="Component_107_1" data-name="Component 107 – 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="50" height="50" viewBox="0 0 50 50">
+  <defs>
+    <linearGradient id="linear-gradient" x1="-2.388" y1="-2.594" x2="-2.393" y2="-3.153" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#358c7b"/>
+      <stop offset="0.526" stop-color="#33a65e"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="-2.672" y1="-3.256" x2="-2.109" y2="-3.746" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#222b90"/>
+      <stop offset="1" stop-color="#367b99"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-3" x1="-1.017" y1="-4.131" x2="-0.471" y2="-4.131" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#f90"/>
+      <stop offset="1" stop-color="#ff8000"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-4" x1="-1.565" y1="-4.131" x2="-1.019" y2="-4.131" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#ff8000"/>
+      <stop offset="1" stop-color="#cc1953"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-5" x1="-2.663" y1="-4.131" x2="-2.117" y2="-4.131" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#222b90"/>
+      <stop offset="1" stop-color="#3559a6"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-6" x1="0.22" y1="-0.434" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#cc1953"/>
+      <stop offset="1" stop-color="#241284"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-8" x1="-1.585" y1="-3.683" x2="-1" y2="-3.319" gradientUnits="objectBoundingBox">
+      <stop offset="0.003" stop-color="#fc0"/>
+      <stop offset="1" stop-color="#ce1938"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-9" x1="-1.52" y1="-3.23" x2="-1.066" y2="-2.513" gradientUnits="objectBoundingBox">
+      <stop offset="0.003" stop-color="#ffd100"/>
+      <stop offset="1" stop-color="#fd5a22"/>
+    </linearGradient>
+  </defs>
+  <rect id="Rectangle_953" data-name="Rectangle 953" width="50" height="50" rx="10"/>
+  <rect id="rect8185" width="6.626" height="3.876" transform="translate(33.695 15)" fill="#40ab5d"/>
+  <rect id="rect8192" width="6.626" height="3.876" transform="translate(33.695 20.375)" fill="url(#linear-gradient)"/>
+  <rect id="rect8199" width="6.626" height="3.876" transform="translate(33.695 25.749)" fill="url(#linear-gradient-2)"/>
+  <rect id="rect8206" width="6.626" height="3.876" transform="translate(9.679 31.124)" fill="url(#linear-gradient-3)"/>
+  <rect id="rect8213" width="6.626" height="3.876" transform="translate(17.68 31.124)" fill="url(#linear-gradient-4)"/>
+  <rect id="rect8227" width="6.626" height="3.876" transform="translate(33.695 31.124)" fill="url(#linear-gradient-5)"/>
+  <g id="Group_4413" data-name="Group 4413" transform="translate(-219 -572)">
+    <rect id="rect8220" width="6.626" height="3.876" transform="translate(244.695 603.124)" fill="url(#linear-gradient-6)"/>
+    <rect id="rect8234" width="6.626" height="3.876" transform="translate(244.695 597.749)" fill="url(#linear-gradient-6)"/>
+  </g>
+  <rect id="rect8241" width="6.626" height="3.876" transform="translate(17.68 25.749)" fill="url(#linear-gradient-8)"/>
+  <rect id="rect8248" width="6.626" height="3.876" transform="translate(17.68 20.375)" fill="url(#linear-gradient-9)"/>
+</svg>

@@ -1,0 +1,15 @@
+<svg id="Component_113_4" data-name="Component 113 – 4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="50" height="50" viewBox="0 0 50 50">
+  <defs>
+    <linearGradient id="linear-gradient" x1="0.398" y1="0.584" x2="0.398" y2="0.572" gradientUnits="objectBoundingBox">
+      <stop offset="1" stop-color="#f8d721"/>
+      <stop offset="1" stop-color="#fbc10a"/>
+    </linearGradient>
+  </defs>
+  <rect id="Rectangle_1034" data-name="Rectangle 1034" width="50" height="50" rx="10" fill="#f8f8f8"/>
+  <g id="qq-music" transform="translate(-3.87 6.69)">
+    <g id="QQ-Music-2" data-name="QQ-Music" transform="translate(13.87 2.31)">
+      <circle id="Oval" cx="15" cy="15" r="15" transform="translate(0 1.432)" fill="url(#linear-gradient)"/>
+      <path id="Path" d="M140.489,3.917l7.8,11.056c-7.383-1.713-12.142,6.141-7.463,9.887,6.416,5.138,14.625-2.338,10.782-7.7L144.527,4.845q8.321-.521,6.506-7.535a8.1,8.1,0,0,1-4.98,2.218,9.521,9.521,0,0,0-5.416,2.795Q139.867,3.245,140.489,3.917Z" transform="translate(-130.785 2.69)" fill="#00ad56" fill-rule="evenodd"/>
+    </g>
+  </g>
+</svg>

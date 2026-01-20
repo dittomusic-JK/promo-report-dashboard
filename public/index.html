@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Promo Report Dashboard</title>
+  <style>
+    @font-face {
+      font-family: 'Satoshi';
+      src: url('/assets/Satoshi-Variable.woff2') format('woff2');
+      font-weight: 100 900;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Neusa';
+      src: url('/assets/Neusa-ExtraBold.otf') format('opentype');
+      font-weight: 800;
+      font-display: swap;
+    }
+    
+    :root {
+      --promo-pink: #F64780;
+      --chayellow: #E0FF4F;
+      --gunmetal: #0C262A;
+      --x-black: #070707;
+      --alt-grey: #3A2F3B;
+      --soft-pink: #FFEAEA;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Satoshi', -apple-system, sans-serif;
+      background: var(--gunmetal);
+      color: #fff;
+      min-height: 100vh;
+    }
+    
+    /* Navigation */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 40px;
+      background: var(--x-black);
+      border-bottom: 1px solid rgba(246, 71, 128, 0.2);
+    }
+    .nav-logo { height: 36px; }
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+    }
+    .nav-links a {
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: #fff; }
+    .nav-links a.active { color: var(--chayellow); }
+    .nav-actions {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-family: 'Neusa', sans-serif;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-primary {
+      background: var(--promo-pink);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(246, 71, 128, 0.4);
+    }
+    .btn-secondary {
+      background: var(--chayellow);
+      color: var(--x-black);
+    }
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(224, 255, 79, 0.3);
+    }
+    .btn-ghost {
+      background: transparent;
+      color: rgba(255,255,255,0.7);
+      padding: 8px;
+    }
+    .btn-ghost:hover {
+      color: #fff;
+      background: rgba(255,255,255,0.1);
+    }
+    
+    /* Hero Section */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 40px;
+      min-height: calc(100vh - 70px);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 20%, rgba(246, 71, 128, 0.15) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 80%, rgba(224, 255, 79, 0.1) 0%, transparent 50%);
+      z-index: 0;
+    }
+    
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 700px;
+    }
+    
+    .hero-logo {
+      height: 72px;
+      margin-bottom: 24px;
+    }
+    
+    .hero h1 {
+      font-family: 'Neusa', sans-serif;
+      font-size: 56px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+      line-height: 1.1;
+    }
+    
+    .hero h1 span {
+      color: var(--chayellow);
+    }
+    
+    .hero-subtitle {
+      font-size: 18px;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 48px;
+      line-height: 1.6;
+    }
+    
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      margin-bottom: 80px;
+    }
+    
+    /* Features */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    
+    .feature {
+      background: var(--alt-grey);
+      border-radius: 16px;
+      padding: 32px 24px;
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .feature:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+    }
+    
+    .feature-icon {
+      width: 56px;
+      height: 56px;
+      background: var(--gunmetal);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 28px;
+    }
+    
+    .feature h3 {
+      font-family: 'Neusa', sans-serif;
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      color: var(--promo-pink);
+    }
+    
+    .feature p {
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.5;
+    }
+    
+    /* Footer */
+    .footer {
+      padding: 40px;
+      text-align: center;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .footer-logo {
+      height: 24px;
+      opacity: 0.5;
+    }
+    
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 36px; }
+      .features { grid-template-columns: 1fr; }
+      .hero-actions { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <img src="/assets/promo-logo.svg" alt="Promo" class="nav-logo">
+    <div class="nav-links">
+      <a href="/" class="active">Home</a>
+      <a href="/library">Library</a>
+    </div>
+    <div class="nav-actions">
+      <a href="/create" class="btn btn-secondary">+ New Report</a>
+      <button class="btn btn-ghost" onclick="logout()" title="Sign Out">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+      </button>
+    </div>
+  </nav>
+  
+  <section class="hero">
+    <div class="hero-content">
+      <img src="/assets/promo-logo.svg" alt="Promo" class="hero-logo">
+      <h1>Report <span>Dashboard</span></h1>
+      <p class="hero-subtitle">Generate beautiful, branded campaign reports for your artists. Import analytics from Feature.fm, add PR coverage and playlist placements.</p>
+      
+      <div class="hero-actions">
+        <a href="/create" class="btn btn-primary">Create New Report</a>
+        <a href="/library" class="btn btn-secondary">View Library</a>
+      </div>
+      
+      <div class="features">
+        <div class="feature">
+          <div class="feature-icon">📊</div>
+          <h3>Smart Link Analytics</h3>
+          <p>Auto-import data from Feature.fm analytics</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">📰</div>
+          <h3>PR Placements</h3>
+          <p>Showcase blog features with auto-scraped details</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🎵</div>
+          <h3>Playlist Tracking</h3>
+          <p>Display Spotify playlist placements</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <footer class="footer">
+    <img src="/assets/ditto-logo.svg" alt="Ditto Music" class="footer-logo">
+  </footer>
+  
+  <script>
+    async function logout() {
+      await fetch('/api/logout', { method: 'POST' });
+      window.location.href = '/login';
+    }
+  </script>
+</body>
+</html>

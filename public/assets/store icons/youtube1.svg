@@ -1,0 +1,12 @@
+<svg id="Component_118_17" data-name="Component 118 – 17" xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50">
+  <g id="Component_110_4" data-name="Component 110 – 4">
+    <g id="Rectangle_1029" data-name="Rectangle 1029" fill="#fff" stroke="#e6e6e6" stroke-width="0.7">
+      <rect width="50" height="50" rx="10" stroke="none"/>
+      <rect x="0.35" y="0.35" width="49.3" height="49.3" rx="9.65" fill="none"/>
+    </g>
+  </g>
+  <g id="youtube_1_" data-name="youtube (1)" transform="translate(5 10.996)">
+    <path id="Path_9750" data-name="Path 9750" d="M39.176,4.382A5.011,5.011,0,0,0,35.65.857C32.52,0,20,0,20,0S7.479,0,4.349.824A5.114,5.114,0,0,0,.824,4.382C0,7.512,0,14,0,14s0,6.524.824,9.621A5.012,5.012,0,0,0,4.349,27.15c3.163.857,15.651.857,15.651.857s12.52,0,15.651-.824a5.011,5.011,0,0,0,3.526-3.525C40,20.527,40,14.036,40,14.036S40.033,7.512,39.176,4.382Zm0,0" fill="red"/>
+    <path id="Path_9751" data-name="Path 9751" d="M204.969,114.478l10.412-6-10.412-6Zm0,0" transform="translate(-188.956 -94.478)" fill="#fff"/>
+  </g>
+</svg>

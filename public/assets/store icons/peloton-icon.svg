@@ -1,0 +1,16 @@
+<svg id="Component_116_91" data-name="Component 116 – 91" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="50" height="50" viewBox="0 0 50 50">
+  <defs>
+    <linearGradient id="linear-gradient" x1="0.847" y1="0.07" x2="0.295" y2="0.808" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#e8484e"/>
+      <stop offset="1" stop-color="#c83238"/>
+    </linearGradient>
+  </defs>
+  <rect id="Rectangle_1005" data-name="Rectangle 1005" width="50" height="50" rx="10" fill="url(#linear-gradient)"/>
+  <g id="peloton-284" transform="translate(-128.261 -101.96)">
+    <g id="Group_4429" data-name="Group 4429" transform="translate(140.563 108.96)">
+      <g id="Group_4428" data-name="Group 4428" transform="translate(0)">
+        <path id="Path_9629" data-name="Path 9629" d="M76.854,54.605l2.6-4.513a2.757,2.757,0,0,0-4.776-2.757l-2.612,4.513A12.711,12.711,0,0,0,56.273,68.172l4.81-8.342h0a8.246,8.246,0,0,1,5.031-3.856,8.141,8.141,0,0,1,6.275.829A8.276,8.276,0,1,1,64.11,71.137l2.758-4.776a2.757,2.757,0,1,0-1.009-3.766L57.074,77.826a2.757,2.757,0,0,0,4.776,2.757l2.612-4.513A12.7,12.7,0,0,0,76.854,54.605Z" transform="translate(-55.563 -45.96)" fill="#fff"/>
+      </g>
+    </g>
+  </g>
+</svg>

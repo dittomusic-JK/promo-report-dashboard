@@ -1,0 +1,25 @@
+<svg id="Component_117_17" data-name="Component 117 – 17" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="50" height="50" viewBox="0 0 50 50">
+  <defs>
+    <linearGradient id="linear-gradient" x1="-0.96" y1="0.991" x2="-0.938" y2="0.991" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#fedc72"/>
+      <stop offset="1" stop-color="#fedc72"/>
+    </linearGradient>
+  </defs>
+  <g id="Rectangle_1036" data-name="Rectangle 1036" fill="#f8f8f8" stroke="#e3e3e3" stroke-width="0.7">
+    <rect width="50" height="50" rx="10" stroke="none"/>
+    <rect x="0.35" y="0.35" width="49.3" height="49.3" rx="9.65" fill="none"/>
+  </g>
+  <g id="kuwo" transform="translate(6.606 8.254)">
+    <g id="Kuwo-2" data-name="Kuwo" transform="translate(2.475)">
+      <path id="Rectangle" d="M21.041,38.287a1.272,1.272,0,0,1,.8,1.205V53.656c0,1.976-.837,1.976-2.11,1.038l-6.529-4.956a2.9,2.9,0,0,1-1.038-2.377L12,36.512a1.223,1.223,0,0,1,.1-.5,1.306,1.306,0,0,1,1.708-.7Z" transform="translate(-8.141 -22.415)" fill="#fac03d" fill-rule="evenodd"/>
+      <path id="Path_9744" data-name="Path 9744" d="M12.4,36.757,5,33.944a1.368,1.368,0,0,0-1.406.3L.852,37.025a1.355,1.355,0,0,0,0,1.875,1.857,1.857,0,0,0,.268.2l6.663,3.918a1.371,1.371,0,0,0,1.641-.234l3.516-3.851a1.325,1.325,0,0,0-.067-1.875A1.844,1.844,0,0,0,12.4,36.757Z" transform="translate(-0.475 -21.521)" fill="#ffe893" stroke="#fff" stroke-width="1.475" fill-rule="evenodd"/>
+      <path id="Path_9745" data-name="Path 9745" d="M44.134,37.685,57.293,34.2a1.3,1.3,0,0,1,1.607.938,1.139,1.139,0,0,1,.033.335V49.1a1.3,1.3,0,0,1-.871,1.239L44.937,55.13a1.316,1.316,0,0,1-1.674-.77.989.989,0,0,1-.067-.435V38.957A1.259,1.259,0,0,1,44.134,37.685Z" transform="translate(-28.89 -21.713)" fill-rule="evenodd" fill="url(#linear-gradient)"/>
+      <path id="Path_9746" data-name="Path 9746" d="M89.93,36.381a.487.487,0,0,1-.5-.469V34.606a1.538,1.538,0,0,0-.67-1.1.206.206,0,0,1,.2-.3l1.373.67a1.238,1.238,0,0,1,.335,1.976l-.4.4A.388.388,0,0,1,89.93,36.381Z" transform="translate(-59.183 -21.079)" fill="#f5a21b" fill-rule="evenodd"/>
+      <path id="Path_9747" data-name="Path 9747" d="M18.8,27.05l12.691-1.875A1.367,1.367,0,0,1,33,26.28v3.415l-4.286,1.1a8.025,8.025,0,0,1-4.253-.335L18,27.987h0A.939.939,0,0,1,18.8,27.05Z" transform="translate(-12.132 -15.732)" fill="#f5a21b" fill-rule="evenodd"/>
+      <path id="Path_9748" data-name="Path 9748" d="M70.632,26.032l-5.324-1.641a1.306,1.306,0,0,0-1.641.871,1.681,1.681,0,0,0-.067.4v3.449l7.9-1.875h0A1.313,1.313,0,0,0,70.632,26.032Z" transform="translate(-42.463 -15.183)" fill="#f08437" fill-rule="evenodd"/>
+      <path id="Path" d="M41.092.884,44.575,5.07c2.076,2.176-1.239,6.3-4.085,4.554-2.243-1.339-.435-4.989,2.444-4.989L39.351.717V.683a1.255,1.255,0,0,1,0-1.44A3.182,3.182,0,0,1,41.193-1.9,3.271,3.271,0,0,0,43.1-2.866L43.269-3l.067.2C44.106-.957,43.336.315,41.092.884Z" transform="translate(-26.183 3)" fill="#39a1db" stroke="#fff" stroke-width="0.738" fill-rule="evenodd"/>
+      <path id="Path_9749" data-name="Path 9749" d="M16.163,5.732l-.5,4.52c-1.507-2.009-4.688-1-4.32.938.5,2.645,4.587,2.176,4.755,0l.67-4.52c1.607,1.1,2.746.938,3.449-.5a2.765,2.765,0,0,1-1.674-.636,2.156,2.156,0,0,0-1.607-.469C16.6,5.062,16.331,5.3,16.163,5.732Z" transform="translate(-7.683 -2.35)" fill="#5eb7e8" fill-rule="evenodd"/>
+      <path id="Path-2" d="M52.8,46.725V56.737c0,2.176,3.616,1.038,3.616-1.038V53.12L59.9,55.464c1.574.6,4.052-1.708,2.411-3.583l-3.75-2.11,4.186-4.453c.9-1-.4-3.315-2.076-2.31l-4.186,4.353V45.586C55.814,43.879,52.8,44.682,52.8,46.725Z" transform="translate(-35.279 -27.438)" fill="#ed6d34" fill-rule="evenodd"/>
+    </g>
+  </g>
+</svg>
