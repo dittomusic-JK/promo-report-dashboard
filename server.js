@@ -10,7 +10,12 @@ import crypto from 'crypto';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
+
+// Use persistent disk on Render, local folders in dev
+const DATA_DIR = process.env.NODE_ENV === 'production' ? '/data' : __dirname;
+const UPLOADS_DIR = path.join(DATA_DIR, 'uploads');
+const REPORTS_DIR = path.join(DATA_DIR, 'reports');
 
 // Password protection
 const PASSWORD = 'PromoReport2026';
@@ -103,18 +108,17 @@ app.use(requireAuth);
 
 // Static files (protected)
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use('/reports', express.static(path.join(__dirname, 'reports')));
+app.use('/uploads', express.static(UPLOADS_DIR));
+app.use('/reports', express.static(REPORTS_DIR));
 
 // Ensure directories exist
-['uploads', 'reports'].forEach(dir => {
-  const dirPath = path.join(__dirname, dir);
-  if (!fs.existsSync(dirPath)) fs.mkdirSync(dirPath, { recursive: true });
+[UPLOADS_DIR, REPORTS_DIR].forEach(dir => {
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 });
 
 // File upload config
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, path.join(__dirname, 'uploads')),
+  destination: (req, file, cb) => cb(null, UPLOADS_DIR),
   filename: (req, file, cb) => cb(null, `${uuidv4()}-${file.originalname}`)
 });
 const upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } });
@@ -308,7 +312,7 @@ app.post('/api/reports', async (req, res) => {
   reports.set(reportId, reportData);
   
   // Save to file for persistence
-  const reportPath = path.join(__dirname, 'reports', `${reportId}.json`);
+  const reportPath = path.join(REPORTS_DIR, `${reportId}.json`);
   fs.writeFileSync(reportPath, JSON.stringify(reportData, null, 2));
   
   res.json({ id: reportId, url: `/report/${reportId}` });
@@ -317,12 +321,11 @@ app.post('/api/reports', async (req, res) => {
 // List all reports with optional search
 app.get('/api/reports', (req, res) => {
   const { q } = req.query;
-  const reportsDir = path.join(__dirname, 'reports');
   
   try {
-    const files = fs.readdirSync(reportsDir).filter(f => f.endsWith('.json'));
+    const files = fs.readdirSync(REPORTS_DIR).filter(f => f.endsWith('.json'));
     let reportsList = files.map(file => {
-      const data = JSON.parse(fs.readFileSync(path.join(reportsDir, file), 'utf-8'));
+      const data = JSON.parse(fs.readFileSync(path.join(REPORTS_DIR, file), 'utf-8'));
       return {
         id: data.id,
         artistName: data.artistName || '',
@@ -361,7 +364,7 @@ app.get('/api/reports/:id', (req, res) => {
   }
   
   // Try file
-  const reportPath = path.join(__dirname, 'reports', `${id}.json`);
+  const reportPath = path.join(REPORTS_DIR, `${id}.json`);
   if (fs.existsSync(reportPath)) {
     const data = JSON.parse(fs.readFileSync(reportPath, 'utf-8'));
     reports.set(id, data);
@@ -374,7 +377,7 @@ app.get('/api/reports/:id', (req, res) => {
 // Update report
 app.put('/api/reports/:id', (req, res) => {
   const { id } = req.params;
-  const reportPath = path.join(__dirname, 'reports', `${id}.json`);
+  const reportPath = path.join(REPORTS_DIR, `${id}.json`);
   
   if (!fs.existsSync(reportPath)) {
     return res.status(404).json({ error: 'Report not found' });
@@ -398,7 +401,7 @@ app.put('/api/reports/:id', (req, res) => {
 // Delete report
 app.delete('/api/reports/:id', (req, res) => {
   const { id } = req.params;
-  const reportPath = path.join(__dirname, 'reports', `${id}.json`);
+  const reportPath = path.join(REPORTS_DIR, `${id}.json`);
   
   if (!fs.existsSync(reportPath)) {
     return res.status(404).json({ error: 'Report not found' });
@@ -616,9 +619,9 @@ async function scrapeFeatureFm(url) {
     
     // Take full page screenshot
     const screenshotBuffer = await page.screenshot({ fullPage: true });
-    const screenshotPath = `/uploads/ffm-${Date.now()}.png`;
-    fs.writeFileSync(path.join(__dirname, screenshotPath.slice(1)), screenshotBuffer);
-    data.screenshot = screenshotPath;
+    const screenshotFilename = `ffm-${Date.now()}.png`;
+    fs.writeFileSync(path.join(UPLOADS_DIR, screenshotFilename), screenshotBuffer);
+    data.screenshot = `/uploads/${screenshotFilename}`;
     
     await browser.close();
     
@@ -738,9 +741,9 @@ async function scrapeArticle(url) {
     
     // Take screenshot of the article for fallback
     const screenshotBuffer = await page.screenshot({ type: 'png', clip: { x: 0, y: 0, width: 1400, height: 800 } });
-    const screenshotPath = `/uploads/article-${Date.now()}.png`;
-    fs.writeFileSync(path.join(__dirname, screenshotPath.slice(1)), screenshotBuffer);
-    data.screenshot = screenshotPath;
+    const screenshotFilename = `article-${Date.now()}.png`;
+    fs.writeFileSync(path.join(UPLOADS_DIR, screenshotFilename), screenshotBuffer);
+    data.screenshot = `/uploads/${screenshotFilename}`;
     
     await browser.close();
     

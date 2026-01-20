@@ -1,0 +1,166 @@
+{
+  "id": "1a339c02",
+  "createdAt": "2026-01-20T16:27:20.913Z",
+  "artistName": "Samantha L Keller",
+  "releaseTitle": "Materializing Dog",
+  "dateRange": "Dec 21, 2025 - Jan 20, 2025",
+  "smartLink": "https://ditto.fm/materializing-dog",
+  "heroArtwork": "https://cloudinary-cdn.ffm.to/s--y5oSpK3H--/f_webp/https%3A%2F%2Fimagestore.ffm.to%2Flink%2Fa970c12dde8bb4b8b0f52a1bb0bc4e12.jpeg",
+  "analytics": {
+    "totalVisits": 957,
+    "uniqueUsers": 854,
+    "clicksToService": 885,
+    "impressions": 220000,
+    "videoViews": 150000,
+    "referrals": [],
+    "services": [
+      {
+        "name": "Spotify",
+        "icon": "🟢",
+        "clicks": 879,
+        "percentage": "99.3%"
+      },
+      {
+        "name": "YouTube Music",
+        "icon": "🔴",
+        "clicks": 2,
+        "percentage": "0.2%"
+      },
+      {
+        "name": "Amazon Music (Streaming)",
+        "icon": "📦",
+        "clicks": 2,
+        "percentage": "0.2%"
+      },
+      {
+        "name": "Pandora",
+        "icon": "🎵",
+        "clicks": 1,
+        "percentage": "0.1%"
+      }
+    ],
+    "countries": [
+      {
+        "name": "United Kingdom",
+        "visits": 957,
+        "percentage": "100.0%"
+      },
+      {
+        "name": "United States",
+        "visits": 957,
+        "percentage": "100.0%"
+      },
+      {
+        "name": "Australia",
+        "visits": 957,
+        "percentage": "100.0%"
+      },
+      {
+        "name": "Canada",
+        "visits": 957,
+        "percentage": "100.0%"
+      },
+      {
+        "name": "Germany",
+        "visits": 957,
+        "percentage": "100.0%"
+      },
+      {
+        "name": "France",
+        "visits": 957,
+        "percentage": "100.0%"
+      },
+      {
+        "name": "Ireland",
+        "visits": 957,
+        "percentage": "100.0%"
+      },
+      {
+        "name": "Spain",
+        "visits": 957,
+        "percentage": "100.0%"
+      },
+      {
+        "name": "Portugal",
+        "visits": 957,
+        "percentage": "100.0%"
+      }
+    ]
+  },
+  "prPlacements": [
+    {
+      "name": "radioarmazem.net",
+      "title": "This site asks for consent to use your data",
+      "description": "Não Vendemos Chiado!",
+      "articleUrl": "https://radioarmazem.net/noticia/127748/samantha-l-keller-estreia-com-o-contemplativo-single-folk-materializing-dog#google_vignette",
+      "logoImage": "https://radioarmazem.net/noticia/127748/imagens/0fbae22d6d473df591e9cd6a8ae99f00.png",
+      "heroImage": "https://radioarmazem.net/imagens/4ad335b76aa30695dc724d0d37e235a7.png",
+      "screenshotImage": "/uploads/article-1768926400891.png",
+      "fbLikes": "12k",
+      "twitter": "14k",
+      "instagram": "12k"
+    },
+    {
+      "name": "Illustrate Magazine",
+      "title": "Materializing Dog by Samantha L. Keller & Kathleen Krenitsky: Review | Illustrate Magazine",
+      "description": "Materializing Dog by Samantha L. Keller & Kathleen Krenitsky: Review",
+      "articleUrl": "https://illustratemagazine.com/materializing-dog-by-samantha-l-keller-kathleen-krenitsky-review/",
+      "logoImage": "https://illustratemagazine.com/wp-content/uploads/2022/05/Illustrate-Magazine-Logo.jpg",
+      "heroImage": "https://illustratemagazine.com/wp-content/uploads/2025/12/516517103_10164030510372718_4729088221477786731_n.jpg",
+      "screenshotImage": "/uploads/article-1768926406734.png",
+      "fbLikes": "",
+      "twitter": "",
+      "instagram": ""
+    },
+    {
+      "name": "Essentiallypop",
+      "title": "'Materializing Dog' Is The, Fun, Heartfelt, And Meditative Debut From Singer Samantha L. Keller ",
+      "description": "Out now, 'Materializing Dog' is the new single from vocal powerhouse, Samantha L. Keller.",
+      "articleUrl": "https://essentiallypop.com/epop/2026/01/materializing-dog-is-the-fun-heartfelt-and-meditative-debut-from-singer-samantha-l-keller/",
+      "logoImage": "https://i0.wp.com/essentiallypop.com/epop/wp-content/uploads/2022/12/cropped-Untitled-design-12.jpg?fit=192%2C192&ssl=1",
+      "heroImage": "https://i0.wp.com/essentiallypop.com/epop/wp-content/uploads/2026/01/Samantha-L-Keller.jpg?fit=1200%2C1200&ssl=1",
+      "screenshotImage": "/uploads/article-1768926410493.png",
+      "fbLikes": "",
+      "twitter": "",
+      "instagram": ""
+    }
+  ],
+  "playlists": [
+    {
+      "name": "#PitPlaylist: Synthetic Soul",
+      "curator": "The Pit London",
+      "curatorAvatar": "https://i.scdn.co/image/ab6775700000b8a89e91b6c8b80e94d241b68138",
+      "followers": "257",
+      "spotifyUrl": "https://open.spotify.com/playlist/4KlAzUaLiPhAHC3NJKlwm7",
+      "coverImage": "https://image-cdn-fa.spotifycdn.com/image/ab67706c0000da845cd643fb9855d5a9670f9573"
+    },
+    {
+      "name": "The Indie Hitlist",
+      "curator": "Ditto Music",
+      "curatorAvatar": "https://i.scdn.co/image/ab6775700000b8a802c7feeb7ee2a8da87c9d507",
+      "followers": "8,980",
+      "spotifyUrl": "https://open.spotify.com/playlist/3Kg4EKpK8OtkhDvIOVm5cc",
+      "coverImage": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000d72cc0ee07232bc57c432a83fab5"
+    },
+    {
+      "name": "Music Victory 🎶✌ Folk 🕺💃",
+      "curator": "Music Victory 🎶✌",
+      "curatorAvatar": "https://i.scdn.co/image/ab6775700000b8a8db80cebbfde9175f6bcff761",
+      "followers": "3,078",
+      "spotifyUrl": "https://open.spotify.com/playlist/73BgIA9J1B4C53oxwnkG45",
+      "coverImage": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000d72c580102b9d04d4f214cefe127"
+    },
+    {
+      "name": "Folk /Singer Songwriter",
+      "curator": "Music Connoisseur",
+      "curatorAvatar": "https://i.scdn.co/image/ab6775700000b8a897c4646c0b79a47cbc0f3353",
+      "followers": "2,202",
+      "spotifyUrl": "https://open.spotify.com/playlist/11sgRMh5AECjsbZ1dl4ggi",
+      "coverImage": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da847998b210d58f9b5e3e6cae1f"
+    }
+  ],
+  "totalPlaylists": "4",
+  "spotifyAudience": "11.6k",
+  "surveyUrl": "",
+  "blogDatabaseUrl": ""
+}
