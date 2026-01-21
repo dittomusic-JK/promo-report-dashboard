@@ -154,7 +154,10 @@ app.post('/api/scrape-smartlink', async (req, res) => {
   console.log(`Scraping smart link: ${url}`);
   
   try {
-    const browser = await chromium.launch({ headless: true });
+const browser = await chromium.launch({ 
+      headless: true,
+      args: ['--disable-gpu', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-sandbox', '--single-process', '--no-zygote']
+    });
     const context = await browser.newContext({
       viewport: { width: 1200, height: 800 },
       userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36'
@@ -421,7 +424,10 @@ app.get('/report/:id', (req, res) => {
 
 // Feature.fm scraper function - captures full dashboard data
 async function scrapeFeatureFm(url) {
-  const browser = await chromium.launch({ headless: true });
+  const browser = await chromium.launch({ 
+    headless: true,
+    args: ['--disable-gpu', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-sandbox', '--single-process', '--no-zygote']
+  });
   const context = await browser.newContext({ viewport: { width: 1400, height: 2000 } });
   const page = await context.newPage();
   
@@ -637,7 +643,10 @@ async function scrapeFeatureFm(url) {
 
 // Article scraper function for PR placements
 async function scrapeArticle(url) {
-  const browser = await chromium.launch({ headless: true });
+  const browser = await chromium.launch({ 
+    headless: true,
+    args: ['--disable-gpu', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-sandbox', '--single-process', '--no-zygote']
+  });
   const context = await browser.newContext({
     viewport: { width: 1400, height: 900 },
     userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
@@ -760,7 +769,10 @@ async function scrapeArticle(url) {
 
 // Spotify playlist scraper function
 async function scrapeSpotifyPlaylist(url, playlistId) {
-  const browser = await chromium.launch({ headless: true });
+  const browser = await chromium.launch({ 
+    headless: true,
+    args: ['--disable-gpu', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-sandbox', '--single-process', '--no-zygote']
+  });
   const context = await browser.newContext({
     viewport: { width: 1400, height: 900 },
     userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
