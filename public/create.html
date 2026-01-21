@@ -849,12 +849,8 @@
         previewEl.innerHTML = `
           <img src="${data.coverImage || ''}" style="width:80px; height:80px; border-radius:8px; object-fit:cover; background:#313135;" onerror="this.style.background='#313135'">
           <div style="flex:1;">
-            <div style="font-weight:700; font-size:16px; margin-bottom:4px;">${data.name || 'Unknown'}</div>
-            <div style="color:#aaaacc; font-size:13px; display:flex; align-items:center; gap:6px;">
-              ${data.curatorAvatar ? `<img src="${data.curatorAvatar}" style="width:18px; height:18px; border-radius:50%; object-fit:cover;">` : ''}
-              by ${data.curator || 'Unknown'}
-            </div>
-            <div style="color:#00ff99; font-size:12px; margin-top:4px;">✓ ${data.followers || '0'} saves</div>
+            <div style="font-weight:700; font-size:16px; margin-bottom:4px;">${data.name || 'Playlist'}</div>
+            <div style="color:#00ff99; font-size:12px;">✓ Linked</div>
           </div>
           <button type="button" class="btn btn-secondary btn-small" onclick="removePlaylist(${index})">✕</button>
         `;
@@ -1071,12 +1067,8 @@
                 previewEl.innerHTML = `
                   <img src="${pl.coverImage || ''}" style="width:80px; height:80px; border-radius:8px; object-fit:cover; background:#313135;" onerror="this.style.background='#313135'">
                   <div style="flex:1;">
-                    <div style="font-weight:700; font-size:16px; margin-bottom:4px;">${pl.name || 'Unknown'}</div>
-                    <div style="color:#aaaacc; font-size:13px; display:flex; align-items:center; gap:6px;">
-                      ${pl.curatorAvatar ? `<img src="${pl.curatorAvatar}" style="width:18px; height:18px; border-radius:50%; object-fit:cover;">` : ''}
-                      by ${pl.curator || 'Unknown'}
-                    </div>
-                    <div style="color:#00ff99; font-size:12px; margin-top:4px;">✓ ${pl.followers || '0'} saves</div>
+                    <div style="font-weight:700; font-size:16px; margin-bottom:4px;">${pl.name || 'Playlist'}</div>
+                    <div style="color:#00ff99; font-size:12px;">✓ Linked</div>
                   </div>
                   <button type="button" class="btn btn-secondary btn-small" onclick="removePlaylist(${i})">✕</button>
                 `;
@@ -1155,9 +1147,6 @@
           const pl = fetchedPlaylists[i];
           data.playlists.push({
             name: pl.name,
-            curator: pl.curator,
-            curatorAvatar: pl.curatorAvatar,
-            followers: pl.followers,
             spotifyUrl: pl.spotifyUrl,
             coverImage: pl.coverImage
           });

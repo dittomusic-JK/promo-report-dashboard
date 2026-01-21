@@ -1035,16 +1035,12 @@
         document.getElementById('playlistGrid').innerHTML = data.playlists.map(pl => `
           <div class="playlist-card">
             ${pl.coverImage?`<img src="${pl.coverImage}" class="playlist-cover">`:`<div class="playlist-cover" style="background:linear-gradient(135deg,#1db954,#191414);display:flex;align-items:center;justify-content:center;font-size:48px;">🎵</div>`}
-            <div class="playlist-name">${pl.name}</div>
-            ${pl.curator?`<div style="color:#aaa;font-size:13px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:6px;">${pl.curatorAvatar?`<img src="${pl.curatorAvatar}" style="width:20px;height:20px;border-radius:50%;object-fit:cover;">`:''}by ${pl.curator}</div>`:''}
-            ${pl.followers?`<div style="color:var(--chayellow);font-size:14px;font-weight:700;margin-bottom:16px;">${pl.followers} saves</div>`:''}
-            ${pl.spotifyUrl?`<a href="${pl.spotifyUrl}" target="_blank" class="btn btn-pink">Listen</a>`:''}
+            <div class="playlist-name">${pl.name || 'Playlist'}</div>
+            ${pl.spotifyUrl?`<a href="${pl.spotifyUrl}" target="_blank" class="btn btn-pink" style="margin-top:12px;">Listen</a>`:''}
           </div>
         `).join('');
         document.getElementById('playlistStats').innerHTML = `
-          <div class="metric-card"><div class="metric-value">${data.playlists.length}</div><div class="metric-label">Current Playlists</div></div>
-          <div class="metric-card"><div class="metric-value">${data.totalPlaylists||data.playlists.length}</div><div class="metric-label">Total Playlists</div></div>
-          <div class="metric-card"><div class="metric-value">${data.spotifyAudience||'-'}</div><div class="metric-label">Spotify Audience</div></div>
+          <div class="metric-card"><div class="metric-value">${data.playlists.length}</div><div class="metric-label">Total Playlists</div></div>
         `;
       }
     }
