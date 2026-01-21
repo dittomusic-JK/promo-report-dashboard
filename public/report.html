@@ -757,7 +757,7 @@
         <li><a href="#pr" class="nav-link">PR</a></li>
         <li><a href="#playlists" class="nav-link">Playlists</a></li>
       </ul>
-      <div class="nav-actions">
+      <div class="nav-actions" id="staffActions" style="display: none;">
         <a href="/library" class="nav-btn nav-btn-outline">Library</a>
         <a href="#" id="editBtn" class="nav-btn nav-btn-primary">Edit</a>
       </div>
@@ -874,6 +874,16 @@
     
     // Set edit button href
     document.getElementById('editBtn').href = `/create?edit=${reportId}`;
+    
+    // Check if user is logged in (staff) - show edit/library buttons
+    fetch('/api/auth/check')
+      .then(res => res.json())
+      .then(data => {
+        if (data.authenticated) {
+          document.getElementById('staffActions').style.display = 'flex';
+        }
+      })
+      .catch(() => {}); // Silently fail - just don't show buttons
     
     // Smooth scroll navigation
     document.addEventListener('DOMContentLoaded', () => {

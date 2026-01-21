@@ -104,18 +104,43 @@ app.post('/api/logout', (req, res) => {
   res.json({ success: true });
 });
 
-// Protected routes
+// Auth check endpoint (public) - lets frontend know if user is logged in
+app.get('/api/auth/check', (req, res) => {
+  const cookies = parseCookies(req);
+  res.json({ authenticated: isValidSession(cookies.session) });
+});
+
+// PUBLIC routes - reports viewable without login
+app.use('/uploads', express.static(UPLOADS_DIR));
+
+// Ensure directories exist (before routes use them)
+[UPLOADS_DIR, REPORTS_DIR].forEach(dir => {
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+});
+
+// Public report viewing
+app.get('/report/:id', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'report.html'));
+});
+
+// Public API to get a single report (for viewing)
+app.get('/api/reports/:id', (req, res) => {
+  const { id } = req.params;
+  const reportPath = path.join(REPORTS_DIR, `${id}.json`);
+  
+  if (fs.existsSync(reportPath)) {
+    const data = JSON.parse(fs.readFileSync(reportPath, 'utf-8'));
+    return res.json(data);
+  }
+  
+  res.status(404).json({ error: 'Report not found' });
+});
+
+// Protected routes (everything below requires login)
 app.use(requireAuth);
 
 // Static files (protected)
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/uploads', express.static(UPLOADS_DIR));
-app.use('/reports', express.static(REPORTS_DIR));
-
-// Ensure directories exist
-[UPLOADS_DIR, REPORTS_DIR].forEach(dir => {
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-});
 
 // File upload config
 const storage = multer.diskStorage({
@@ -358,26 +383,6 @@ app.get('/api/reports', (req, res) => {
   }
 });
 
-// Get report
-app.get('/api/reports/:id', (req, res) => {
-  const { id } = req.params;
-  
-  // Try memory first
-  if (reports.has(id)) {
-    return res.json(reports.get(id));
-  }
-  
-  // Try file
-  const reportPath = path.join(REPORTS_DIR, `${id}.json`);
-  if (fs.existsSync(reportPath)) {
-    const data = JSON.parse(fs.readFileSync(reportPath, 'utf-8'));
-    reports.set(id, data);
-    return res.json(data);
-  }
-  
-  res.status(404).json({ error: 'Report not found' });
-});
-
 // Update report
 app.put('/api/reports/:id', (req, res) => {
   const { id } = req.params;
@@ -417,12 +422,7 @@ app.delete('/api/reports/:id', (req, res) => {
   res.json({ success: true });
 });
 
-// View report page
-app.get('/report/:id', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'report.html'));
-});
-
-// Feature.fm scraper function - captures full dashboard data
+// Feature.fm scraper function
 async function scrapeFeatureFm(url) {
   const browser = await chromium.launch({ 
     headless: true,
