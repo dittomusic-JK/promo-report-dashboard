@@ -767,185 +767,49 @@ async function scrapeArticle(url) {
   }
 }
 
-// Spotify playlist scraper function
+// Spotify playlist function - uses oEmbed API (no scraping needed)
 async function scrapeSpotifyPlaylist(url, playlistId) {
-  const browser = await chromium.launch({ 
-    headless: true,
-    args: ['--disable-gpu', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-sandbox', '--single-process', '--no-zygote']
-  });
-  const context = await browser.newContext({
-    viewport: { width: 1400, height: 900 },
-    userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-  });
-  const page = await context.newPage();
-  
   try {
-    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
-    await page.waitForTimeout(3000);
+    // Use Spotify's oEmbed API - works without auth from any IP
+    const oembedUrl = `https://open.spotify.com/oembed?url=${encodeURIComponent(url)}`;
+    const response = await fetch(oembedUrl);
     
-    // Debug: Log all images found
-    const allImagesDebug = await page.evaluate(() => {
-      const imgs = document.querySelectorAll('img');
-      return Array.from(imgs).map(img => ({
-        src: img.src,
-        srcset: img.srcset,
-        alt: img.alt,
-        width: img.width,
-        height: img.height
-      })).filter(i => i.src);
-    });
-    console.log('\n=== ALL IMAGES FOUND ===');
-    allImagesDebug.forEach((img, i) => {
-      console.log(`${i + 1}. ${img.src}`);
-      if (img.srcset) console.log(`   srcset: ${img.srcset}`);
-    });
-    console.log('========================\n');
+    if (!response.ok) {
+      throw new Error(`Spotify oEmbed failed: ${response.status}`);
+    }
     
-    const data = await page.evaluate(() => {
-      const result = {
-        name: '',
-        curator: '',
-        curatorAvatar: '',
-        followers: '',
-        coverImage: ''
-      };
-      
-      // Get playlist name - try multiple selectors
-      // Try the main content area h1 first, avoiding navigation elements
-      const h1s = document.querySelectorAll('h1');
-      for (const h1 of h1s) {
-        const text = h1.textContent?.trim() || '';
-        // Skip generic UI elements
-        if (text && !text.includes('Your Library') && !text.includes('Home') && text.length > 0) {
-          result.name = text;
-          break;
-        }
-      }
-      
-      // Try data-testid for playlist title
-      if (!result.name) {
-        const titleEl = document.querySelector('[data-testid="entityTitle"] h1, [data-testid="playlist-title"]');
-        if (titleEl) result.name = titleEl.textContent?.trim() || '';
-      }
-      
-      // Get from page title as fallback
-      if (!result.name) {
-        const pageTitle = document.title;
-        const match = pageTitle.match(/^(.+?)\s*[-–|]\s*playlist/i) || pageTitle.match(/^(.+?)\s*[-–|]\s*Spotify/i);
-        if (match) result.name = match[1].trim();
-      }
-      
-      // Get curator name - look for "by" text or owner link
-      const ownerLink = document.querySelector('a[href*="/user/"]');
-      if (ownerLink) result.curator = ownerLink.textContent?.trim() || '';
-      
-      // Get curator avatar - small circular image near the owner name
-      const ownerSection = ownerLink?.closest('div');
-      if (ownerSection) {
-        const avatarImg = ownerSection.querySelector('img');
-        if (avatarImg && avatarImg.src) {
-          result.curatorAvatar = avatarImg.src;
-        }
-      }
-      
-      // Get follower/save count - look for text containing "likes" or "saves"
-      const allText = document.body.innerText;
-      const likesMatch = allText.match(/([\d,]+)\s*likes?/i) || 
-                         allText.match(/([\d,]+)\s*saves?/i) ||
-                         allText.match(/([\d,]+)\s*followers?/i);
-      if (likesMatch) result.followers = likesMatch[1];
-      
-      // Get playlist cover image
-      // First try og:image meta tag - most reliable for Spotify
-      const ogImage = document.querySelector('meta[property="og:image"]');
-      if (ogImage) {
-        const ogSrc = ogImage.getAttribute('content') || '';
-        // Make sure it's not a user avatar
-        if (ogSrc && !ogSrc.includes('ab67757')) {
-          result.coverImage = ogSrc;
-        }
-      }
-      
-      // Fallback to finding images in DOM
-      // Spotify image URL patterns:
-      // - ab67706c = playlist covers (what we want)
-      // - ab67616d = album/track artwork  
-      // - ab67757 = user profile images (skip these)
-      // - mosaic = generated playlist covers from multiple tracks
-      
-      if (!result.coverImage) {
-        const allImages = document.querySelectorAll('img[src*="scdn.co"], img[srcset*="scdn.co"], img[src*="spotifycdn.com"]');
-        
-        // First priority: image-cdn-ak.spotifycdn.com with ab67706c (playlist covers)
-        for (const img of allImages) {
-          const src = img.src || '';
-          if (src.includes('image-cdn-ak.spotifycdn.com') && src.includes('ab67706c')) {
-            result.coverImage = src;
-            break;
-          }
-        }
-        
-        // Second priority: any ab67706c pattern (playlist covers)
-        if (!result.coverImage) {
-          for (const img of allImages) {
-            const src = img.src || '';
-            const srcset = img.srcset || '';
-            
-            const isPlaylistCover = src.includes('ab67706c') || srcset.includes('ab67706c') ||
-                                    src.includes('mosaic') || srcset.includes('mosaic');
-            const isUserAvatar = src.includes('ab67757') || srcset.includes('ab67757');
-            
-            if (isPlaylistCover && !isUserAvatar) {
-              if (srcset) {
-                const srcsetParts = srcset.split(',');
-                const largest = srcsetParts[srcsetParts.length - 1]?.trim().split(' ')[0];
-                result.coverImage = largest || src;
-              } else {
-                result.coverImage = src;
-              }
-              break;
-            }
-          }
-        }
-        
-        // Third priority: any image-cdn that's not an avatar
-        if (!result.coverImage) {
-          for (const img of allImages) {
-            const src = img.src || '';
-            if (src.includes('image-cdn') && !src.includes('ab67757')) {
-              result.coverImage = src;
-              break;
-            }
-          }
-        }
-        
-        // Final fallback: any large image that's not an avatar
-        if (!result.coverImage) {
-          for (const img of allImages) {
-            const src = img.src || '';
-            const width = img.width || img.naturalWidth || 0;
-            if (width >= 100 && !src.includes('ab67757')) {
-              result.coverImage = src;
-              break;
-            }
-          }
-        }
-      }
-      
-      return result;
-    });
+    const oembed = await response.json();
+    console.log('Spotify oEmbed response:', oembed);
     
-    await browser.close();
+    // Parse the title - format is usually "Playlist Name" or "Playlist Name - playlist by Curator"
+    let name = oembed.title || '';
+    let curator = '';
     
-    // Ensure we have the Spotify URL
-    data.spotifyUrl = url;
-    data.playlistId = playlistId;
+    // Try to extract curator from title
+    const byMatch = name.match(/(.+?)\s*[-–]\s*(?:playlist\s+)?by\s+(.+)/i);
+    if (byMatch) {
+      name = byMatch[1].trim();
+      curator = byMatch[2].trim();
+    }
     
-    console.log('Scraped Spotify playlist:', data);
-    return data;
+    // Also check provider_name for Spotify (not useful but available)
+    // oembed.provider_name is always "Spotify"
+    
+    const result = {
+      name: name,
+      curator: curator,
+      curatorAvatar: '', // Not available via oEmbed
+      followers: '', // Not available via oEmbed  
+      coverImage: oembed.thumbnail_url || '',
+      spotifyUrl: url,
+      playlistId: playlistId
+    };
+    
+    console.log('Spotify playlist data:', result);
+    return result;
     
   } catch (error) {
-    await browser.close();
+    console.error('Spotify oEmbed error:', error);
     throw error;
   }
 }
