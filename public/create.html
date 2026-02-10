@@ -578,6 +578,9 @@
             </div>
           </div>
         </div>
+        <button type="button" class="btn btn-secondary" onclick="addPRField()" style="width:100%; margin-top:8px; border:1px dashed #313135;">
+          + Add Another PR Placement
+        </button>
       </div>
       
       <!-- Section 4: Playlist Placements -->
@@ -642,6 +645,9 @@
             </div>
           </div>
         </div>
+        <button type="button" class="btn btn-secondary" onclick="addPlaylistField()" style="width:100%; margin-top:8px; border:1px dashed #313135;">
+          + Add Another Playlist
+        </button>
       </div>
       
       <!-- Section 5: Survey Link -->
@@ -752,6 +758,65 @@
     
     // Store fetched PR article data
     const fetchedPR = {};
+    
+    // Track current count of fields
+    let prCount = 4;
+    let playlistCount = 4;
+    
+    // Add new PR placement field
+    function addPRField() {
+      const index = prCount++;
+      const container = document.getElementById('prInputs');
+      const newCard = document.createElement('div');
+      newCard.className = 'pr-input-card';
+      newCard.setAttribute('data-index', index);
+      newCard.style.cssText = 'background:#1f1f1f; border-radius:12px; padding:20px; margin-bottom:16px; border:1px dashed #313135;';
+      newCard.innerHTML = `
+        <div class="form-group">
+          <label>PR Placement ${index + 1} - Article URL</label>
+          <div class="import-row">
+            <input type="url" class="pr-url" data-index="${index}" placeholder="https://blog.com/your-article...">
+            <button type="button" class="btn btn-secondary btn-small" onclick="fetchArticle(${index})">Fetch</button>
+          </div>
+        </div>
+        <div class="pr-preview" id="prPreview${index}" style="display:none;"></div>
+        <div class="pr-socials" id="prSocials${index}" style="display:none; margin-top:16px;">
+          <label style="margin-bottom:12px; display:block;">Publication Social Stats (optional)</label>
+          <div class="row row-3">
+            <div class="form-group" style="margin-bottom:0;">
+              <input type="text" class="pr-fb" data-index="${index}" placeholder="FB Likes (e.g. 1.2k)">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <input type="text" class="pr-twitter" data-index="${index}" placeholder="Twitter (e.g. 11.4k)">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <input type="text" class="pr-instagram" data-index="${index}" placeholder="Instagram (e.g. 21.1k)">
+            </div>
+          </div>
+        </div>
+      `;
+      container.appendChild(newCard);
+    }
+    
+    // Add new playlist field
+    function addPlaylistField() {
+      const index = playlistCount++;
+      const container = document.getElementById('playlistInputs');
+      const newRow = document.createElement('div');
+      newRow.className = 'playlist-input-row';
+      newRow.setAttribute('data-index', index);
+      newRow.innerHTML = `
+        <div class="form-group">
+          <label>Playlist ${index + 1}</label>
+          <div class="import-row">
+            <input type="url" class="playlist-url" data-index="${index}" placeholder="https://open.spotify.com/playlist/...">
+            <button type="button" class="btn btn-secondary btn-small" onclick="fetchPlaylist(${index})">Fetch</button>
+          </div>
+          <div class="playlist-preview" id="playlistPreview${index}" style="display:none;"></div>
+        </div>
+      `;
+      container.appendChild(newRow);
+    }
     
     // Fetch PR article data
     async function fetchArticle(index) {
@@ -1007,7 +1072,9 @@
           // PR Placements
           if (report.prPlacements) {
             report.prPlacements.forEach((pr, i) => {
-              if (i >= 4) return;
+              // Add extra fields if needed
+              while (i >= prCount) addPRField();
+              
               fetchedPR[i] = {
                 siteName: pr.name,
                 title: pr.title,
@@ -1055,7 +1122,9 @@
           // Playlists
           if (report.playlists) {
             report.playlists.forEach((pl, i) => {
-              if (i >= 4) return;
+              // Add extra fields if needed
+              while (i >= playlistCount) addPlaylistField();
+              
               fetchedPlaylists[i] = pl;
               
               const previewEl = document.getElementById(`playlistPreview${i}`);
@@ -1118,8 +1187,8 @@
         blogDatabaseUrl: formData.get('blogDatabaseUrl')
       };
       
-      // Collect PR placements from fetched data
-      for (let i = 0; i < 4; i++) {
+      // Collect PR placements from fetched data (dynamic count)
+      for (let i = 0; i < prCount; i++) {
         if (fetchedPR[i]) {
           const pr = fetchedPR[i];
           const fbInput = document.querySelector(`.pr-fb[data-index="${i}"]`);
@@ -1141,8 +1210,8 @@
         }
       }
       
-      // Collect playlists from fetched data
-      for (let i = 0; i < 4; i++) {
+      // Collect playlists from fetched data (dynamic count)
+      for (let i = 0; i < playlistCount; i++) {
         if (fetchedPlaylists[i]) {
           const pl = fetchedPlaylists[i];
           data.playlists.push({
