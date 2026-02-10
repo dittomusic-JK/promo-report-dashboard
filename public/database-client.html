@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Database - Promo</title>
+  <style>
+    @font-face {
+      font-family: 'Satoshi';
+      src: url('/assets/Satoshi-Variable.woff2') format('woff2');
+      font-weight: 100 900;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Neusa';
+      src: url('/assets/Neusa-ExtraBold.otf') format('opentype');
+      font-weight: 800;
+      font-display: swap;
+    }
+    
+    :root {
+      --promo-pink: #F64780;
+      --chayellow: #E0FF4F;
+      --gunmetal: #0C262A;
+      --x-black: #070707;
+      --alt-grey: #3A2F3B;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Satoshi', -apple-system, sans-serif;
+      background: var(--gunmetal);
+      color: #fff;
+      min-height: 100vh;
+    }
+    
+    /* Header */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 40px;
+      background: var(--x-black);
+      border-bottom: 1px solid rgba(246, 71, 128, 0.2);
+    }
+    .logo { height: 36px; }
+    
+    /* Container */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 40px;
+    }
+    
+    /* Password Screen */
+    .password-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+      text-align: center;
+    }
+    .password-screen h1 {
+      font-family: 'Neusa', sans-serif;
+      font-size: 32px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .password-screen p {
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 32px;
+    }
+    .password-form {
+      display: flex;
+      gap: 12px;
+      max-width: 400px;
+      width: 100%;
+    }
+    .password-form input {
+      flex: 1;
+      padding: 14px 20px;
+      background: var(--alt-grey);
+      border: 2px solid transparent;
+      border-radius: 8px;
+      color: #fff;
+      font-family: 'Satoshi', sans-serif;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .password-form input:focus {
+      border-color: var(--promo-pink);
+    }
+    .password-form input::placeholder {
+      color: rgba(255,255,255,0.4);
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-family: 'Neusa', sans-serif;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-primary {
+      background: var(--promo-pink);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(246, 71, 128, 0.4);
+    }
+    .error-msg {
+      color: var(--promo-pink);
+      margin-top: 16px;
+      font-size: 14px;
+    }
+    
+    /* Database Content */
+    .database-content {
+      display: none;
+    }
+    .database-content.visible {
+      display: block;
+    }
+    
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .header h1 {
+      font-family: 'Neusa', sans-serif;
+      font-size: 28px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    /* Search */
+    .search-box {
+      display: flex;
+      align-items: center;
+      background: var(--alt-grey);
+      border-radius: 8px;
+      padding: 0 16px;
+      width: 320px;
+      border: 2px solid transparent;
+      transition: border-color 0.2s;
+    }
+    .search-box:focus-within {
+      border-color: var(--promo-pink);
+    }
+    .search-box svg {
+      width: 20px;
+      height: 20px;
+      color: rgba(255,255,255,0.4);
+      flex-shrink: 0;
+    }
+    .search-box input {
+      background: none;
+      border: none;
+      color: #fff;
+      font-family: 'Satoshi', sans-serif;
+      font-size: 14px;
+      padding: 12px;
+      width: 100%;
+      outline: none;
+    }
+    .search-box input::placeholder {
+      color: rgba(255,255,255,0.4);
+    }
+    
+    /* Genre Tabs */
+    .tabs-container {
+      margin-bottom: 24px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .tabs-container::-webkit-scrollbar { display: none; }
+    
+    .tabs {
+      display: flex;
+      gap: 8px;
+      padding-bottom: 4px;
+    }
+    .tab {
+      padding: 10px 20px;
+      background: var(--alt-grey);
+      border: none;
+      border-radius: 8px;
+      color: rgba(255,255,255,0.7);
+      font-family: 'Satoshi', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .tab:hover {
+      background: rgba(246, 71, 128, 0.2);
+      color: #fff;
+    }
+    .tab.active {
+      background: var(--promo-pink);
+      color: #fff;
+    }
+    .tab .count {
+      display: inline-block;
+      margin-left: 8px;
+      padding: 2px 8px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 12px;
+      font-size: 12px;
+    }
+    
+    /* Loading */
+    .loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 40px;
+      gap: 16px;
+    }
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid var(--alt-grey);
+      border-top-color: var(--promo-pink);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Table */
+    .table-container {
+      background: var(--alt-grey);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .data-table th {
+      text-align: left;
+      padding: 16px 20px;
+      background: rgba(0,0,0,0.2);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgba(255,255,255,0.5);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    
+    .data-table td {
+      padding: 16px 20px;
+      font-size: 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      vertical-align: top;
+    }
+    
+    .data-table tr:hover td {
+      background: rgba(246, 71, 128, 0.05);
+    }
+    
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    /* Cell styles */
+    .cell-primary {
+      font-weight: 600;
+      color: var(--chayellow);
+      max-width: 200px;
+    }
+    
+    .cell-link a {
+      color: var(--promo-pink);
+      text-decoration: none;
+      word-break: break-all;
+    }
+    .cell-link a:hover {
+      text-decoration: underline;
+    }
+    
+    .cell-email a {
+      color: #fff;
+      text-decoration: none;
+      word-break: break-all;
+    }
+    .cell-email a:hover {
+      color: var(--chayellow);
+    }
+    
+    .cell-secondary {
+      color: rgba(255,255,255,0.7);
+      max-width: 200px;
+    }
+    
+    .cell-description {
+      max-width: 300px;
+      color: rgba(255,255,255,0.6);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+    
+    .results-info {
+      padding: 16px 20px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .empty-tab {
+      text-align: center;
+      padding: 60px 40px;
+      color: rgba(255,255,255,0.5);
+    }
+    
+    /* Mobile */
+    @media (max-width: 768px) {
+      header { padding: 12px 20px; }
+      .container { padding: 20px; }
+      .header { flex-direction: column; gap: 16px; align-items: stretch; }
+      .header h1 { font-size: 22px; text-align: center; }
+      .search-box { width: 100%; }
+      .password-form { flex-direction: column; }
+      .tabs { gap: 6px; }
+      .tab { padding: 8px 14px; font-size: 13px; }
+      .table-container { overflow-x: auto; }
+      .data-table { min-width: 700px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="/assets/Promo_Logo_Landscape.png" alt="Promo" class="logo">
+  </header>
+
+  <div class="container">
+    <!-- Password Entry -->
+    <div class="password-screen" id="passwordScreen">
+      <h1 id="dbTitle">Contact Database</h1>
+      <p>Enter the password to access this database</p>
+      <form class="password-form" onsubmit="submitPassword(event)">
+        <input type="password" id="passwordInput" placeholder="Enter password" autofocus>
+        <button type="submit" class="btn btn-primary">Access</button>
+      </form>
+      <p class="error-msg" id="errorMsg" style="display: none;"></p>
+    </div>
+    
+    <!-- Database Content (hidden until authenticated) -->
+    <div class="database-content" id="databaseContent">
+      <div class="header">
+        <h1 id="contentTitle">Contact Database</h1>
+        <div class="search-box">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" id="searchInput" placeholder="Search..." oninput="filterTable()">
+        </div>
+      </div>
+      
+      <div class="tabs-container">
+        <div class="tabs" id="genreTabs"></div>
+      </div>
+      
+      <div id="tableContent">
+        <div class="loading">
+          <div class="spinner"></div>
+          <p>Loading database...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Get database type from URL
+    const pathParts = window.location.pathname.split('/');
+    const dbType = pathParts[pathParts.length - 1]; // 'press' or 'playlist'
+    
+    // Set initial title
+    const titleText = dbType === 'playlist' ? 'Playlist Contact Database' : 'Press Contact Database';
+    document.getElementById('dbTitle').textContent = titleText;
+    document.title = titleText + ' - Promo';
+    
+    let sheetData = null;
+    let activeTab = null;
+    let searchQuery = '';
+    let currentPassword = '';
+    
+    async function submitPassword(e) {
+      e.preventDefault();
+      const password = document.getElementById('passwordInput').value;
+      const errorMsg = document.getElementById('errorMsg');
+      
+      try {
+        const res = await fetch(`/api/database/${dbType}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password })
+        });
+        
+        if (!res.ok) {
+          errorMsg.textContent = 'Invalid password. Please try again.';
+          errorMsg.style.display = 'block';
+          return;
+        }
+        
+        currentPassword = password;
+        sheetData = await res.json();
+        
+        // Hide password screen, show content
+        document.getElementById('passwordScreen').style.display = 'none';
+        document.getElementById('databaseContent').classList.add('visible');
+        document.getElementById('contentTitle').textContent = sheetData.title;
+        
+        // Filter out "Home" tab
+        const dataTabs = sheetData.tabs.filter(t => t !== 'Home' && sheetData.tabData[t]?.data?.length > 0);
+        
+        if (dataTabs.length > 0) {
+          activeTab = dataTabs[0];
+          renderTabs(dataTabs);
+          renderTable();
+        }
+        
+      } catch (err) {
+        errorMsg.textContent = 'Connection error. Please try again.';
+        errorMsg.style.display = 'block';
+      }
+    }
+    
+    function renderTabs(tabs) {
+      const container = document.getElementById('genreTabs');
+      container.innerHTML = tabs.map(tab => {
+        const count = sheetData.tabData[tab]?.data?.length || 0;
+        return `
+          <button class="tab ${tab === activeTab ? 'active' : ''}" onclick="switchTab('${tab.replace(/'/g, "\\'")}')">
+            ${escapeHtml(tab)}
+            <span class="count">${count}</span>
+          </button>
+        `;
+      }).join('');
+    }
+    
+    function switchTab(tabName) {
+      activeTab = tabName;
+      document.querySelectorAll('.tab').forEach(btn => {
+        btn.classList.toggle('active', btn.textContent.includes(tabName));
+      });
+      renderTable();
+    }
+    
+    function renderTable() {
+      const container = document.getElementById('tableContent');
+      const tabData = sheetData.tabData[activeTab];
+      
+      if (!tabData || !tabData.data || tabData.data.length === 0) {
+        container.innerHTML = `<div class="table-container"><div class="empty-tab">No contacts in this category yet.</div></div>`;
+        return;
+      }
+      
+      const headers = tabData.headers;
+      const data = filterData(tabData.data);
+      
+      container.innerHTML = `
+        <div class="table-container">
+          <div class="results-info">${data.length} contact${data.length !== 1 ? 's' : ''} found</div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                ${headers.map(h => `<th>${escapeHtml(h)}</th>`).join('')}
+              </tr>
+            </thead>
+            <tbody>
+              ${data.map(row => `
+                <tr>
+                  ${headers.map((h, i) => {
+                    const value = row[h] || '';
+                    const cellClass = getCellClass(h, i);
+                    const formattedValue = formatCell(h, value);
+                    return `<td class="${cellClass}">${formattedValue}</td>`;
+                  }).join('')}
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+    
+    function getCellClass(header, index) {
+      const h = header.toLowerCase();
+      if (index === 0 || h.includes('blog') || h.includes('playlist') || h.includes('name')) return 'cell-primary';
+      if (h.includes('site') || h.includes('url') || h.includes('link')) return 'cell-link';
+      if (h.includes('email') || h.includes('submit')) return 'cell-email';
+      if (h.includes('contact') || h.includes('curator')) return 'cell-secondary';
+      if (h.includes('description') || h.includes('notes') || h.includes('genre')) return 'cell-description';
+      return '';
+    }
+    
+    function formatCell(header, value) {
+      if (!value) return '—';
+      
+      const h = header.toLowerCase();
+      
+      // URLs
+      if (h.includes('site') || h.includes('url') || h.includes('link')) {
+        let url = value;
+        if (!url.startsWith('http')) url = 'https://' + url;
+        return `<a href="${escapeHtml(url)}" target="_blank" rel="noopener">${escapeHtml(value)}</a>`;
+      }
+      
+      // Emails
+      if (h.includes('email') || h.includes('submit')) {
+        if (value.includes('@')) {
+          return `<a href="mailto:${escapeHtml(value)}">${escapeHtml(value)}</a>`;
+        } else if (value.includes('.')) {
+          let url = value;
+          if (!url.startsWith('http')) url = 'https://' + url;
+          return `<a href="${escapeHtml(url)}" target="_blank" rel="noopener">${escapeHtml(value)}</a>`;
+        }
+      }
+      
+      return escapeHtml(value);
+    }
+    
+    function filterData(data) {
+      if (!searchQuery) return data;
+      const query = searchQuery.toLowerCase();
+      return data.filter(row => 
+        Object.values(row).some(val => val && val.toString().toLowerCase().includes(query))
+      );
+    }
+    
+    function filterTable() {
+      searchQuery = document.getElementById('searchInput').value;
+      renderTable();
+    }
+    
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+  </script>
+</body>
+</html>

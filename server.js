@@ -6,6 +6,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import crypto from 'crypto';
+import { google } from 'googleapis';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -20,6 +21,33 @@ const REPORTS_DIR = path.join(DATA_DIR, 'reports');
 
 // Password protection
 const PASSWORD = 'PromoReport2026';
+
+// Google Sheets setup
+let sheetsClient = null;
+try {
+  // In production, use environment variable; in dev, use local JSON file
+  let credentials;
+  if (process.env.GOOGLE_CREDENTIALS) {
+    credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS);
+  } else {
+    // Local development - read from file
+    const credPath = '/Users/jameskeane/Documents/promo-sheets-487010-716eaf0302a0.json';
+    if (fs.existsSync(credPath)) {
+      credentials = JSON.parse(fs.readFileSync(credPath, 'utf-8'));
+    }
+  }
+  
+  if (credentials) {
+    const auth = new google.auth.GoogleAuth({
+      credentials,
+      scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly']
+    });
+    sheetsClient = google.sheets({ version: 'v4', auth });
+    console.log('✓ Google Sheets API initialized');
+  }
+} catch (err) {
+  console.warn('Google Sheets not configured:', err.message);
+}
 const SESSION_SECRET = crypto.randomBytes(32).toString('hex');
 const sessions = new Map();
 
@@ -121,6 +149,94 @@ app.use('/uploads', express.static(UPLOADS_DIR));
 // Public report viewing
 app.get('/report/:id', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'report.html'));
+});
+
+// Database configuration
+const DATABASE_CONFIG = {
+  press: {
+    spreadsheetId: '1iUeRqifNrEBGWgPaP1qRJXByU5HVsrSUu2P7mxGbdC8',
+    title: 'Press Contact Database'
+  },
+  playlist: {
+    spreadsheetId: '15l1uH9Z_onBNYo4aPGg1hvi_CGu6VlSb1Sc_AkcvqfQ',
+    title: 'Playlist Contact Database'
+  }
+};
+const DATABASE_PASSWORD = 'PromoDB2026';
+
+// Public database viewing (press or playlist)
+app.get('/database/:type', (req, res) => {
+  const { type } = req.params;
+  if (type !== 'press' && type !== 'playlist') {
+    return res.status(404).send('Not found');
+  }
+  res.sendFile(path.join(__dirname, 'public', 'database-client.html'));
+});
+
+// Public API to get database data (with password)
+app.post('/api/database/:type', async (req, res) => {
+  const { type } = req.params;
+  const { password } = req.body;
+  
+  // Verify password
+  if (password !== DATABASE_PASSWORD) {
+    return res.status(401).json({ error: 'Invalid password' });
+  }
+  
+  // Get config for this database type
+  const config = DATABASE_CONFIG[type];
+  if (!config) {
+    return res.status(404).json({ error: 'Database not found' });
+  }
+  
+  if (!sheetsClient) {
+    return res.status(503).json({ error: 'Database service unavailable' });
+  }
+  
+  try {
+    const metadata = await sheetsClient.spreadsheets.get({
+      spreadsheetId: config.spreadsheetId,
+      fields: 'sheets.properties.title'
+    });
+    
+    const tabs = metadata.data.sheets.map(s => s.properties.title);
+    const tabData = {};
+    
+    for (const tabName of tabs) {
+      try {
+        const response = await sheetsClient.spreadsheets.values.get({
+          spreadsheetId: config.spreadsheetId,
+          range: `'${tabName}'!A:Z`
+        });
+        
+        const rows = response.data.values || [];
+        if (rows.length > 0) {
+          const headers = rows[0];
+          const data = rows.slice(1).map(row => {
+            const obj = {};
+            headers.forEach((header, i) => {
+              obj[header] = row[i] || '';
+            });
+            return obj;
+          }).filter(row => Object.values(row).some(v => v));
+          
+          tabData[tabName] = { headers, data };
+        }
+      } catch (tabErr) {
+        console.warn(`Error fetching tab ${tabName}:`, tabErr.message);
+      }
+    }
+    
+    res.json({
+      title: config.title,
+      tabs,
+      tabData
+    });
+    
+  } catch (error) {
+    console.error('Database access error:', error);
+    res.status(500).json({ error: 'Failed to load database' });
+  }
 });
 
 // Public API to get a single report (for viewing)
@@ -813,6 +929,69 @@ async function scrapeSpotifyPlaylist(url, playlistId) {
     throw error;
   }
 }
+
+// Google Sheets API endpoint - get all tabs and data from a spreadsheet
+app.get('/api/sheets/:spreadsheetId', async (req, res) => {
+  if (!sheetsClient) {
+    return res.status(503).json({ error: 'Google Sheets not configured' });
+  }
+  
+  const { spreadsheetId } = req.params;
+  const { tab } = req.query; // Optional: fetch specific tab only
+  
+  try {
+    // First get spreadsheet metadata to get tab names
+    const metadata = await sheetsClient.spreadsheets.get({
+      spreadsheetId,
+      fields: 'sheets.properties.title'
+    });
+    
+    const tabs = metadata.data.sheets.map(s => s.properties.title);
+    
+    // If specific tab requested, only fetch that one
+    const tabsToFetch = tab ? [tab] : tabs;
+    
+    // Fetch data from all (or specified) tabs
+    const tabData = {};
+    for (const tabName of tabsToFetch) {
+      try {
+        const response = await sheetsClient.spreadsheets.values.get({
+          spreadsheetId,
+          range: `'${tabName}'!A:Z` // Fetch columns A-Z
+        });
+        
+        const rows = response.data.values || [];
+        if (rows.length > 0) {
+          const headers = rows[0];
+          const data = rows.slice(1).map(row => {
+            const obj = {};
+            headers.forEach((header, i) => {
+              obj[header] = row[i] || '';
+            });
+            return obj;
+          }).filter(row => Object.values(row).some(v => v)); // Filter empty rows
+          
+          tabData[tabName] = {
+            headers,
+            data
+          };
+        }
+      } catch (tabErr) {
+        console.warn(`Error fetching tab ${tabName}:`, tabErr.message);
+      }
+    }
+    
+    res.json({
+      spreadsheetId,
+      tabs,
+      tabData
+    });
+    
+  } catch (error) {
+    console.error('Sheets API error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`\n🚀 Ditto Promo Report Dashboard`);

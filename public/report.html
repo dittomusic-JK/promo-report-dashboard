@@ -697,6 +697,113 @@
       transform: scale(1.03);
     }
     
+    /* Database Links Section */
+    .databases-section {
+      padding: 60px 40px;
+      background: linear-gradient(180deg, var(--alt-grey) 0%, var(--gunmetal) 100%);
+    }
+    .database-links {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      max-width: 900px;
+      margin: 0 auto 24px;
+    }
+    .database-card {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 24px;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(246, 71, 128, 0.2);
+      border-radius: 12px;
+      text-decoration: none;
+      color: #fff;
+      transition: all 0.3s;
+    }
+    .database-card:hover {
+      background: rgba(246, 71, 128, 0.1);
+      border-color: var(--promo-pink);
+      transform: translateY(-4px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+    }
+    .database-icon {
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--promo-pink);
+      border-radius: 12px;
+      flex-shrink: 0;
+    }
+    .database-icon.playlist {
+      background: #1DB954;
+    }
+    .database-icon svg {
+      color: #fff;
+    }
+    .database-info {
+      flex: 1;
+    }
+    .database-info h3 {
+      font-family: 'Neusa', sans-serif;
+      font-size: 18px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .database-info p {
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+    }
+    .database-arrow {
+      color: rgba(255,255,255,0.4);
+      transition: transform 0.3s, color 0.3s;
+    }
+    .database-card:hover .database-arrow {
+      color: var(--chayellow);
+      transform: translateX(4px);
+    }
+    .database-password {
+      text-align: center;
+      padding: 16px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 8px;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    .password-label {
+      color: rgba(255,255,255,0.5);
+      font-size: 13px;
+      margin-right: 8px;
+    }
+    .password-value {
+      background: rgba(224, 255, 79, 0.2);
+      color: var(--chayellow);
+      padding: 6px 16px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 15px;
+      letter-spacing: 1px;
+    }
+    
+    @media (max-width: 768px) {
+      .database-links {
+        grid-template-columns: 1fr;
+      }
+      .database-card {
+        padding: 16px;
+      }
+      .database-icon {
+        width: 48px;
+        height: 48px;
+      }
+      .database-icon svg {
+        width: 24px;
+        height: 24px;
+      }
+    }
+    
     /* Footer */
     footer {
       background: var(--x-black);
@@ -857,6 +964,45 @@
       </div>
       <div class="playlist-grid" id="playlistGrid"></div>
       <div class="metrics-grid" id="playlistStats"></div>
+    </section>
+    
+    <!-- Database Links -->
+    <section id="databases" class="databases-section">
+      <div class="section-header">
+        <span class="section-badge">Resources</span>
+        <h2 class="section-title">Contact Databases</h2>
+        <p class="section-subtitle">Access our curated press and playlist contact databases</p>
+      </div>
+      <div class="database-links">
+        <a href="/database/press" target="_blank" class="database-card">
+          <div class="database-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"></path><path d="M18 14h-8"></path><path d="M15 18h-5"></path><path d="M10 6h8v4h-8V6Z"></path></svg>
+          </div>
+          <div class="database-info">
+            <h3>Press Database</h3>
+            <p>Blogs, magazines, and media contacts by genre</p>
+          </div>
+          <div class="database-arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </div>
+        </a>
+        <a href="/database/playlist" target="_blank" class="database-card">
+          <div class="database-icon playlist">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15V6"></path><path d="M18.5 18a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"></path><path d="M12 12H3"></path><path d="M16 6H3"></path><path d="M12 18H3"></path></svg>
+          </div>
+          <div class="database-info">
+            <h3>Playlist Database</h3>
+            <p>Spotify playlist curators and submission contacts</p>
+          </div>
+          <div class="database-arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </div>
+        </a>
+      </div>
+      <div class="database-password">
+        <span class="password-label">Password:</span>
+        <code class="password-value">PromoDB2026</code>
+      </div>
     </section>
     
     <!-- Footer -->
