@@ -856,7 +856,18 @@
             </div>
             <button type="button" class="btn btn-secondary btn-small" onclick="removePR(${index})" style="flex-shrink:0;">✕</button>
           </div>
-          ${data.heroImage ? `<img src="${data.heroImage}" style="width:100%; height:150px; object-fit:cover; border-radius:8px; margin-top:12px;" onerror="this.style.display='none'">` : ''}
+          <div style="margin-top:12px;">
+            <div style="display:flex; gap:12px; align-items:center;">
+              <div id="prHeroImage${index}" style="flex:1; position:relative;">
+                ${data.heroImage ? `<img src="${data.heroImage}" style="width:100%; height:150px; object-fit:cover; border-radius:8px;" onerror="this.style.display='none'">` : '<div style="width:100%; height:150px; background:#313135; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#666;">No image found</div>'}
+              </div>
+            </div>
+            <label style="display:flex; align-items:center; gap:8px; margin-top:8px; cursor:pointer; color:#aaa; font-size:12px;">
+              <input type="file" accept="image/*" onchange="handlePRImageUpload(this, ${index})" style="display:none;">
+              <span style="background:#313135; padding:6px 12px; border-radius:6px; color:#9e77ff;">📷 Upload custom image</span>
+              <span>or replace scraped image</span>
+            </label>
+          </div>
         `;
         
         // Show socials inputs
@@ -884,6 +895,36 @@
       const card = document.querySelector(`.pr-input-card[data-index="${index}"]`);
       card.style.borderStyle = 'dashed';
       card.style.borderColor = '#313135';
+    }
+    
+    // Handle custom PR hero image upload
+    async function handlePRImageUpload(input, index) {
+      const file = input.files[0];
+      if (!file) return;
+      
+      const formData = new FormData();
+      formData.append('image', file);
+      
+      try {
+        const res = await fetch('/api/upload', { method: 'POST', body: formData });
+        const data = await res.json();
+        
+        if (data.url) {
+          // Update the stored PR data with custom image
+          if (fetchedPR[index]) {
+            fetchedPR[index].heroImage = data.url;
+          }
+          
+          // Update the preview
+          const imageContainer = document.getElementById(`prHeroImage${index}`);
+          if (imageContainer) {
+            imageContainer.innerHTML = `<img src="${data.url}" style="width:100%; height:150px; object-fit:cover; border-radius:8px;">`;
+          }
+        }
+      } catch (err) {
+        console.error('Upload failed:', err);
+        alert('Failed to upload image');
+      }
     }
     
     // Fetch Spotify playlist data
@@ -1104,6 +1145,16 @@
                       <div style="color:#00ff99; font-size:12px;">✓ Loaded from saved report</div>
                     </div>
                     <button type="button" class="btn btn-secondary btn-small" onclick="removePR(${i})">✕</button>
+                  </div>
+                  <div style="margin-top:12px;">
+                    <div id="prHeroImage${i}" style="flex:1; position:relative;">
+                      ${pr.heroImage ? `<img src="${pr.heroImage}" style="width:100%; height:150px; object-fit:cover; border-radius:8px;">` : '<div style="width:100%; height:150px; background:#313135; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#666;">No image</div>'}
+                    </div>
+                    <label style="display:flex; align-items:center; gap:8px; margin-top:8px; cursor:pointer; color:#aaa; font-size:12px;">
+                      <input type="file" accept="image/*" onchange="handlePRImageUpload(this, ${i})" style="display:none;">
+                      <span style="background:#313135; padding:6px 12px; border-radius:6px; color:#9e77ff;">📷 Upload custom image</span>
+                      <span>or replace existing image</span>
+                    </label>
                   </div>
                 `;
               }
