@@ -1106,6 +1106,25 @@
       document.title = `${data.artistName} - Promo Report`;
       document.getElementById('artistName').textContent = data.artistName || 'Artist';
       
+      // Hide sections based on visibility toggles
+      const vis = data.sectionVisibility || {};
+      if (vis.social === false) {
+        document.getElementById('social').classList.add('hidden');
+        document.querySelector('.nav-link[href="#social"]')?.parentElement?.remove();
+        // Hide the divider after hero (before social)
+        document.getElementById('social').previousElementSibling?.classList.add('hidden');
+      }
+      if (vis.pr === false) {
+        document.getElementById('pr').classList.add('hidden');
+        document.querySelector('.nav-link[href="#pr"]')?.parentElement?.remove();
+        document.getElementById('pr').previousElementSibling?.classList.add('hidden');
+      }
+      if (vis.playlist === false) {
+        document.getElementById('playlists').classList.add('hidden');
+        document.querySelector('.nav-link[href="#playlists"]')?.parentElement?.remove();
+        document.getElementById('playlists').previousElementSibling?.classList.add('hidden');
+      }
+      
       // Show hero artwork if available
       if (data.heroArtwork) {
         const artworkEl = document.getElementById('heroArtwork');

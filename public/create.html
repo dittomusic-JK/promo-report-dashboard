@@ -321,6 +321,66 @@
       display: none;
     }
     
+    /* Section Toggle */
+    .section-toggle {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-toggle-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: rgba(255,255,255,0.4);
+      font-weight: 600;
+    }
+    .toggle-switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      cursor: pointer;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+      position: absolute;
+    }
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.15);
+      border-radius: 24px;
+      transition: background 0.2s;
+    }
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      left: 3px;
+      bottom: 3px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+    .toggle-switch input:checked + .toggle-slider {
+      background: var(--promo-pink);
+    }
+    .toggle-switch input:checked + .toggle-slider::before {
+      transform: translateX(20px);
+    }
+    .section-content {
+      transition: opacity 0.3s, max-height 0.3s;
+    }
+    .section-content.collapsed {
+      opacity: 0.3;
+      max-height: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    
     /* Footer Actions */
     .actions {
       display: flex;
@@ -422,8 +482,16 @@
         <div class="section-header">
           <div class="section-number">2</div>
           <h2>Social Report (Feature.fm Analytics)</h2>
+          <div class="section-toggle">
+            <span class="section-toggle-label">Include</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="toggleSocial" checked onchange="toggleSection('social', this.checked)">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
         </div>
         
+        <div class="section-content" id="sectionSocial">
         <div class="form-group">
           <label>Feature.fm Analytics URL</label>
           <div class="import-row">
@@ -462,6 +530,7 @@
         </div>
         
         <div id="analyticsPreview" class="analytics-preview"></div>
+        </div>
       </div>
       
       <!-- Section 3: PR Placements -->
@@ -469,9 +538,17 @@
         <div class="section-header">
           <div class="section-number">3</div>
           <h2>PR Placements</h2>
+          <div class="section-toggle">
+            <span class="section-toggle-label">Include</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="togglePR" checked onchange="toggleSection('pr', this.checked)">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
         </div>
         
-        <p style="color: #aaaacc; font-size: 13px; margin-bottom: 20px;">Paste article URLs - we'll fetch the logo, excerpt, and hero image automatically. Add social stats manually.</p>
+        <div class="section-content" id="sectionPR">
+        <p style="color: #aaaacc; font-size: 13px; margin-bottom: 20px;">Paste article URLs
         
         <div id="prInputs">
           <!-- PR 1 -->
@@ -581,6 +658,7 @@
         <button type="button" class="btn btn-secondary" onclick="addPRField()" style="width:100%; margin-top:8px; border:1px dashed #313135;">
           + Add Another PR Placement
         </button>
+        </div>
       </div>
       
       <!-- Section 4: Playlist Placements -->
@@ -588,9 +666,17 @@
         <div class="section-header">
           <div class="section-number">4</div>
           <h2>Playlist Placements</h2>
+          <div class="section-toggle">
+            <span class="section-toggle-label">Include</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="togglePlaylist" checked onchange="toggleSection('playlist', this.checked)">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
         </div>
         
-        <p style="color: #aaaacc; font-size: 13px; margin-bottom: 20px;">Just paste Spotify playlist URLs - we'll fetch the name, curator, saves, and artwork automatically!</p>
+        <div class="section-content" id="sectionPlaylist">
+        <p style="color: #aaaacc; font-size: 13px; margin-bottom: 20px;">Just paste Spotify playlist URLs
         
         <div class="row">
           <div class="form-group">
@@ -648,6 +734,7 @@
         <button type="button" class="btn btn-secondary" onclick="addPlaylistField()" style="width:100%; margin-top:8px; border:1px dashed #313135;">
           + Add Another Playlist
         </button>
+        </div>
       </div>
       
       <!-- Section 5: Survey Link -->
@@ -685,6 +772,15 @@
   </div>
   
   <script>
+    // Section visibility toggles
+    function toggleSection(section, enabled) {
+      const sectionMap = { social: 'sectionSocial', pr: 'sectionPR', playlist: 'sectionPlaylist' };
+      const el = document.getElementById(sectionMap[section]);
+      if (el) {
+        el.classList.toggle('collapsed', !enabled);
+      }
+    }
+    
     // Store uploaded images and fetched playlists
     const uploadedImages = {
       pr: {},
@@ -1102,6 +1198,19 @@
             };
           }
           
+          // Section visibility toggles
+          if (report.sectionVisibility) {
+            ['social', 'pr', 'playlist'].forEach(section => {
+              const enabled = report.sectionVisibility[section] !== false;
+              const toggleId = 'toggle' + section.charAt(0).toUpperCase() + section.slice(1);
+              const toggle = document.getElementById(toggleId);
+              if (toggle) {
+                toggle.checked = enabled;
+                toggleSection(section, enabled);
+              }
+            });
+          }
+          
           // Hero artwork
           if (report.heroArtwork) {
             heroArtwork = report.heroArtwork;
@@ -1220,6 +1329,11 @@
         dateRange: formData.get('dateRange'),
         smartLink: formData.get('smartLink'),
         heroArtwork: heroArtwork,
+        sectionVisibility: {
+          social: document.getElementById('toggleSocial').checked,
+          pr: document.getElementById('togglePR').checked,
+          playlist: document.getElementById('togglePlaylist').checked
+        },
         analytics: {
           totalVisits: parseInt(formData.get('totalVisits')) || 0,
           uniqueUsers: parseInt(formData.get('uniqueUsers')) || 0,
