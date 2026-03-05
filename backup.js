@@ -38,7 +38,7 @@ const S3_REGION = process.env.BACKUP_S3_REGION || 'us-east-1';
 const S3_ENDPOINT = process.env.BACKUP_S3_ENDPOINT;
 const ACCESS_KEY = process.env.AWS_ACCESS_KEY_ID;
 const SECRET_KEY = process.env.AWS_SECRET_ACCESS_KEY;
-const RETENTION = parseInt(process.env.BACKUP_RETENTION || '30', 10);
+const RETENTION = parseInt(process.env.BACKUP_RETENTION || '90', 10);
 const PREFIX = 'promo-dashboard-backups/';
 
 // --- Helpers ---
