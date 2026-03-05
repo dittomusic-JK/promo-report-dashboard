@@ -7,6 +7,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import crypto from 'crypto';
 import { google } from 'googleapis';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -18,8 +20,8 @@ const DATA_DIR = process.env.NODE_ENV === 'production' ? '/data' : path.join(__d
 const UPLOADS_DIR = path.join(DATA_DIR, 'uploads');
 const REPORTS_DIR = path.join(DATA_DIR, 'reports');
 
-// Password protection
-const PASSWORD = 'PromoReport2026';
+// Password protection — use env vars in production
+const PASSWORD = process.env.APP_PASSWORD || 'PromoReport2026';
 
 // Google Sheets setup
 let sheetsClient = null;
@@ -28,11 +30,10 @@ try {
   let credentials;
   if (process.env.GOOGLE_CREDENTIALS) {
     credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS);
-  } else {
-    // Local development - read from file
-    const credPath = '/Users/jameskeane/Documents/promo-sheets-487010-716eaf0302a0.json';
-    if (fs.existsSync(credPath)) {
-      credentials = JSON.parse(fs.readFileSync(credPath, 'utf-8'));
+  } else if (process.env.GOOGLE_CREDENTIALS_PATH) {
+    // Local development - read from path in env var
+    if (fs.existsSync(process.env.GOOGLE_CREDENTIALS_PATH)) {
+      credentials = JSON.parse(fs.readFileSync(process.env.GOOGLE_CREDENTIALS_PATH, 'utf-8'));
     }
   }
   
@@ -95,6 +96,20 @@ function requireAuth(req, res, next) {
   res.redirect('/login');
 }
 
+// Security middleware
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdn.jsdelivr.net"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'"],
+    }
+  }
+}));
+
 // Setup
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
@@ -111,11 +126,20 @@ app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
-app.post('/api/login', (req, res) => {
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // 10 attempts per window
+  message: { error: 'Too many login attempts, please try again later' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.post('/api/login', loginLimiter, (req, res) => {
   const { password } = req.body;
   if (password === PASSWORD) {
     const token = createSession();
-    res.setHeader('Set-Cookie', `session=${token}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${24 * 60 * 60}`);
+    const securePart = process.env.NODE_ENV === 'production' ? ' Secure;' : '';
+    res.setHeader('Set-Cookie', `session=${token}; Path=/; HttpOnly; SameSite=Strict;${securePart} Max-Age=${24 * 60 * 60}`);
     res.json({ success: true });
   } else {
     res.status(401).json({ error: 'Invalid password' });
@@ -161,7 +185,7 @@ const DATABASE_CONFIG = {
     title: 'Playlist Contact Database'
   }
 };
-const DATABASE_PASSWORD = 'PromoDB2026';
+const DATABASE_PASSWORD = process.env.DATABASE_PASSWORD || 'PromoDB2026';
 
 // Public database viewing (press or playlist)
 app.get('/database/:type', (req, res) => {
@@ -238,9 +262,36 @@ app.post('/api/database/:type', async (req, res) => {
   }
 });
 
+// Validate report IDs to prevent path traversal
+function isValidReportId(id) {
+  return /^[a-f0-9\-]+$/.test(id);
+}
+
+// Validate URLs for scrape endpoints to prevent SSRF
+const ALLOWED_SCRAPE_DOMAINS = [
+  'ditto.fm', 'ffm.to', 'feature.fm', 'open.spotify.com',
+  'distrokid.com', 'linktr.ee', 'linkin.bio',
+  // Common press/blog domains - add more as needed
+  'youtube.com', 'music.apple.com',
+];
+
+function isAllowedScrapeUrl(url) {
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') return false;
+    const hostname = parsed.hostname.replace(/^www\./, '');
+    // Block private/internal IPs
+    if (/^(127\.|10\.|172\.(1[6-9]|2\d|3[01])\.|192\.168\.|0\.|localhost|\[::1\])/.test(hostname)) return false;
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 // Public API to get a single report (for viewing)
 app.get('/api/reports/:id', (req, res) => {
   const { id } = req.params;
+  if (!isValidReportId(id)) return res.status(400).json({ error: 'Invalid report ID' });
   const reportPath = path.join(REPORTS_DIR, `${id}.json`);
   
   if (fs.existsSync(reportPath)) {
@@ -290,6 +341,7 @@ app.post('/api/upload', upload.single('image'), (req, res) => {
 app.post('/api/scrape-smartlink', async (req, res) => {
   const { url } = req.body;
   if (!url) return res.status(400).json({ error: 'URL required' });
+  if (!isAllowedScrapeUrl(url)) return res.status(400).json({ error: 'URL not allowed' });
   
   console.log(`Scraping smart link: ${url}`);
   
@@ -395,6 +447,7 @@ const browser = await chromium.launch({
 app.post('/api/scrape-article', async (req, res) => {
   const { url } = req.body;
   if (!url) return res.status(400).json({ error: 'URL required' });
+  if (!isAllowedScrapeUrl(url)) return res.status(400).json({ error: 'URL not allowed' });
   
   console.log(`Scraping article: ${url}`);
   
@@ -411,6 +464,7 @@ app.post('/api/scrape-article', async (req, res) => {
 app.post('/api/scrape-spotify-playlist', async (req, res) => {
   const { url } = req.body;
   if (!url) return res.status(400).json({ error: 'URL required' });
+  if (!isAllowedScrapeUrl(url)) return res.status(400).json({ error: 'URL not allowed' });
   
   // Extract playlist ID from URL
   const playlistMatch = url.match(/playlist\/([a-zA-Z0-9]+)/);
@@ -432,6 +486,7 @@ app.post('/api/scrape-spotify-playlist', async (req, res) => {
 app.post('/api/scrape-ffm', async (req, res) => {
   const { url } = req.body;
   if (!url) return res.status(400).json({ error: 'URL required' });
+  if (!isAllowedScrapeUrl(url)) return res.status(400).json({ error: 'URL not allowed' });
   
   console.log(`Scraping: ${url}`);
   
@@ -447,10 +502,11 @@ app.post('/api/scrape-ffm', async (req, res) => {
 // Create report
 app.post('/api/reports', async (req, res) => {
   const reportId = uuidv4().slice(0, 8);
+  const { artistName, releaseTitle, dateRange, heroArtwork, heroArtworkBlurred, smartLink, sections } = req.body;
   const reportData = {
     id: reportId,
     createdAt: new Date().toISOString(),
-    ...req.body
+    artistName, releaseTitle, dateRange, heroArtwork, heroArtworkBlurred, smartLink, sections
   };
   
   reports.set(reportId, reportData);
@@ -501,6 +557,7 @@ app.get('/api/reports', (req, res) => {
 // Update report
 app.put('/api/reports/:id', (req, res) => {
   const { id } = req.params;
+  if (!isValidReportId(id)) return res.status(400).json({ error: 'Invalid report ID' });
   const reportPath = path.join(REPORTS_DIR, `${id}.json`);
   
   if (!fs.existsSync(reportPath)) {
@@ -522,9 +579,21 @@ app.put('/api/reports/:id', (req, res) => {
   res.json({ id, url: `/report/${id}` });
 });
 
+// Manual backup trigger (auth-protected)
+app.post('/api/backup', async (req, res) => {
+  try {
+    const { runBackup } = await import('./backup.js');
+    const result = await runBackup();
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Delete report
 app.delete('/api/reports/:id', (req, res) => {
   const { id } = req.params;
+  if (!isValidReportId(id)) return res.status(400).json({ error: 'Invalid report ID' });
   const reportPath = path.join(REPORTS_DIR, `${id}.json`);
   
   if (!fs.existsSync(reportPath)) {
