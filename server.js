@@ -519,11 +519,17 @@ app.post('/api/scrape-ffm', async (req, res) => {
 // Create report
 app.post('/api/reports', async (req, res) => {
   const reportId = uuidv4().slice(0, 8);
-  const { artistName, releaseTitle, dateRange, heroArtwork, heroArtworkBlurred, smartLink, sections } = req.body;
+  const {
+    artistName, releaseTitle, dateRange, heroArtwork, heroArtworkBlurred, smartLink,
+    sectionVisibility, analytics, prPlacements, playlists,
+    totalPlaylists, spotifyAudience, surveyUrl, blogDatabaseUrl
+  } = req.body;
   const reportData = {
     id: reportId,
     createdAt: new Date().toISOString(),
-    artistName, releaseTitle, dateRange, heroArtwork, heroArtworkBlurred, smartLink, sections
+    artistName, releaseTitle, dateRange, heroArtwork, heroArtworkBlurred, smartLink,
+    sectionVisibility, analytics, prPlacements, playlists,
+    totalPlaylists, spotifyAudience, surveyUrl, blogDatabaseUrl
   };
   
   reports.set(reportId, reportData);
