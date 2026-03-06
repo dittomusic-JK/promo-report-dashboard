@@ -263,6 +263,22 @@ app.post('/api/database/:type', async (req, res) => {
   }
 });
 
+// Cron-triggered backup (token-authenticated, no session needed)
+const BACKUP_TOKEN = process.env.BACKUP_CRON_TOKEN || '';
+app.post('/api/cron/backup', async (req, res) => {
+  const token = req.headers['authorization']?.replace('Bearer ', '');
+  if (!BACKUP_TOKEN || token !== BACKUP_TOKEN) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  try {
+    const { runBackup } = await import('./backup.js');
+    const result = await runBackup();
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Validate report IDs to prevent path traversal
 function isValidReportId(id) {
   return /^[a-f0-9\-]+$/.test(id);
