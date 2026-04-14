@@ -279,6 +279,33 @@ app.post('/api/cron/backup', async (req, res) => {
   }
 });
 
+// Restore from backup (token-authenticated)
+const restoreUpload = multer({ dest: '/tmp/restore', limits: { fileSize: 200 * 1024 * 1024 } });
+app.post('/api/cron/restore', restoreUpload.single('backup'), async (req, res) => {
+  const token = req.headers['authorization']?.replace('Bearer ', '');
+  if (!BACKUP_TOKEN || token !== BACKUP_TOKEN) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  if (!req.file) return res.status(400).json({ error: 'No backup file uploaded' });
+  
+  try {
+    const { execSync } = await import('child_process');
+    // Extract to data dir, overwriting existing files
+    execSync(`tar -xzf "${req.file.path}" -C "${DATA_DIR}"`, { stdio: 'pipe' });
+    fs.unlinkSync(req.file.path);
+    
+    // Count restored files
+    const reportCount = fs.existsSync(REPORTS_DIR) ? fs.readdirSync(REPORTS_DIR).filter(f => f.endsWith('.json')).length : 0;
+    const uploadCount = fs.existsSync(UPLOADS_DIR) ? fs.readdirSync(UPLOADS_DIR).length : 0;
+    
+    console.log(`✅ Restored ${reportCount} reports and ${uploadCount} uploads`);
+    res.json({ success: true, reports: reportCount, uploads: uploadCount });
+  } catch (error) {
+    console.error('Restore failed:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Validate report IDs to prevent path traversal
 function isValidReportId(id) {
   return /^[a-f0-9\-]+$/.test(id);
