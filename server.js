@@ -9,16 +9,24 @@ import crypto from 'crypto';
 import { google } from 'googleapis';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
+import { r2Put, r2Get, r2Delete, r2List, isConfigured as r2IsConfigured } from './r2.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Use persistent disk on Render (/data mount), local ./data in dev
+// Storage mode: R2 in production (if configured), filesystem in dev
+const USE_R2 = process.env.NODE_ENV === 'production' && r2IsConfigured();
 const DATA_DIR = process.env.NODE_ENV === 'production' ? '/data' : path.join(__dirname, 'data');
 const UPLOADS_DIR = path.join(DATA_DIR, 'uploads');
 const REPORTS_DIR = path.join(DATA_DIR, 'reports');
+
+if (USE_R2) {
+  console.log('✓ Using Cloudflare R2 for storage');
+} else {
+  console.log('✓ Using local filesystem for storage');
+}
 
 // Password protection — use env vars in production
 const PASSWORD = process.env.APP_PASSWORD || 'PromoReport2026';
@@ -162,13 +170,30 @@ app.get('/api/auth/check', (req, res) => {
   res.json({ authenticated: isValidSession(cookies.session) });
 });
 
-// PUBLIC routes - reports viewable without login
-app.use('/uploads', express.static(UPLOADS_DIR));
+// Ensure local directories exist (used in dev mode and as fallback)
+if (!USE_R2) {
+  [UPLOADS_DIR, REPORTS_DIR].forEach(dir => {
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  });
+}
 
-// Ensure directories exist (before routes use them)
-[UPLOADS_DIR, REPORTS_DIR].forEach(dir => {
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-});
+// PUBLIC routes - serve uploads from R2 or local filesystem
+if (USE_R2) {
+  app.get('/uploads/:filename', async (req, res) => {
+    try {
+      const result = await r2Get(`uploads/${req.params.filename}`);
+      if (!result) return res.status(404).send('Not found');
+      res.set('Content-Type', result.contentType);
+      res.set('Cache-Control', 'public, max-age=31536000, immutable');
+      res.send(result.body);
+    } catch (error) {
+      console.error('Upload proxy error:', error);
+      res.status(500).send('Error loading file');
+    }
+  });
+} else {
+  app.use('/uploads', express.static(UPLOADS_DIR));
+}
 
 // Public report viewing
 app.get('/report/:id', (req, res) => {
@@ -333,17 +358,26 @@ function isAllowedScrapeUrl(url) {
 }
 
 // Public API to get a single report (for viewing)
-app.get('/api/reports/:id', (req, res) => {
+app.get('/api/reports/:id', async (req, res) => {
   const { id } = req.params;
   if (!isValidReportId(id)) return res.status(400).json({ error: 'Invalid report ID' });
-  const reportPath = path.join(REPORTS_DIR, `${id}.json`);
   
-  if (fs.existsSync(reportPath)) {
-    const data = JSON.parse(fs.readFileSync(reportPath, 'utf-8'));
-    return res.json(data);
+  try {
+    if (USE_R2) {
+      const result = await r2Get(`reports/${id}.json`);
+      if (!result) return res.status(404).json({ error: 'Report not found' });
+      return res.json(JSON.parse(result.body.toString('utf-8')));
+    } else {
+      const reportPath = path.join(REPORTS_DIR, `${id}.json`);
+      if (fs.existsSync(reportPath)) {
+        return res.json(JSON.parse(fs.readFileSync(reportPath, 'utf-8')));
+      }
+      res.status(404).json({ error: 'Report not found' });
+    }
+  } catch (error) {
+    console.error('Error reading report:', error);
+    res.status(500).json({ error: error.message });
   }
-  
-  res.status(404).json({ error: 'Report not found' });
 });
 
 // Protected routes (everything below requires login)
@@ -353,11 +387,15 @@ app.use(requireAuth);
 app.use(express.static(path.join(__dirname, 'public')));
 
 // File upload config
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, UPLOADS_DIR),
-  filename: (req, file, cb) => cb(null, `${uuidv4()}-${file.originalname}`)
-});
-const upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } });
+const upload = USE_R2
+  ? multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } })
+  : multer({
+      storage: multer.diskStorage({
+        destination: (req, file, cb) => cb(null, UPLOADS_DIR),
+        filename: (req, file, cb) => cb(null, `${uuidv4()}-${file.originalname}`)
+      }),
+      limits: { fileSize: 10 * 1024 * 1024 }
+    });
 
 // Store reports in memory (in production, use a database)
 const reports = new Map();
@@ -376,9 +414,21 @@ app.get('/library', (req, res) => {
 });
 
 // Upload image endpoint
-app.post('/api/upload', upload.single('image'), (req, res) => {
+app.post('/api/upload', upload.single('image'), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
-  res.json({ url: `/uploads/${req.file.filename}` });
+  
+  if (USE_R2) {
+    const filename = `${uuidv4()}-${req.file.originalname}`;
+    try {
+      await r2Put(`uploads/${filename}`, req.file.buffer, req.file.mimetype);
+      res.json({ url: `/uploads/${filename}` });
+    } catch (error) {
+      console.error('R2 upload error:', error);
+      res.status(500).json({ error: 'Upload failed' });
+    }
+  } else {
+    res.json({ url: `/uploads/${req.file.filename}` });
+  }
 });
 
 // Scrape smart link for artwork
@@ -559,32 +609,58 @@ app.post('/api/reports', async (req, res) => {
     totalPlaylists, spotifyAudience, surveyUrl, blogDatabaseUrl
   };
   
-  reports.set(reportId, reportData);
-  
-  // Save to file for persistence
-  const reportPath = path.join(REPORTS_DIR, `${reportId}.json`);
-  fs.writeFileSync(reportPath, JSON.stringify(reportData, null, 2));
-  
-  res.json({ id: reportId, url: `/report/${reportId}` });
+  try {
+    const json = JSON.stringify(reportData, null, 2);
+    if (USE_R2) {
+      await r2Put(`reports/${reportId}.json`, json, 'application/json');
+    } else {
+      const reportPath = path.join(REPORTS_DIR, `${reportId}.json`);
+      fs.writeFileSync(reportPath, json);
+    }
+    reports.set(reportId, reportData);
+    res.json({ id: reportId, url: `/report/${reportId}` });
+  } catch (error) {
+    console.error('Error saving report:', error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // List all reports with optional search
-app.get('/api/reports', (req, res) => {
+app.get('/api/reports', async (req, res) => {
   const { q } = req.query;
   
   try {
-    const files = fs.readdirSync(REPORTS_DIR).filter(f => f.endsWith('.json'));
-    let reportsList = files.map(file => {
-      const data = JSON.parse(fs.readFileSync(path.join(REPORTS_DIR, file), 'utf-8'));
-      return {
-        id: data.id,
-        artistName: data.artistName || '',
-        releaseTitle: data.releaseTitle || '',
-        dateRange: data.dateRange || '',
-        createdAt: data.createdAt || '',
-        heroArtwork: data.heroArtwork || ''
-      };
-    });
+    let reportsList;
+    
+    if (USE_R2) {
+      const keys = await r2List('reports/');
+      const jsonKeys = keys.filter(k => k.endsWith('.json'));
+      const results = await Promise.all(jsonKeys.map(k => r2Get(k)));
+      reportsList = results.filter(Boolean).map(r => {
+        const data = JSON.parse(r.body.toString('utf-8'));
+        return {
+          id: data.id,
+          artistName: data.artistName || '',
+          releaseTitle: data.releaseTitle || '',
+          dateRange: data.dateRange || '',
+          createdAt: data.createdAt || '',
+          heroArtwork: data.heroArtwork || ''
+        };
+      });
+    } else {
+      const files = fs.readdirSync(REPORTS_DIR).filter(f => f.endsWith('.json'));
+      reportsList = files.map(file => {
+        const data = JSON.parse(fs.readFileSync(path.join(REPORTS_DIR, file), 'utf-8'));
+        return {
+          id: data.id,
+          artistName: data.artistName || '',
+          releaseTitle: data.releaseTitle || '',
+          dateRange: data.dateRange || '',
+          createdAt: data.createdAt || '',
+          heroArtwork: data.heroArtwork || ''
+        };
+      });
+    }
     
     // Filter by search query if provided
     if (q) {
@@ -605,28 +681,42 @@ app.get('/api/reports', (req, res) => {
 });
 
 // Update report
-app.put('/api/reports/:id', (req, res) => {
+app.put('/api/reports/:id', async (req, res) => {
   const { id } = req.params;
   if (!isValidReportId(id)) return res.status(400).json({ error: 'Invalid report ID' });
-  const reportPath = path.join(REPORTS_DIR, `${id}.json`);
   
-  if (!fs.existsSync(reportPath)) {
-    return res.status(404).json({ error: 'Report not found' });
+  try {
+    let existingData;
+    if (USE_R2) {
+      const result = await r2Get(`reports/${id}.json`);
+      if (!result) return res.status(404).json({ error: 'Report not found' });
+      existingData = JSON.parse(result.body.toString('utf-8'));
+    } else {
+      const reportPath = path.join(REPORTS_DIR, `${id}.json`);
+      if (!fs.existsSync(reportPath)) return res.status(404).json({ error: 'Report not found' });
+      existingData = JSON.parse(fs.readFileSync(reportPath, 'utf-8'));
+    }
+    
+    const updatedData = {
+      ...existingData,
+      ...req.body,
+      id,
+      createdAt: existingData.createdAt,
+      updatedAt: new Date().toISOString()
+    };
+    
+    const json = JSON.stringify(updatedData, null, 2);
+    if (USE_R2) {
+      await r2Put(`reports/${id}.json`, json, 'application/json');
+    } else {
+      fs.writeFileSync(path.join(REPORTS_DIR, `${id}.json`), json);
+    }
+    reports.set(id, updatedData);
+    res.json({ id, url: `/report/${id}` });
+  } catch (error) {
+    console.error('Error updating report:', error);
+    res.status(500).json({ error: error.message });
   }
-  
-  const existingData = JSON.parse(fs.readFileSync(reportPath, 'utf-8'));
-  const updatedData = {
-    ...existingData,
-    ...req.body,
-    id, // Preserve original ID
-    createdAt: existingData.createdAt, // Preserve original creation date
-    updatedAt: new Date().toISOString()
-  };
-  
-  reports.set(id, updatedData);
-  fs.writeFileSync(reportPath, JSON.stringify(updatedData, null, 2));
-  
-  res.json({ id, url: `/report/${id}` });
 });
 
 // Manual backup trigger (auth-protected)
@@ -641,19 +731,26 @@ app.post('/api/backup', async (req, res) => {
 });
 
 // Delete report
-app.delete('/api/reports/:id', (req, res) => {
+app.delete('/api/reports/:id', async (req, res) => {
   const { id } = req.params;
   if (!isValidReportId(id)) return res.status(400).json({ error: 'Invalid report ID' });
-  const reportPath = path.join(REPORTS_DIR, `${id}.json`);
   
-  if (!fs.existsSync(reportPath)) {
-    return res.status(404).json({ error: 'Report not found' });
+  try {
+    if (USE_R2) {
+      const result = await r2Get(`reports/${id}.json`);
+      if (!result) return res.status(404).json({ error: 'Report not found' });
+      await r2Delete(`reports/${id}.json`);
+    } else {
+      const reportPath = path.join(REPORTS_DIR, `${id}.json`);
+      if (!fs.existsSync(reportPath)) return res.status(404).json({ error: 'Report not found' });
+      fs.unlinkSync(reportPath);
+    }
+    reports.delete(id);
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error deleting report:', error);
+    res.status(500).json({ error: error.message });
   }
-  
-  fs.unlinkSync(reportPath);
-  reports.delete(id);
-  
-  res.json({ success: true });
 });
 
 // Feature.fm scraper function
@@ -861,7 +958,11 @@ async function scrapeFeatureFm(url) {
     // Take full page screenshot
     const screenshotBuffer = await page.screenshot({ fullPage: true });
     const screenshotFilename = `ffm-${Date.now()}.png`;
-    fs.writeFileSync(path.join(UPLOADS_DIR, screenshotFilename), screenshotBuffer);
+    if (USE_R2) {
+      await r2Put(`uploads/${screenshotFilename}`, screenshotBuffer, 'image/png');
+    } else {
+      fs.writeFileSync(path.join(UPLOADS_DIR, screenshotFilename), screenshotBuffer);
+    }
     data.screenshot = `/uploads/${screenshotFilename}`;
     
     await browser.close();
@@ -986,7 +1087,11 @@ async function scrapeArticle(url) {
     // Take screenshot of the article for fallback
     const screenshotBuffer = await page.screenshot({ type: 'png', clip: { x: 0, y: 0, width: 1400, height: 800 } });
     const screenshotFilename = `article-${Date.now()}.png`;
-    fs.writeFileSync(path.join(UPLOADS_DIR, screenshotFilename), screenshotBuffer);
+    if (USE_R2) {
+      await r2Put(`uploads/${screenshotFilename}`, screenshotBuffer, 'image/png');
+    } else {
+      fs.writeFileSync(path.join(UPLOADS_DIR, screenshotFilename), screenshotBuffer);
+    }
     data.screenshot = `/uploads/${screenshotFilename}`;
     
     await browser.close();
