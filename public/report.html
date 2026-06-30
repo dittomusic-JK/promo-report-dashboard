@@ -966,6 +966,18 @@
       <div class="metrics-grid" id="playlistStats"></div>
     </section>
     
+    <!-- Feedback Forms -->
+    <section id="feedback" class="hidden" style="padding:60px 40px; background:linear-gradient(135deg, rgba(246,71,128,0.08) 0%, var(--gunmetal) 100%);">
+      <div class="section-header">
+        <span class="section-badge">Feedback</span>
+        <h2 class="section-title">We'd Love Your Feedback</h2>
+        <p class="section-subtitle">Help us improve our campaigns by sharing your thoughts</p>
+      </div>
+      <div id="feedbackLinks" style="display:flex; gap:20px; justify-content:center; flex-wrap:wrap; max-width:700px; margin:0 auto;"></div>
+    </section>
+    
+    <div class="section-divider"></div>
+    
     <!-- Database Links -->
     <section id="databases" class="databases-section">
       <div class="section-header">
@@ -1207,6 +1219,20 @@
         document.getElementById('playlistStats').innerHTML = `
           <div class="metric-card"><div class="metric-value">${data.playlists.length}</div><div class="metric-label">Total Playlists</div></div>
         `;
+      }
+      
+      // Feedback forms
+      const fb = data.feedbackForms || {};
+      if (fb.artist || fb.manager) {
+        document.getElementById('feedback').classList.remove('hidden');
+        let html = '';
+        if (fb.artist) {
+          html += `<a href="https://docs.google.com/forms/d/e/1FAIpQLSecPtMobZrovhq3R3u9YJpZzMpAWlLGKS76K7c-kY9EHj0fSA/viewform" target="_blank" class="btn btn-pink" style="padding:16px 32px; font-size:14px;">Artist Feedback Survey</a>`;
+        }
+        if (fb.manager) {
+          html += `<a href="https://docs.google.com/forms/d/e/1FAIpQLSeCfCFAqNQS6z52k85qbXP9nQU-dehXErrZr2KmzLaZ96P1xg/viewform" target="_blank" class="btn btn-yellow" style="padding:16px 32px; font-size:14px;">Manager Feedback Survey</a>`;
+        }
+        document.getElementById('feedbackLinks').innerHTML = html;
       }
     }
     

@@ -599,14 +599,14 @@ app.post('/api/reports', async (req, res) => {
   const {
     artistName, releaseTitle, dateRange, heroArtwork, heroArtworkBlurred, smartLink,
     sectionVisibility, analytics, prPlacements, playlists,
-    totalPlaylists, spotifyAudience, surveyUrl, blogDatabaseUrl
+    totalPlaylists, spotifyAudience, feedbackForms
   } = req.body;
   const reportData = {
     id: reportId,
     createdAt: new Date().toISOString(),
     artistName, releaseTitle, dateRange, heroArtwork, heroArtworkBlurred, smartLink,
     sectionVisibility, analytics, prPlacements, playlists,
-    totalPlaylists, spotifyAudience, surveyUrl, blogDatabaseUrl
+    totalPlaylists, spotifyAudience, feedbackForms
   };
   
   try {

@@ -737,21 +737,34 @@
         </div>
       </div>
       
-      <!-- Section 5: Survey Link -->
+      <!-- Section 5: Feedback Forms -->
       <div class="section">
         <div class="section-header">
           <div class="section-number">5</div>
-          <h2>Survey & Links</h2>
+          <h2>Feedback Forms</h2>
         </div>
+        <p style="color: #aaaacc; font-size: 13px; margin-bottom: 20px;">Toggle on to include feedback forms in the client report</p>
         
-        <div class="row">
-          <div class="form-group">
-            <label>Feedback Survey URL</label>
-            <input type="url" name="surveyUrl" placeholder="https://...">
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 20px; background:var(--gunmetal); border-radius:10px; border:1px solid rgba(255,255,255,0.1);">
+            <div>
+              <div style="font-weight:600; font-size:14px;">Artist Feedback Survey</div>
+              <div style="color:rgba(255,255,255,0.4); font-size:12px; margin-top:2px;">Ask the artist for campaign feedback</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="toggleFeedbackArtist">
+              <span class="toggle-slider"></span>
+            </label>
           </div>
-          <div class="form-group">
-            <label>Blog Contact Database URL</label>
-            <input type="url" name="blogDatabaseUrl" placeholder="https://...">
+          <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 20px; background:var(--gunmetal); border-radius:10px; border:1px solid rgba(255,255,255,0.1);">
+            <div>
+              <div style="font-weight:600; font-size:14px;">Manager Feedback Survey</div>
+              <div style="color:rgba(255,255,255,0.4); font-size:12px; margin-top:2px;">Ask the manager/label for campaign feedback</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="toggleFeedbackManager">
+              <span class="toggle-slider"></span>
+            </label>
           </div>
         </div>
       </div>
@@ -1211,6 +1224,12 @@
             });
           }
           
+          // Feedback form toggles
+          if (report.feedbackForms) {
+            if (report.feedbackForms.artist) document.getElementById('toggleFeedbackArtist').checked = true;
+            if (report.feedbackForms.manager) document.getElementById('toggleFeedbackManager').checked = true;
+          }
+          
           // Hero artwork
           if (report.heroArtwork) {
             heroArtwork = report.heroArtwork;
@@ -1348,8 +1367,10 @@
         playlists: [],
         totalPlaylists: formData.get('totalPlaylists'),
         spotifyAudience: formData.get('spotifyAudience'),
-        surveyUrl: formData.get('surveyUrl'),
-        blogDatabaseUrl: formData.get('blogDatabaseUrl')
+        feedbackForms: {
+          artist: document.getElementById('toggleFeedbackArtist').checked,
+          manager: document.getElementById('toggleFeedbackManager').checked
+        }
       };
       
       // Collect PR placements from fetched data (dynamic count)
