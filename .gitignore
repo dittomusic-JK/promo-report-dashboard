@@ -4,3 +4,4 @@ uploads/
 *.log
 .env
 data/backups_tmp/
+data/

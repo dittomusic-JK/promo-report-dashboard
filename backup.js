@@ -3,7 +3,7 @@
 /**
  * Backup script for Promo Report Dashboard
  *
- * Archives reports/ and uploads/ into a timestamped .tar.gz and uploads to an
+ * Archives reports/, handbooks/, handbook-config/ and uploads/ into a timestamped .tar.gz and uploads to an
  * S3-compatible bucket. Retains the last N backups (default 30).
  *
  * Required env vars:
@@ -31,6 +31,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = process.env.NODE_ENV === 'production' ? '/data' : path.join(__dirname, 'data');
 const REPORTS_DIR = path.join(DATA_DIR, 'reports');
 const UPLOADS_DIR = path.join(DATA_DIR, 'uploads');
+const HANDBOOKS_DIR = path.join(DATA_DIR, 'handbooks');
+const HANDBOOK_CONFIG_DIR = path.join(DATA_DIR, 'handbook-config');
 const TMP_DIR = path.join(DATA_DIR, 'backups_tmp');
 
 const S3_BUCKET = process.env.BACKUP_S3_BUCKET;
@@ -267,6 +269,8 @@ async function runBackup() {
     const dirs = [];
     if (fs.existsSync(REPORTS_DIR)) dirs.push('reports');
     if (fs.existsSync(UPLOADS_DIR)) dirs.push('uploads');
+    if (fs.existsSync(HANDBOOKS_DIR)) dirs.push('handbooks');
+    if (fs.existsSync(HANDBOOK_CONFIG_DIR)) dirs.push('handbook-config');
 
     execSync(`tar -czf "${archivePath}" -C "${DATA_DIR}" ${dirs.join(' ')}`, { stdio: 'pipe' });
 

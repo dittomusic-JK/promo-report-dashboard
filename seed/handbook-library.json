@@ -1,0 +1,1040 @@
+{
+ "updatedAt": "2026-09-09",
+ "ideas": [
+  {
+   "id": "live-photos-before-an-ig-live",
+   "title": "Live photos (before an IG Live)",
+   "format": "Carousel",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "live",
+   "body": "Post a Carousel of photos from a previous live performance, building momentum for your IG Live tomorrow! This is a great opportunity to show your fans what to expect tomorrow for your live. In your caption, guide your audience to the smartlink in your bio to listen to your EP."
+  },
+  {
+   "id": "live-video",
+   "title": "Live Video",
+   "format": "Feed",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "live",
+   "body": "Post Live footage of you performing your release song to an audience. Tag the venue involved and any other musicians you were performing with at the time. Ask fans where they want to see you perform next."
+  },
+  {
+   "id": "live-performance",
+   "title": "Live Performance",
+   "format": "Live",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "live",
+   "body": "Perform your EP to your audience on IG Live, and make sure you save it so that you can share it to your main feed so that fans can rewatch. Organise to collaborate and include other performers if you can; put on a memorable show for your fans!"
+  },
+  {
+   "id": "live-photos",
+   "title": "Live Photos",
+   "format": "Carousel",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "live",
+   "body": "Post a Carousel of photos of your last live performances. In your caption ask your fans where they would like to see you play next! Reply to these comments to make sure you’re engaging with your fans. Use this as an opportunity to tell your audience that you will be going IG Live tomorrow to peform songs off {release}!"
+  },
+  {
+   "id": "ig-live-listening-party",
+   "title": "IG Live Listening Party",
+   "format": "Live",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "live",
+   "body": "Go IG Live to play {release}! This is a great opportunity to interact directly with your fans, inviting audience members to join you in your Livestream to discuss the release and your creative process. This will help maintain the hype you have created, and will give your fans the opportunity to interact with you directly."
+  },
+  {
+   "id": "ig-live-discussion",
+   "title": "IG Live Discussion",
+   "format": "Live",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "live",
+   "body": "Go IG Live for a release discussion with your special guests and fans! Speak with those who are involved with your creative process to discuss the inspiration for your music with you! You can go into further detail about creating the release, from the meaning behind the lyrics to the studio experience!"
+  },
+  {
+   "id": "pre-save-party",
+   "title": "Pre-Save Party",
+   "format": "Live",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "pre",
+   "category": "live",
+   "body": "Go IG Live for a pre-save party! The first ten pre-saves from your fans during the live stream might be able to request a song for you to play live/acoustically! Get creative with your setting and invite fans on to collab with you! This idea can really gather your fan community ahead of the release!"
+  },
+  {
+   "id": "ig-live-walkthrough",
+   "title": "IG Live Walkthrough",
+   "format": "Live",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "live",
+   "body": "Go IG Live from your home studio, inviting special guests to talk through your release with you. Show your audience never before seen behind-the-scenes footage of your video, and ask your fans what they thought of {release}. Your audience will really appreciate your interaction!"
+  },
+  {
+   "id": "ig-live-dj-set",
+   "title": "IG Live DJ Set",
+   "format": "Live",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "live",
+   "body": "Go IG Live from your home studio, performing a DJ set for your fans! Play {release}, as well as any other tracks that perhaps inspired the release. You can invite other performers to join you, and interact with your audience during the livestream. Your fans will love the interaction!"
+  },
+  {
+   "id": "reshare-your-live-footage",
+   "title": "Reshare your Live Footage",
+   "format": "Story",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "live",
+   "body": "Reshare any fan stories of your live performance yesterday on your own story. In each video, guide fans to your smartlink. This is a great way to connect with potential gig attendees!"
+  },
+  {
+   "id": "ig-live-game",
+   "title": "IG Live game",
+   "format": "Live",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "live",
+   "body": "Go live with a friend, collaborator, or fan and play a “Heads Up!”-style guessing game using the album’s song titles. One person gives clues without saying the title, while the other tries to guess the song, creating a fun, engaging way to introduce tracks from {release} and encourage fans to explore"
+  },
+  {
+   "id": "happy-release-day",
+   "title": "Happy Release Day",
+   "format": "Feed",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "rel",
+   "category": "release",
+   "body": "Share a snippet to your feed, announcing that your release is now out! Thank everyone that contributed to the making of it, tagging them in your post. Share this to your story, and remember to add to your Highlight. It’s important to have this announcement in as many places as possible!"
+  },
+  {
+   "id": "reshare-fan-stories",
+   "title": "Reshare fan stories",
+   "format": "Story",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "rel",
+   "category": "release",
+   "body": "Reshare any fan stories or reactions from your release on your own story. In each video, guide fans to your smartlink. This is a great way to connect with your fans!"
+  },
+  {
+   "id": "video-response",
+   "title": "Video Response",
+   "format": "Reel",
+   "platforms": [
+    "ig",
+    "tt"
+   ],
+   "phase": "post",
+   "category": "video",
+   "body": "Take a short video for your feed thanking your fans for interest and support of {release}. Direct them to the smartlink in bio to listen, and encourage your audience to comment and share! It’s important to engage with your audience, and showing you have them in mind will increase your support for the release."
+  },
+  {
+   "id": "snippet-on-reels",
+   "title": "Snippet on Reels",
+   "format": "Reel",
+   "platforms": [
+    "ig",
+    "tt"
+   ],
+   "phase": "pre",
+   "category": "video",
+   "body": "Post a snippet of one of your tracks on Reels, reminding everyone that your album is out next week! It’s good to have it in as many places as possible, particularly with a strong visual aesthetic. In your caption, announce that you will be hosting a live listening party on Tuesday next week!"
+  },
+  {
+   "id": "teaser-snippet",
+   "title": "Teaser Snippet",
+   "format": "Reel",
+   "platforms": [
+    "ig",
+    "tt"
+   ],
+   "phase": "pre",
+   "category": "video",
+   "body": "Post a video snippet to your feed of {release}. It is important to have this in as many places as possible! In your caption direct your audience to the smartlink in your bio to pre-save, reminding them that {release} is out this week!"
+  },
+  {
+   "id": "freestyle-reel",
+   "title": "Freestyle Reel",
+   "format": "Reel",
+   "platforms": [
+    "ig",
+    "tt"
+   ],
+   "phase": "any",
+   "category": "video",
+   "body": "Post a video of a freestyle to Reels, to demonstrate your talents to your fans! Make sure you take a look at the most relevant hashtags to your music and include them in the caption of your Reel. This can really help with reaching new fans!"
+  },
+  {
+   "id": "spoken-word-reel",
+   "title": "Spoken word reel",
+   "format": "Reel",
+   "platforms": [
+    "ig",
+    "tt"
+   ],
+   "phase": "any",
+   "category": "video",
+   "body": "Post a spoken word piece to Reels, performing a verse or a poem that connects to {release}. Add the most relevant hashtags in the caption to help reach new fans, and tell them where to find the full track."
+  },
+  {
+   "id": "bts-video",
+   "title": "BTS Video",
+   "format": "Reel",
+   "platforms": [
+    "ig",
+    "tt"
+   ],
+   "phase": "any",
+   "category": "video",
+   "body": "Post a video to your feed giving your fans a behind-the-scenes insight from the making of {release}. Show them how you created the release, how you worked with your team and equipment, and show the best outtakes! Your fans will appreciate the insight."
+  },
+  {
+   "id": "artwork-post",
+   "title": "Artwork Post",
+   "format": "Feed",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "photo",
+   "body": "Post your artwork to your feed, directing your fans to your smartlink in your bio. Share this post to your story, adding it to your Highlight. Adding posts to your Highlights means you’re making it easier for your fans to find your music, but also keeps all of the information regarding the EP in a very visible place on your profile."
+  },
+  {
+   "id": "artwork-reveal",
+   "title": "Artwork Reveal",
+   "format": "Feed",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "pre",
+   "category": "photo",
+   "body": "Post the artwork for your new single {release} to your feed, announcing that it will be available to listen to on all major platforms next week! Add this to your stories and use the Countdown tool to create some hype, adding this to your Highlights. Direct your audience to the smartlink in your bio to pre-save."
+  },
+  {
+   "id": "playlisting-thank-you",
+   "title": "Playlisting thank-you",
+   "format": "Carousel",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "post",
+   "category": "photo",
+   "body": "Post a Carousel of playlist covers to your feed thanking curators for adding songs from {release} to their Spotify playlists! Tag the curators that featured you, asking your fans to save the playlists and your post. This links you to independent curators, and your fans will see that your music is being heard!"
+  },
+  {
+   "id": "the-journey",
+   "title": "The Journey",
+   "format": "Carousel",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "photo",
+   "body": "Post a carousel of photos that document your music journey, from the beginning to where you are now. It’s always good to reflect on how far you’ve come and your audience will appreciate this insight, too! In your caption, encourage your audience to like/comment/share this post."
+  },
+  {
+   "id": "create-a-playlist",
+   "title": "Create A Playlist",
+   "format": "Feed",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "photo",
+   "body": "Create a Spotify playlist of music from artists that have inspired your album. Let your audience know you’ve created a playlist and tag the featured artists. Remember to add tracks off {release} to the top, and direct your fans to the smartlink in your bio to listen now!"
+  },
+  {
+   "id": "your-goals-this-year",
+   "title": "Your goals this year",
+   "format": "Story",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "seasonal",
+   "body": "Post a checklist to your stories using ‘Create’, letting your fans know what your goals are as an artist for the remainder of {year}! This helps your fans stay on board with your artistic journey as your move forward this year. Be sure to respond to any DM’s following this post!"
+  },
+  {
+   "id": "story-post",
+   "title": "Story Post",
+   "format": "Story",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "story",
+   "body": "Post a Poll to your story asking your fans if you should drop something new next month! This will be a great way to build some hype for a new project, but keep your fans engaged. After the poll has had votes, announce that you will be teasing something new on Thursday!"
+  },
+  {
+   "id": "shout-out",
+   "title": "Shout Out",
+   "format": "Story",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "story",
+   "body": "Plan for a music influencer shout out to be posted today! DM a close music contact who will create a video shout out to promote your EP. Be sure to re-post the video and tag those involved with your release! Share far and wide, and if you have further influencer contacts, ask them to also shout out that your EP is out now!"
+  },
+  {
+   "id": "spotify-crossover",
+   "title": "Spotify Crossover",
+   "format": "Feed",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "assets",
+   "body": "Use a Spotify crossover photo to promote your release. This consists of a press shot/release artwork and the Spotify logo. Make sure the link in your bio takes people to your single to listen! We can make one of these images for you."
+  },
+  {
+   "id": "spotify-canvas",
+   "title": "Spotify Canvas",
+   "format": "Story",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "assets",
+   "body": "Share your track to your Stories with Spotify Canvas! Designed to catch the attention of your audience as they go through Stories, Canvas previews your music video along with your track artwork and looks great when fans share too! We can create a Canvas asset for you!"
+  },
+  {
+   "id": "lyric-graphic",
+   "title": "Lyric Graphic",
+   "format": "Feed",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "assets",
+   "body": "Post a lyric graphic of a memorable lyric from the lead track off {release} to your feed. In your caption, ask your fans to tag someone they’re reminded of in the comments! Reply to these comments to make sure you’re engaging with your fans."
+  },
+  {
+   "id": "press-features",
+   "title": "Press Features",
+   "format": "Story",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "post",
+   "category": "assets",
+   "body": "Post to your stories a mobile scroll through of your press features! Alternatively, you could post a collection of clippings to your feed to display which publications are writing about your music! Be sure to tag the publications and don’t forget to post your press graphics next week!"
+  },
+  {
+   "id": "music-video-stills",
+   "title": "Music Video Stills",
+   "format": "Carousel",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "video",
+   "body": "Post a Carousel of high quality music video stills, and ask your fans which part of the video they enjoyed the most! This will encourage your audience to check out your video, and you can post this to remind them to listen and watch your single using the smartlink in your bio! Reply to all comments and messages."
+  },
+  {
+   "id": "lyric-video",
+   "title": "Lyric Video",
+   "format": "Feed",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "video",
+   "body": "Post an easy-to-read lyric video for {release} to IGTV! Alternatively, we can create a set of lyric caption graphics for this track! These would be sizeable for Story posts and fitting with the theme of your IG to help your audience engage with your lyrics.."
+  },
+  {
+   "id": "youtube-crossover",
+   "title": "YouTube Crossover",
+   "format": "Feed",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "video",
+   "body": "Use a YouTube crossover photo to promote your release. This consists of a press shot/ release artwork and the YouTube logo. We can make one of these images for you. In your caption, encourage your fans to like, comment and share!"
+  },
+  {
+   "id": "creative-reels",
+   "title": "Creative reels",
+   "format": "Reel",
+   "platforms": [
+    "ig",
+    "tt"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Post a creative IG Reel using your new music from the IG music library! Collaborate with somebody you know in your Reel who will share it out to their followers, meaning your music travels further! Invite fans to Remix your Reel or tag you in their IG Reels featuring your new music, and re-post your favourites!"
+  },
+  {
+   "id": "cover-competition",
+   "title": "Cover Competition",
+   "format": "Reel",
+   "platforms": [
+    "ig",
+    "tt"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Post a video of yourself to your feed, calling all of your fans to get involved in a cover competition of your single, and ask fans to tag you in their video covers of the track. Pick a winner, and maybe give them a physical copy of the track as a prize - it’s entirely up to you!"
+  },
+  {
+   "id": "track-vs-track",
+   "title": "Track Vs Track",
+   "format": "Story",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "post",
+   "category": "misc",
+   "body": "Share to your story using the Poll tool, asking your fans to pick which track they enjoyed the most off the album {release}. It’s always valuable to hear your audience’s opinions, and fans will appreciate your engagement. Direct them to the smartlink in your bio to listen to the album!"
+  },
+  {
+   "id": "share-your-process",
+   "title": "Share your Process",
+   "format": "Reel",
+   "platforms": [
+    "ig",
+    "tt"
+   ],
+   "phase": "pre",
+   "category": "misc",
+   "body": "Post a reel called “How I make my songs”,you can demonstrate how you wrote your upcoming single. Make sure you use the most engaging part of the song! End the reel by saying that your single {release} is coming this Wednesday!"
+  },
+  {
+   "id": "promotional-story",
+   "title": "Promotional Story",
+   "format": "Story",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Make a story of you singing along to your song and wearing your merch. You can use the emojis slider to get your fans interacting with the story. Make sure to remind your fans that {release} is out on all major streaming platforms! Your fans will love to see you enjoying your own track!"
+  },
+  {
+   "id": "transitional-video",
+   "title": "Transitional Video",
+   "format": "Reel",
+   "platforms": [
+    "ig",
+    "tt"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Make a post with some footage of you recording the track and then transition to a live performance of it. In the caption remind everyone that the song is out now! Your fans will love to see the journey behind the song!"
+  },
+  {
+   "id": "start-a-routine",
+   "title": "Start a Routine",
+   "format": "Story",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "On your stories explain that everyday (or every other day etc) you will be giving some insight behind each of your song in the stories. This involves adding the tracks via the IG sticker feature and adding a few sentences about the song. Think Spotify’s Storyline feature. Your fans will love getting to know more about the album!"
+  },
+  {
+   "id": "personalise-it-for-the-fans",
+   "title": "Personalise it for the Fans",
+   "format": "Story",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Make a short quiz and put it up on your story. Let them know that if they do the quiz, they can see what track from {release} best suits them! Alternatively, ask them to dm you the word ‘mytrack’ to get their track. Your fans will love this personalised touch!"
+  },
+  {
+   "id": "swap-your-account",
+   "title": "Swap your Account",
+   "format": "Feed",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Ask a fellow musician or collective if you can takeover each other’s accounts for a day. Make sure you let people know who you are via the account’s stories and your upcoming release. You can both host an IG Live performing your music. This is another great way to promote the release to a new audience."
+  },
+  {
+   "id": "day-in-the-life",
+   "title": "Day in the Life",
+   "format": "Reel",
+   "platforms": [
+    "ig",
+    "tt"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Make a video showcasing a day in the life of {artist} and use a track from your album throughout. In the caption remind your fans that the album is out now to enjoy! Getting more personal with your audience will create a stronger bond with them"
+  },
+  {
+   "id": "story-poll",
+   "title": "Story Poll",
+   "format": "Story",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Post a selfie to your Story thanking your fans for joining in your Live and for supporting your release! Follow up with a Poll asking your fans if you should drop something new soon. After the poll has had votes, announce that you will be teasing something soon."
+  },
+  {
+   "id": "artist-background",
+   "title": "Artist Background",
+   "format": "Feed",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Create a post using one of your press shots and post it to your feed. In the caption, provide a small bio about yourself: where the name came from, what inspired you to begin your artist journey, your favourite artists etc. Your audience will love to see insight into your personal background!"
+  },
+  {
+   "id": "reflect-on-your-year",
+   "title": "Reflect on your year",
+   "format": "Reel",
+   "platforms": [
+    "ig",
+    "tt"
+   ],
+   "phase": "any",
+   "category": "seasonal",
+   "body": "Now that the year is coming to a close, it’s time to reflect on how far you’ve come! Share a reel of your proudest achievements in your career this year, from your first studio session to your latest feature or streaming milestone. Be as creative as you’d like, you could even adapt the Spotify Wrapped style!"
+  },
+  {
+   "id": "fan-appreciation-post",
+   "title": "Fan Appreciation Post",
+   "format": "Carousel",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Post a press shot of you from your days as part of your previous band and, on the next slide, your most recent press shot. In the caption, say a brief thank you to all the long term fans who have been with from the start and a welcome to all the new members of your social media audience!"
+  },
+  {
+   "id": "new-years-eve-party",
+   "title": "New Years Eve Party",
+   "format": "Live",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "seasonal",
+   "body": "Go IG Live and tell your fans to join in at 11 pm so you can all count down to the new year together. Be sure to have your release playing in the background along with a range of songs/artists that inspire you. Answer audience questions, thank them for all their support and countdown to the New Year together!"
+  },
+  {
+   "id": "gig-calendar",
+   "title": "Gig Calendar",
+   "format": "Feed",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Utilising the same format as your Social Handbook, create a calendar for the upcoming weeks or month. Fill in each space where you have a gig with the location, start date and ticket link. Pin this post to your Instagram wall so your audience always know where to look for your upcoming shows."
+  },
+  {
+   "id": "create-a-highlight",
+   "title": "Create a Highlight",
+   "format": "Story",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Make a story about your release, and create a highlight named {release}. Any stories in relation to your release can then be saved to the highlight dedicated to this release. New page followers will easily see what your latest release is and where to find it."
+  },
+  {
+   "id": "lyric-story",
+   "title": "Lyric Story",
+   "format": "Story",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "On your stories, create a short lyric video and use your song in the background. Use the most engaging parts of the song to engage your listeners. Giving your fans a look into the lyrics is a nice way to get more insight into the meaning behind the song!"
+  },
+  {
+   "id": "thank-you-post",
+   "title": "Thank You Post",
+   "format": "Feed",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "post",
+   "category": "misc",
+   "body": "Share the artwork of your track or a press shot. In the caption thank everyone for being involved and listening to {release}. You can ask your fans to check out the track and let you know what they think of the song. This is a nice way to show appreciation for your fans and wrap up the campaign."
+  },
+  {
+   "id": "anniversary-post",
+   "title": "Anniversary Post",
+   "format": "Story",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "post",
+   "category": "misc",
+   "body": "Post on your story with the smartlink to the song celebrating a month since its release! Thank your followers for all their support so far. Be sure to remind your audience to keep streaming the song or go listen if they haven’t yet!"
+  },
+  {
+   "id": "guess-the-instrument",
+   "title": "Guess The Instrument",
+   "format": "Reel",
+   "platforms": [
+    "ig",
+    "tt"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Film a video of each band member playing an instrument (I.e. guitar) and then ask the audience to guess who they think plays that instrument in the band e.g. ‘guess the guitarist!’ This is a fun way to engage your audience whilst also promoting yourself as an artist."
+  },
+  {
+   "id": "this-or-that",
+   "title": "This or That",
+   "format": "Reel",
+   "platforms": [
+    "ig",
+    "tt"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Film yourself listening to some of your biggest artist inspirations, picking two particular songs back to back to pit against each other in a ‘this or that’ vs. format. You can do several artists in one video or do each artist separately - it’s up to you! Be sure to ask your audience which they prefer in the caption."
+  },
+  {
+   "id": "favourite-songs-playlist",
+   "title": "Favourite Songs Playlist",
+   "format": "Story",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Create a collaborative playlist on Spotify and add some of your favourite songs. Share this playlist to your story and ask your followers to add their favourite tracks to the playlist. You could even film yourself reacting to some of the songs on the playlist and make it a weekly routine to make sure you don’t miss any new additions!"
+  },
+  {
+   "id": "write-a-song-with-me",
+   "title": "Write A Song With Me",
+   "format": "Story",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Invite your audience on your songwriting journey! Using the poll feature on Instagram, ask your audience a set of questions which will structure a new song you’re working on (e.g. fast or slow, major or minor.) You could even ask for themes or lyrics. See what you create using your followers suggestions!"
+  },
+  {
+   "id": "ad-assets",
+   "title": "Ad Assets",
+   "format": "Feed",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Post your ad assets to your Instagram feed and remind your fans to stream your new release. We will provide you with these ad assets at end of the second week of your PROMO campaign."
+  },
+  {
+   "id": "behindthesong-reel",
+   "title": "#BehindTheSong reel",
+   "format": "Reel",
+   "platforms": [
+    "tt",
+    "ig"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Post a reel called ‘BehindTheSong’! #BehindTheSong is being pushed by TikTok and Instagram - show the BTS of the creation of your release, or the process of writing it. Your audience will appreciate seeing how you make your music!"
+  },
+  {
+   "id": "merch-competition",
+   "title": "Merch Competition",
+   "format": "Story",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Announce on your Instagram Story that you will be running a competition to win a piece of free merch from yourselves! To enter the competition, tell your audience they have to add {release} to their playlist and to send you proof. This will not only build hype around your release but will also promote your merchandise."
+  },
+  {
+   "id": "merch-example",
+   "title": "Merch Example",
+   "format": "Feed",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Post a picture to your feed showcasing all the different items of merchandise that you have. Be sure to let the audience know where to buy it and your merch pricing in the caption."
+  },
+  {
+   "id": "announce-merch-winner",
+   "title": "Announce Merch Winner",
+   "format": "Story",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Pick a person at random who entered your merch competition and announce on your story who the winner is. Be sure to mention that your listeners can purchase your merchandise using the link you will provide in your bio, caption or on the story itself."
+  },
+  {
+   "id": "local-artist-shoutout",
+   "title": "Local Artist Shoutout",
+   "format": "Story",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Create a story post which lists some of your favourite, underground artists making inroads in the local scene. Be sure to tag their IG acounts so they can reshare your post to their stories and bring your music to a new fanbase. This will not only help connect with other musicians but also promote yourself!"
+  },
+  {
+   "id": "live-event-promo",
+   "title": "Live Event Promo",
+   "format": "Carousel",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Create a 2-picture carousel using the cover image as a press shot of yourself and the second image being the gig or event poster. Be sure to mention all the gig details in the caption as well as letting fans know that they can hear your new release live if they buy their ticket."
+  },
+  {
+   "id": "vinyl-promo-sale",
+   "title": "Vinyl promo sale",
+   "format": "Story",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Post a picture of the LP vinyl for this release to your IG story with the link for viewers to purchase it! Perhaps you could offer a returning discount for the first 10 purchases of the LP."
+  },
+  {
+   "id": "collaboration-posts",
+   "title": "Collaboration posts",
+   "format": "Feed",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Work with the artists who featured on {release} Share their stories, day-to-day activities etc. Collaborate with other social media influencers who resonate with your music genre. They can introduce your artists to new audiences and offer fresh content ideas."
+  },
+  {
+   "id": "ask-me-anything-about-the-project",
+   "title": "Ask me anything about the project",
+   "format": "Story",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Use the question sticker to invite an ‘Ask Me Anything’ about the project behind {release}, and offer some insight into its meaning. New followers get to know what you are about."
+  },
+  {
+   "id": "rehearsal-storyline-bands",
+   "title": "Rehearsal storyline (bands)",
+   "format": "Reel",
+   "platforms": [
+    "ig",
+    "tt"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Film yourself rehearsing as a band - if anything interesting happens, be sure to clip this section of the video. Add some captions and make a fun story out of your rehearsing antics! Your audience will love seeing a personable side to the band and it can help push your music to new audiences!"
+  },
+  {
+   "id": "christmas-cover",
+   "title": "Christmas cover",
+   "format": "Reel",
+   "platforms": [
+    "ig",
+    "tt"
+   ],
+   "phase": "any",
+   "category": "seasonal",
+   "body": "Record a video of yourself covering a famous Christmas hit and be sure to put your own twist on it; whether it be the genre, lyrics or a mash-up, make it your own! Tag the artist in the caption and make sure to use a range of Xmas hashtags!"
+  },
+  {
+   "id": "merry-christmas",
+   "title": "Merry Christmas",
+   "format": "Story",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "seasonal",
+   "body": "Be sure to wish all of your followers who celebrate a ‘Merry Christmas’ on your IG story with a press shot of yourself or a selfie in a Santa hat! Make it fun and let your audience know how grateful you are for all their support this year!"
+  },
+  {
+   "id": "nye-live-party",
+   "title": "NYE live party",
+   "format": "Live",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "seasonal",
+   "body": "Go live on IG at 11pm and perform a set of your songs for your Instagram audience. Take any questions, discuss your plans for the upcoming year and have a good time! Be sure to countdown to midnight with your audience and wish them all a Happy New Year!"
+  },
+  {
+   "id": "fan-duets-and-stitches",
+   "title": "Fan duets and stitches",
+   "format": "Reel",
+   "platforms": [
+    "tt",
+    "ig"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Record and post a live-performance version of your release making sure to leave space for other instruments or singers to add their own touch. Encourage your followers to duet/stitch video or an acoustic version of your track and put their own twist on it. Repost them to your Stories and feed!"
+  },
+  {
+   "id": "get-ready-with-me",
+   "title": "Get ready with me",
+   "format": "Reel",
+   "platforms": [
+    "ig",
+    "tt"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Make a “Get Ready With Me” (GRWM) video using your song as the audio and explore the preparation that occurs before a gig. These videos can offer an insight into your artist life and will boost your engagement while also drawing new listeners to your release."
+  },
+  {
+   "id": "ai-inspired-visuals",
+   "title": "AI-Inspired Visuals",
+   "format": "Feed",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Use an external AI to generate art/videos based on your song’s lyrics and maybe it’s genre/theme. Post the AI creation and ask your audience if they think the AI visuals truly captured the song’s essence."
+  },
+  {
+   "id": "artist-comparison",
+   "title": "Artist Comparison",
+   "format": "Carousel",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Post a mood board style carousel comparing your song to other artists/songs in the same genre. You could post small snippets of other artists’ tracks that sound similar to yourself. People love discovering new music this way!"
+  },
+  {
+   "id": "spotify-wrapped-style-graphic",
+   "title": "Spotify Wrapped Style Graphic",
+   "format": "Feed",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Using the data available on Spotify for artists, create a Spotify Wrapped-style stat post (e.g., “X streams in 24 hours!” or “Top city streaming my song is...”). Your followers will appreciate this insight into your audience demographics."
+  },
+  {
+   "id": "lyric-breakdown",
+   "title": "Lyric Breakdown",
+   "format": "Reel",
+   "platforms": [
+    "ig",
+    "tt"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Using the closed captions feature on IG, post a video of you lip-syncing your track and highlight a clever lyric, wordplay, or hidden reference in your song. Break it down for viewers either in the captions or with a short video explanation."
+  },
+  {
+   "id": "how-we-met-reel",
+   "title": "How we met reel",
+   "format": "Reel",
+   "platforms": [
+    "ig",
+    "tt"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Post a short reel to your feed of you and your collaborators explaining how you met and how this collaboration happened. You could even talk about what the song means to you individually and how you worked together in the studio!"
+  },
+  {
+   "id": "live-b2b-session",
+   "title": "Live B2B session",
+   "format": "Live",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Do a casual live B2B stream with another DJ/producer where you both play your own tracks, unreleased bits, and talk music as you go.T Thinkstudio hangout rather than a “performance” so it feels natural, avoids copyright issues, and still builds hype."
+  },
+  {
+   "id": "moodboard-post",
+   "title": "Moodboard post",
+   "format": "Carousel",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Create a Reel or Carousel with some images, inspirations, charaters etc. that you’d associate with {release}. This is a way of building a world around yur music that listeners can immerse themselves into."
+  },
+  {
+   "id": "learn-a-word-with-me",
+   "title": "Learn a word with me",
+   "format": "Reel",
+   "platforms": [
+    "ig",
+    "tt"
+   ],
+   "phase": "any",
+   "category": "misc",
+   "body": "Post short clips explaining a word, phrase or reference from a lyric in {release}, and ask followers to guess the meaning before revealing the answer."
+  },
+  {
+   "id": "create-a-playlist-2",
+   "title": "Create A Playlist",
+   "format": "Feed",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "pre",
+   "category": "presave",
+   "body": "Create a Spotify playlist of music from artists that have inspired {release}. Let your audience know you’ve created a playlist and tag the featured artists. Remember to add your release to the top, and direct your fans to the smartlink in your bio to pre-save now!"
+  },
+  {
+   "id": "artwork-reveal-2",
+   "title": "Artwork Reveal",
+   "format": "Feed",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "pre",
+   "category": "presave",
+   "body": "Post the artwork for {release} to your feed, announcing to your fans that it is out soon! Add this to your stories and your Highlights. Encourage your fans to like, comment and share, and reply to all comments on your post."
+  },
+  {
+   "id": "teaser-snippet-2",
+   "title": "Teaser Snippet",
+   "format": "Reel",
+   "platforms": [
+    "ig",
+    "tt"
+   ],
+   "phase": "pre",
+   "category": "presave",
+   "body": "Post a video snippet to your feed of the lead track off{release}, reminding your fans that it is out soon! It is important to have this in as many places as possible! Direct your audience to the smartlink in your bio to pre-save the release."
+  },
+  {
+   "id": "competition",
+   "title": "Competition",
+   "format": "Story",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "pre",
+   "category": "presave",
+   "body": "Ask your followers to pre-save your track, sending you a DM to confirm! The first 10 pre-saves can receive an exclusive preview to your track, or something to say Thankyou for their support! Your fans will love your direct engagement. Get Them Guessing…. In your stories, post an image relating to your track, ask your fans what they think the next track will be called. Use the quiz tool and create a multiple answer quiz for your fans to try! This is a fun way to get your fans engaged with this release."
+  },
+  {
+   "id": "presave-party",
+   "title": "PreSave Party",
+   "format": "Live",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "pre",
+   "category": "presave",
+   "body": "Let all your fans know you’ll be going live and at what time. Tell them to send song requests and perform them when you go live. Be sure to mention that the song is able to be pre-saved and the first 10 people to pre-save get to hear a snippet of your release early!"
+  },
+  {
+   "id": "ama",
+   "title": "AMA",
+   "format": "Story",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "pre",
+   "category": "presave",
+   "body": "Post a selfie or release image on your story, telling your fans you’ll be doing an ‘Ask Me Anything’ tonight on your story. Once you’ve posted the AMA, reply to every question with a short video reply - your fans will really appreciate the engagement. Ask fans what {release} means to them. Start The Countdown... Each day from today, post on your story with a press shot or still from the music video with the numbers counting down from 4 overlaid in the Instagram font of your choice. This will build suspense and anticipation for your release!"
+  },
+  {
+   "id": "trending-audio-your-niche",
+   "title": "Trending audio, your niche",
+   "format": "Reel",
+   "platforms": [
+    "tt"
+   ],
+   "phase": "any",
+   "category": "tiktok",
+   "body": "Find trending audios on TikTok and apply them to your own niche/genre (tip search for ‘trend alert’ to find new ones)"
+  },
+  {
+   "id": "cover-a-bigger-artist",
+   "title": "Cover a bigger artist",
+   "format": "Reel",
+   "platforms": [
+    "tt"
+   ],
+   "phase": "any",
+   "category": "tiktok",
+   "body": "Cover an artists song who’s slightly bigger than you and tag them, aim to try and get re-shared by them so your video gets seen by their audience"
+  },
+  {
+   "id": "copy-what-performs-in-your-genre",
+   "title": "Copy what performs in your genre",
+   "format": "Reel",
+   "platforms": [
+    "tt"
+   ],
+   "phase": "any",
+   "category": "tiktok",
+   "body": "In TikTok, search your genre, eg ‘indie rock’, and filter to see the best performing videos from the last month, copy those ideas into your own posting strategy"
+  },
+  {
+   "id": "behindthesong-on-tiktok",
+   "title": "#BehindTheSong on TikTok",
+   "format": "Reel",
+   "platforms": [
+    "tt"
+   ],
+   "phase": "any",
+   "category": "tiktok",
+   "body": "#BehindTheSong is being pushed by TikTok, show the BTS of the creation of one of your songs, or the process of writing it"
+  }
+ ]
+}

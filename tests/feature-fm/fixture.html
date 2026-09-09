@@ -1,0 +1,48 @@
+<!doctype html><html><head><style>
+body{font-family:sans-serif;margin:0;padding:20px;background:#f5f6fa}
+.card{background:#fff;border:1px solid #ddd;margin:20px 0}
+.hd{padding:14px;background:#f8f9fc;border-bottom:1px solid #eee;font-size:13px;letter-spacing:.5px}
+.row{display:flex;padding:10px 14px;border-top:1px solid #eee}.row span{flex:1}.row small{color:#888;margin-left:6px}
+.tot{display:flex;padding:14px}.tot div{flex:1;text-align:center}.tot b{display:block;font-size:20px}
+</style></head><body>
+<div class="top"><img src="https://imagestore.ffm.to/link/abc.jpeg" alt="artwork"><div><div>Materializing Dog</div><a href="https://ditto.fm/materializing-dog">https://ditto.fm/materializing-dog</a><span>INSIGHTS</span><span>CONVERSION</span></div></div>
+<div><button>Dec 21, 2025 - Jan 20, 2026</button></div>
+<div class="card"><div class="hd">TIMELINE</div>
+ <div class="tot"><div><b>957</b>Total Visits</div><div><b>854</b>Unique Users</div><div><b>885</b>Clicks to Service</div></div>
+ <svg width="800" height="200"><circle cx="50" cy="120" r="4"/><circle cx="50" cy="150" r="4"/><circle cx="120" cy="100" r="4"/><circle cx="120" cy="140" r="4"/><circle cx="190" cy="90" r="4"/><circle cx="190" cy="130" r="4"/></svg>
+</div>
+<div class="card"><div class="hd">CHANNELS</div>
+ <div class="row"><span>Channel</span><span>957 <small>Visits</small></span><span>3 <small>Song Previews</small></span><span>885 <small>Clicks To Service</small></span></div>
+ <div class="row"><span>Original</span><span>957 <small>100%</small></span><span>3 <small>100%</small></span><span>885 <small>100%</small></span></div>
+</div>
+<div class="card"><div class="hd">ACTIVITIES</div><div class="row"><span>Click here to learn how to track your traffic with activities</span></div></div>
+<div class="card"><div class="hd">REFERRALS</div>
+ <div class="row"><span>Referrer</span><span>957 <small>Visits</small></span><span>3 <small>Song Previews</small></span><span>885 <small>Clicks To Service</small></span></div>
+ <div class="row"><span>direct</span><span>912 <small>95.3%</small></span><span>2 <small>66.7%</small></span><span>753 <small>85.1%</small></span></div>
+ <div class="row"><span>instagram.com</span><span>18 <small>1.9%</small></span><span>0 <small>0%</small></span><span>8 <small>0.9%</small></span></div>
+ <div class="row"><span>facebook.com</span><span>17 <small>1.8%</small></span><span>0 <small>0%</small></span><span>4 <small>0.5%</small></span></div>
+ <div class="row"><span>ditto.fm</span><span>4 <small>0.4%</small></span><span>0 <small>0%</small></span><span>119 <small>13.4%</small></span></div>
+ <div class="row"><span>dashboard.dittomusic.com</span><span>4 <small>0.4%</small></span><span>0 <small>0%</small></span><span>0 <small>0%</small></span></div>
+ <div class="row"><span>console.feature.fm</span><span>1 <small>0.1%</small></span><span>0 <small>0%</small></span><span>0 <small>0%</small></span></div>
+ <div class="row"><span>android-app</span><span>1 <small>0.1%</small></span><span>1 <small>33.3%</small></span><span>1 <small>0.1%</small></span></div>
+</div>
+<div class="card"><div class="hd">CLICKS TO SERVICE</div>
+ <div class="row"><span>Spotify</span><span>879</span><span>99.3%</span></div>
+ <div class="row"><span>YouTube Music</span><span>2</span><span>0.2%</span></div>
+ <div class="row"><span>Amazon Music (Streaming)</span><span>2</span><span>0.2%</span></div>
+ <div class="row"><span>Pandora</span><span>1</span><span>0.1%</span></div>
+ <div class="row"><span>Custom Branding Logo</span><span>1</span><span>0.1%</span></div>
+</div>
+<div class="card"><div class="hd">DIRECT TRAFFIC</div><div class="row"><span>No data available</span></div></div>
+<div class="card"><div class="hd">COUNTRIES</div>
+ <div class="row"><span>Countries</span><span>957 <small>Visits</small></span><span>3 <small>Song Previews</small></span><span>885 <small>Clicks To Service</small></span></div>
+ <div class="row"><span>France</span><span>748 <small>78.2%</small></span><span>0 <small>0%</small></span><span>741 <small>83.7%</small></span></div>
+ <div class="row"><span>United States</span><span>49 <small>5.1%</small></span><span>2 <small>66.7%</small></span><span>14 <small>1.6%</small></span></div>
+ <div class="row"><span>Ireland</span><span>31 <small>3.2%</small></span><span>0 <small>0%</small></span><span>27 <small>3.1%</small></span></div>
+ <div class="row"><span>United Kingdom</span><span>27 <small>2.8%</small></span><span>0 <small>0%</small></span><span>8 <small>0.9%</small></span></div>
+</div>
+<div id="tip" style="position:fixed;display:none;background:#fff;border:1px solid #ccc;padding:6px"></div>
+<script>
+const days={50:['Dec 27, 2025',45,30],120:['Dec 28, 2025',61,48],190:['Dec 29, 2025',58,41]};
+document.querySelectorAll('circle').forEach(c=>{c.addEventListener('mouseenter',e=>{const d=days[+c.getAttribute('cx')];const t=document.getElementById('tip');t.style.display='block';t.style.left=(e.clientX+10)+'px';t.style.top=(e.clientY+10)+'px';t.innerHTML=`<div>${d[0]}</div><div>Total Visits: ${d[1]}</div><div>Clicks to Service: ${d[2]}</div>`;});c.addEventListener('mouseleave',()=>{document.getElementById('tip').style.display='none';});});
+</script></body></html>

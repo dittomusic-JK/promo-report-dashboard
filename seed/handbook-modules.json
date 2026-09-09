@@ -1,0 +1,100 @@
+{
+ "updatedAt": "2026-09-09",
+ "intro": "Here’s your {weeks}-week Instagram and TikTok strategy for {release}. We’ve built a personalised guide to what you should post and when. Don’t hesitate to use your own ideas too. A personal touch always lands.",
+ "modules": [
+  {
+   "id": "tips",
+   "eyebrow": "Start here",
+   "title": "Top posting tips",
+   "platforms": [
+    "ig",
+    "tt"
+   ],
+   "default": true,
+   "html": "<p>{intro}</p><div class=\"tiles\"><div class=\"tile\"><h4>Timing</h4><p>Check your Instagram analytics to see when your audience is active. Timing posts is key to the best engagement.</p></div><div class=\"tile\"><h4>SmartLink</h4><p>Use a SmartLink in your bio so fans find your music on every platform with a single click.</p></div><div class=\"tile\"><h4>Profile pic</h4><p>Keep the same profile picture across every social account. Consistency is key.</p></div><div class=\"tile\"><h4>Stories</h4><p>Update your story regularly. More content means more attention and engagement.</p></div></div>"
+  },
+  {
+   "id": "igbasics",
+   "eyebrow": "Instagram",
+   "title": "IG basics: do and don’t",
+   "platforms": [
+    "ig"
+   ],
+   "default": true,
+   "html": "<div class=\"dodont\"><div class=\"topic\">Links</div><div class=\"no\"><div class=\"h\">Don’t</div><p>Long links ruin your bio’s aesthetic. Shorten them or use your Ditto SmartLink.</p></div><div class=\"yes\"><div class=\"h\">Do</div><p>A SmartLink looks tidy and takes fans to their preferred platform from one link. We can provide one for you.</p></div><div class=\"topic\">Highlights</div><div class=\"no\"><div class=\"h\">Don’t</div><p>Highlights with no theme look messy, disordered and unappealing.</p></div><div class=\"yes\"><div class=\"h\">Do</div><p>Named, themed highlights give your audience more insight into who you are as an artist and a person.</p></div><div class=\"topic\">Profile picture</div><div class=\"no\"><div class=\"h\">Don’t</div><p>Blurry, unclear or unrelated pictures discourage people from engaging.</p></div><div class=\"yes\"><div class=\"h\">Do</div><p>A strong, consistent aesthetic is far more appealing to potential followers.</p></div><div class=\"topic\">Bio</div><div class=\"no\"><div class=\"h\">Don’t</div><p>A line of plain text looks boring and gets skipped.</p></div><div class=\"yes\"><div class=\"h\">Do</div><p>Say who you are and when your music is out. A well-structured bio with a few emojis catches the eye.</p></div></div><p><strong>Aesthetics.</strong> Standing out on Instagram is essential. A strong, maintained look for your feed builds your brand and overall image. Try black and white, a consistent filter, or a white border.</p><div class=\"filters\"><figure><img src=\"/assets/handbook/filter-bw.jpg\" alt=\"Black and white\" loading=\"lazy\"><figcaption>Black and white</figcaption></figure><figure><img src=\"/assets/handbook/filter-vsco.jpg\" alt=\"VSCO filter\" loading=\"lazy\"><figcaption>VSCO filter</figcaption></figure><figure><img src=\"/assets/handbook/filter-border.jpg\" alt=\"White border\" loading=\"lazy\"><figcaption>White border</figcaption></figure></div><p class=\"apps\">VSCO<span>|</span>Whitagram<span>|</span>Snapseed<span>|</span>Photoshop Express<span>|</span>Pixlr</p>"
+  },
+  {
+   "id": "reels",
+   "eyebrow": "Instagram",
+   "title": "How to: Reels",
+   "platforms": [
+    "ig"
+   ],
+   "default": true,
+   "html": "<p>Reels is one of the best channels to reach new people and grow your audience. Short-form video is everywhere, so it has to be part of your strategy.</p><ul class=\"check\"><li>Keep it simple, fun and share it to your feed so your core fanbase sees it.</li><li>Be yourself. The best-performing Reels let your personality shine through.</li><li>Use a few relevant hashtags. Four to six is enough.</li><li>Add a call to action: ‘Remix my reel’, ‘Flip this sample’.</li><li>Go with what’s trending. Popular audio and ideas reach new fans.</li><li>Collaborate with similar artists to reach the audience most likely to enjoy your sound.</li></ul><div class=\"tiles\"><div class=\"tile\"><h4>Cover song</h4><p>Your own spin on a popular song, with the right hashtags, reaches a brand new audience.</p></div><div class=\"tile\"><h4>Remix</h4><p>Attach your name to content that’s already getting attention. Add your own flair.</p></div><div class=\"tile\"><h4>Comedy</h4><p>Light-hearted, relatable posts put your personality front and centre.</p></div><div class=\"tile\"><h4>Call to action</h4><p>Content your audience can remix: ‘Producers, sample this sound.’</p></div></div>"
+  },
+  {
+   "id": "feed",
+   "eyebrow": "Instagram",
+   "title": "Posting to your feed",
+   "platforms": [
+    "ig"
+   ],
+   "default": true,
+   "html": "<p>Your feed is the most important part of the campaign. It’s where all your content ideas come to life. Before you hit share:</p><ul class=\"check\"><li>Tag the location of the photo.</li><li>Tag people involved: featured artists, producers, promoters.</li><li>Tag your DSPs and distribution platforms: Spotify, Apple Music, Ditto.</li><li>Proof-read and prepare your caption. No misspelt words, nicely formatted.</li><li>Include some relevant hashtags.</li></ul><div class=\"tiles six\"><div class=\"tile\"><img src=\"/assets/handbook/feed-acoustic.jpg\" alt=\"Acoustic videos example\" loading=\"lazy\"><h4>Acoustic videos</h4><p>Show off your talent in an intimate, stripped-back format.</p></div><div class=\"tile\"><img src=\"/assets/handbook/feed-artwork.jpg\" alt=\"Release artwork example\" loading=\"lazy\"><h4>Release artwork</h4><p>Share your artwork and tell fans where to hear it.</p></div><div class=\"tile\"><img src=\"/assets/handbook/feed-press-shot.jpg\" alt=\"Press shots example\" loading=\"lazy\"><h4>Press shots</h4><p>Simple and effective, a must-have on your feed.</p></div><div class=\"tile\"><img src=\"/assets/handbook/feed-music-video.jpg\" alt=\"Music video clips example\" loading=\"lazy\"><h4>Music video clips</h4><p>Teasers from your video create hype.</p></div><div class=\"tile\"><img src=\"/assets/handbook/feed-live-photos.jpg\" alt=\"Live photos example\" loading=\"lazy\"><h4>Live photos</h4><p>The best shots and videos from your latest gig.</p></div><div class=\"tile\"><img src=\"/assets/handbook/feed-bts.jpg\" alt=\"Behind the scenes example\" loading=\"lazy\"><h4>Behind the scenes</h4><p>A sneak peek into how things operate.</p></div></div>"
+  },
+  {
+   "id": "stories",
+   "eyebrow": "Instagram",
+   "title": "How to: Stories",
+   "platforms": [
+    "ig"
+   ],
+   "default": true,
+   "html": "<p>Stories are often the first thing people check when they open the app, so always have something there for them. Include stickers and your location, tag anyone involved, and keep captions succinct.</p><img class=\"hl\" src=\"/assets/handbook/highlights.jpg\" alt=\"Example Instagram highlights row\" loading=\"lazy\"><p><strong>Highlights</strong> let you curate what your audience sees before they check your feed: live shows, fan activity, press and reviews.</p><div class=\"tiles six\"><div class=\"tile tall\"><img src=\"/assets/handbook/story-fan-content.jpg\" alt=\"Fan content example\" loading=\"lazy\"><h4>Fan content</h4><p>Reciprocate the effort your fans give you.</p></div><div class=\"tile tall\"><img src=\"/assets/handbook/story-ama.jpg\" alt=\"Ask me anything example\" loading=\"lazy\"><h4>Ask me anything</h4><p>Take questions and open up to your fans.</p></div><div class=\"tile tall\"><img src=\"/assets/handbook/story-live.jpg\" alt=\"Live videos example\" loading=\"lazy\"><h4>Live videos</h4><p>A quick snippet gives a real taste of what you’re about.</p></div><div class=\"tile tall\"><img src=\"/assets/handbook/story-now-playing.jpg\" alt=\"Now playing example\" loading=\"lazy\"><h4>Now playing</h4><p>Interact and network with artists in your scene.</p></div><div class=\"tile tall\"><img src=\"/assets/handbook/story-wallpapers.jpg\" alt=\"Wallpapers example\" loading=\"lazy\"><h4>Wallpapers</h4><p>A fun bit of content for your biggest fans.</p></div><div class=\"tile tall\"><img src=\"/assets/handbook/story-polls.jpg\" alt=\"Polls example\" loading=\"lazy\"><h4>Polls</h4><p>A quick, easy way to get your fans’ opinion.</p></div></div>"
+  },
+  {
+   "id": "tiktok",
+   "eyebrow": "TikTok",
+   "title": "TikTok basics: do and don’t",
+   "platforms": [
+    "tt"
+   ],
+   "default": true,
+   "html": "<div class=\"dodont\"><div class=\"no\"><div class=\"h\">Don’t</div><p>Load up on broad hashtags like #fyp and #viral. It kills retention by showing your content to the wrong people.</p></div><div class=\"yes\"><div class=\"h\">Do</div><p>Use the caption strategically to give context to your video.</p></div><div class=\"no\"><div class=\"h\">Don’t</div><p>Focus on numbers. Virality doesn’t translate into long-term listeners and fans.</p></div><div class=\"yes\"><div class=\"h\">Do</div><p>Plan content in advance and post consistently to keep momentum.</p></div><div class=\"no\"><div class=\"h\">Don’t</div><p>Simply promote with ‘stream my song’. Direct pitching rarely works. Focus on emotional connection.</p></div><div class=\"yes\"><div class=\"h\">Do</div><p>Engage with commenters and use comments to create new videos.</p></div><div class=\"no\"><div class=\"h\">Don’t</div><p>Force yourself to chase trends.</p></div><div class=\"yes\"><div class=\"h\">Do</div><p>Test what works for your style and personality. Embrace your uniqueness.</p></div></div><p><strong>Claim your TikTok Artist Account.</strong> It links your music officially, protects your copyright and helps streamline streaming revenue. <a class=\"linkline\" href=\"https://support.tiktok.com/en/using-tiktok/growing-your-audience/artist-account\" target=\"_blank\" rel=\"noopener\">How to claim it</a></p>"
+  },
+  {
+   "id": "short",
+   "eyebrow": "TikTok · Reels",
+   "title": "Short-form video",
+   "platforms": [
+    "ig",
+    "tt"
+   ],
+   "default": false,
+   "html": "<div class=\"two\"><div><h4>Emotional hook</h4><p>Let your audience into the emotional core of the track. One genuine line before the music hits can land harder than polished production.</p></div><div><h4>Rinse and repeat</h4><p>Use {release} as the soundtrack of your campaign, as much as possible. Every new piece of content with your track is a new chance to reach the right fans.</p></div><div><h4>Test and repurpose</h4><p>Try different parts of the audio and different captions to see what lands. Apps like ReelRise and Trendtok help spot what works.</p></div><div><h4>Plan ahead, film in batches</h4><p>Think two or three campaigns ahead, then film content in batches so you can focus on the music.</p></div></div><div class=\"tiles six\"><div class=\"tile\"><h4>Behind the scenes</h4><p>Studio, rehearsal, the 2am bowl of cereal.</p></div><div class=\"tile\"><h4>Stitch a comment</h4><p>Turn comments into content.</p></div><div class=\"tile\"><h4>Personal anecdotes</h4><p>Stories only you can tell.</p></div><div class=\"tile\"><h4>Underdog reality</h4><p>The honest version of where you are.</p></div><div class=\"tile\"><h4>Striking visuals</h4><p>One frame that stops the scroll.</p></div><div class=\"tile\"><h4>Track origin story</h4><p>Where the song came from.</p></div></div>"
+  },
+  {
+   "id": "community",
+   "eyebrow": "Instagram · TikTok",
+   "title": "Community channels",
+   "platforms": [
+    "ig",
+    "tt"
+   ],
+   "default": false,
+   "html": "<p>Social apps are building their own direct, inbox-level channels. Think of them as a mailing list or fan group chat: tease content, promote merch and shows, share exclusives.</p><div class=\"two\"><div><h4>Instagram Broadcast Channels</h4><p>A one-to-many group chat with voice notes, polls, prompts and collaborator channels, deeply tied into DMs and Stories.</p></div><div><h4>TikTok Bulletin Boards</h4><p>A mini broadcast newsletter rather than a place for two-way feedback. Polls, quick text posts, images and links in a lightweight feed.</p></div></div><ul class=\"check\"><li><strong>Teasers and pre-save nudges.</strong> Time-sensitive sneak peeks for those most invested in your music.</li><li><strong>Livestream reminders.</strong> Tell your community when you’re going live, and give them a reason to join early.</li><li><strong>Behind the scenes.</strong> Daily check-ins, bloopers, ‘here’s what I’m working on’.</li><li><strong>Exclusive access.</strong> Early plays, insider updates and private thoughts that never hit the main grid.</li></ul>"
+  },
+  {
+   "id": "world",
+   "eyebrow": "Instagram · TikTok",
+   "title": "Worldbuilding for your campaign",
+   "platforms": [
+    "ig",
+    "tt"
+   ],
+   "default": false,
+   "html": "<p>Worldbuilding immerses people in your music by creating a cohesive ‘world’ around {release}. Build a consistent look or idea that represents the vibe or mood of the project, and translate it visually by connecting imagery, fonts, colours and visuals.</p><div class=\"tiles\"><div class=\"tile\"><h4>Eccentric</h4><p>Bold type, collage, unexpected colour.</p></div><div class=\"tile\"><h4>Nostalgic</h4><p>Film grain, warm tones, found objects.</p></div><div class=\"tile\"><h4>Grungy</h4><p>High contrast, black and white, texture.</p></div></div><p class=\"apps\">Pinterest<span>|</span>Canva<span>|</span>Milanote</p>"
+  }
+ ]
+}

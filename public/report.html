@@ -6,1268 +6,475 @@
   <title>Promo Report</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    @font-face {
-      font-family: 'Satoshi';
-      src: url('/assets/Satoshi-Variable.woff2') format('woff2');
-      font-weight: 100 900;
-      font-display: swap;
-    }
-    @font-face {
-      font-family: 'Neusa';
-      src: url('/assets/Neusa-ExtraBold.otf') format('opentype');
-      font-weight: 800;
-      font-display: swap;
-    }
-    
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    
-    :root {
-      --promo-pink: #F64780;
-      --chayellow: #E0FF4F;
-      --gunmetal: #0C262A;
-      --x-black: #070707;
-      --alt-grey: #3A2F3B;
-      --soft-pink: #FFEAEA;
-    }
-    
-    body {
-      font-family: 'Satoshi', -apple-system, sans-serif;
-      background: var(--gunmetal);
-      color: #fff;
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
-    
-    /* Navigation */
-    nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      background: rgba(12, 38, 42, 0.95);
-      backdrop-filter: blur(10px);
-      z-index: 1000;
-      padding: 10px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid rgba(246, 71, 128, 0.2);
-    }
-    .nav-logo { height: 28px; }
-    .nav-menu {
-      display: none;
-      gap: 16px;
-      list-style: none;
-      align-items: center;
-    }
-    .nav-menu a {
-      color: #fff;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      transition: color 0.3s;
-    }
-    .nav-menu a:hover { color: var(--promo-pink); }
-    .nav-menu a.active {
-      color: var(--chayellow);
-      position: relative;
-    }
-    .nav-menu a.active::after {
-      content: '';
-      position: absolute;
-      bottom: -8px;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: var(--chayellow);
-    }
-    .nav-actions {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-    .nav-btn {
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-weight: 600;
-      font-size: 11px;
-      text-decoration: none;
-      transition: all 0.2s;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .nav-btn-outline {
-      border: 1px solid rgba(255,255,255,0.3);
-      color: #fff;
-    }
-    .nav-btn-outline:hover {
-      border-color: var(--chayellow);
-      color: var(--chayellow);
-    }
-    .nav-btn-primary {
-      background: var(--promo-pink);
-      color: #fff;
-    }
-    .nav-btn-primary:hover {
-      background: #e03a70;
-    }
-    
-    /* Hero Section - Compact horizontal layout */
-    .hero {
-      min-height: auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--gunmetal);
-      position: relative;
-      padding: 80px 20px 40px;
-      overflow: hidden;
-    }
-    /* Fullscreen blurred background image */
-    .hero-bg {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-size: cover;
-      background-position: center;
-      filter: blur(50px);
-      transform: scale(1.3);
-      opacity: 0.6;
-      z-index: 0;
-    }
-    .hero-bg::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(135deg, 
-        rgba(12, 38, 42, 0.4) 0%, 
-        rgba(12, 38, 42, 0.7) 100%);
-    }
-    .hero-content {
-      position: relative;
-      z-index: 1;
-      max-width: 1100px;
-      width: 100%;
-      display: flex;
-      align-items: center;
-      gap: 60px;
-    }
-    .hero-left {
-      flex-shrink: 0;
-    }
-    .hero-right {
-      flex: 1;
-      text-align: left;
-    }
-    .hero h1 {
-      font-family: 'Neusa', sans-serif;
-      font-size: 52px;
-      font-weight: 800;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-      letter-spacing: -0.5px;
-      color: #fff;
-      line-height: 1.1;
-    }
-    .hero-release-title {
-      font-size: 20px;
-      color: var(--chayellow);
-      margin-bottom: 24px;
-      font-weight: 500;
-    }
-    .promo-badge {
-      display: inline-block;
-    }
-    .promo-badge img { height: 50px; }
-    .hero-subtitle {
-      font-size: 14px;
-      color: rgba(255,255,255,0.6);
-      margin-top: 16px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-    }
-    .hero-artwork {
-      width: 220px;
-      height: 220px;
-      border-radius: 12px;
-      object-fit: cover;
-      box-shadow: 0 25px 50px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.1);
-      position: relative;
-      z-index: 2;
-    }
-    .scroll-indicator {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      animation: bounce 2s infinite;
-      z-index: 2;
-    }
-    @keyframes bounce {
-      0%, 100% { transform: translateX(-50%) translateY(0); }
-      50% { transform: translateX(-50%) translateY(-8px); }
-    }
-    .scroll-indicator::after {
-      content: '↓';
-      font-size: 24px;
-      color: var(--chayellow);
-      opacity: 0.7;
-    }
-    @media (max-width: 768px) {
-      nav { padding: 10px 16px; }
-      .nav-logo { height: 28px; }
-      .nav-menu { display: none; }
-      .nav-btn { padding: 6px 10px; font-size: 10px; }
-      .hero { padding: 70px 16px 30px; min-height: auto; }
-      .hero-content { flex-direction: column; text-align: center; gap: 20px; }
-      .hero-right { text-align: center; }
-      .hero h1 { font-size: 26px; }
-      .hero-artwork { width: 120px; height: 120px; }
-      .hero-release-title { font-size: 14px; margin-bottom: 12px; }
-      .promo-badge img { height: 32px; }
-      .hero-subtitle { font-size: 10px; margin-top: 10px; letter-spacing: 1px; }
-      .scroll-indicator { display: none; }
-      section { padding: 30px 12px; }
-      .section-header { margin-bottom: 20px; }
-      .section-badge { font-size: 10px; padding: 5px 12px; margin-bottom: 8px; }
-      .section-title { font-size: 24px; margin-bottom: 6px; }
-      .section-subtitle { font-size: 13px; }
-      .metrics-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 16px 0; }
-      .metric-card { padding: 16px 12px; border-radius: 12px; }
-      .metric-value { font-size: 28px; margin-bottom: 4px; }
-      .metric-label { font-size: 9px; }
-      .metric-desc { font-size: 9px; margin-top: 2px; }
-      .card { padding: 16px; border-radius: 16px; margin-bottom: 16px; }
-      .card-header { font-size: 11px; margin-bottom: 16px; }
-      .timeline-metrics { gap: 4px; margin-bottom: 12px; }
-      .timeline-metric { padding: 8px 4px; }
-      .timeline-metric .value { font-size: 22px; margin-bottom: 2px; }
-      .timeline-metric .label { font-size: 8px; }
-      .chart-container { height: 160px; margin-top: 12px; }
-      .data-table { font-size: 11px; }
-      .data-table th { padding: 8px 4px; font-size: 9px; }
-      .data-table td { padding: 8px 4px; }
-      .services-section { grid-template-columns: 1fr; gap: 16px; }
-      .service-list { gap: 6px; }
-      .service-item { padding: 6px; gap: 8px; }
-      .service-icon { width: 24px; height: 24px; }
-      .service-name { font-size: 12px; }
-      .service-clicks { font-size: 12px; min-width: 35px; }
-      .service-percent { font-size: 11px; min-width: 40px; }
-      .pie-chart { display: none; }
-      .pr-grid { grid-template-columns: 1fr; gap: 16px; }
-      .pr-card { border-radius: 14px; }
-      .pr-header { padding: 16px; }
-      .pr-name { font-size: 18px; margin-bottom: 12px; }
-      .pr-logo { width: 50px; height: 50px; margin-bottom: 12px; }
-      .pr-description { padding: 10px; font-size: 12px; border-radius: 10px; }
-      .pr-stats { gap: 20px; padding: 12px; }
-      .pr-stat-icon { width: 20px; height: 20px; }
-      .pr-stat-value { font-size: 18px; }
-      .pr-stat-label { font-size: 8px; }
-      .pr-screenshot { max-height: 150px; }
-      .pr-cta { padding: 12px; }
-      .btn { padding: 8px 16px; font-size: 10px; border-radius: 16px; }
-      .playlist-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
-      .playlist-card { padding: 12px 10px; border-radius: 10px; }
-      .playlist-cover { max-width: 90px; border-radius: 6px; margin-bottom: 10px; }
-      .playlist-name { font-size: 11px; margin-bottom: 4px; }
-      footer { padding: 30px 16px; }
-      .footer-logos { gap: 24px; margin-bottom: 16px; }
-      .footer-logo { height: 28px; }
-      .footer-text { font-size: 12px; }
-    }
-      .promo-badge img { height: 36px; }
-      .hero-subtitle { font-size: 11px; margin-top: 12px; letter-spacing: 1px; }
-    }
-    
-    /* Desktop styles */
-    @media (min-width: 769px) {
-      nav { padding: 16px 40px; }
-      .nav-logo { height: 40px; }
-      .nav-menu { display: flex; gap: 32px; }
-      .nav-btn { padding: 8px 16px; font-size: 13px; }
-      section { padding: 60px 40px; }
-      .section-header { margin-bottom: 40px; }
-      .section-badge { font-size: 14px; padding: 8px 24px; }
-      .section-title { font-size: 42px; }
-      .section-subtitle { font-size: 16px; }
-      .hero { padding: 120px 60px 60px; min-height: 50vh; }
-      .hero-content { gap: 60px; }
-      .hero h1 { font-size: 48px; }
-      .hero-artwork { width: 200px; height: 200px; }
-      .metrics-grid { grid-template-columns: repeat(4, 1fr); gap: 20px; }
-      .metric-card { padding: 28px 24px; border-radius: 20px; }
-      .metric-value { font-size: 42px; }
-      .metric-label { font-size: 11px; }
-      .card { padding: 28px; border-radius: 24px; }
-      .timeline-metric { padding: 20px; }
-      .timeline-metric .value { font-size: 40px; }
-      .timeline-metric .label { font-size: 11px; }
-      .chart-container { height: 250px; }
-      .services-section { grid-template-columns: 1.5fr 1fr; gap: 40px; }
-      .pie-chart { display: block; max-width: 280px; }
-      .service-item { padding: 12px; gap: 12px; }
-      .service-icon { width: 36px; height: 36px; }
-      .service-name { font-size: 15px; }
-      .service-clicks { font-size: 15px; }
-      .pr-grid { grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 28px; }
-      .pr-card { border-radius: 24px; }
-      .pr-header { padding: 32px; }
-      .pr-name { font-size: 28px; }
-      .pr-logo { width: 80px; height: 80px; }
-      .pr-description { padding: 16px; font-size: 14px; }
-      .pr-screenshot { max-height: 300px; }
-      .pr-cta { padding: 24px; }
-      .btn { padding: 14px 32px; font-size: 13px; }
-      .playlist-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
-      .playlist-card { padding: 24px; border-radius: 16px; }
-      .playlist-cover { max-width: 160px; }
-      .playlist-name { font-size: 14px; }
-    }
-    
-    /* Section divider */
-    .section-divider {
-      width: 100%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--promo-pink), var(--chayellow), transparent);
-      margin: 0;
-      opacity: 0.5;
-    }
-    
-    /* Sections */
-    section {
-      padding: 40px 16px;
-      max-width: 1400px;
-      margin: 0 auto;
-      scroll-margin-top: 70px;
-    }
-    .section-header {
-      text-align: center;
-      margin-bottom: 24px;
-    }
-    .section-badge {
-      display: inline-block;
-      background: var(--promo-pink);
-      color: #fff;
-      font-family: 'Neusa', sans-serif;
-      font-size: 11px;
-      text-transform: uppercase;
-      padding: 6px 16px;
-      border-radius: 20px;
-      letter-spacing: 1px;
-      margin-bottom: 12px;
-    }
-    .section-badge.yellow {
-      background: var(--chayellow);
-      color: var(--x-black);
-    }
-    .section-title {
-      font-family: 'Neusa', sans-serif;
-      font-size: 28px;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-    .section-subtitle {
-      font-size: 14px;
-      color: var(--soft-pink);
-      max-width: 700px;
-      margin: 0 auto;
-    }
-    
-    /* Cards */
-    .card {
-      background: #fff;
-      border-radius: 20px;
-      padding: 24px;
-      margin-bottom: 20px;
-      color: var(--x-black);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-      transition: transform 0.3s, box-shadow 0.3s;
-      overflow-x: auto;
-    }
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 30px 80px rgba(246, 71, 128, 0.2);
-    }
-    .card-header {
-      font-family: 'Neusa', sans-serif;
-      font-size: 12px;
-      text-transform: uppercase;
-      color: #666;
-      letter-spacing: 1px;
-      margin-bottom: 24px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .card-header::before {
-      content: '';
-      width: 4px;
-      height: 16px;
-      background: var(--promo-pink);
-      border-radius: 2px;
-    }
-    
-    /* Metrics */
-    .metrics-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 12px;
-      margin: 24px 0;
-    }
-    .metric-card {
-      background: linear-gradient(145deg, rgba(58, 47, 59, 0.8) 0%, rgba(12, 38, 42, 0.9) 100%);
-      border-radius: 16px;
-      padding: 20px 16px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-      border: 1px solid rgba(246, 71, 128, 0.15);
-      backdrop-filter: blur(10px);
-      transition: transform 0.3s, border-color 0.3s;
-    }
-    .metric-card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(246, 71, 128, 0.4);
-    }
-    .metric-card::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -30%;
-      width: 200px;
-      height: 200px;
-      background: radial-gradient(circle, rgba(246, 71, 128, 0.08) 0%, transparent 70%);
-      border-radius: 50%;
-    }
-    .metric-value {
-      font-family: 'Neusa', sans-serif;
-      font-size: 32px;
-      color: var(--chayellow);
-      line-height: 1;
-      margin-bottom: 8px;
-      text-shadow: 0 0 40px rgba(224, 255, 79, 0.3);
-    }
-    .metric-label {
-      font-weight: 700;
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--soft-pink);
-    }
-    .metric-desc {
-      font-size: 10px;
-      color: #aaa;
-      margin-top: 4px;
-    }
-    
-    /* Timeline */
-    .timeline-metrics {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-    .timeline-metric {
-      padding: 12px 8px;
-      border-right: 1px solid #eee;
-    }
-    .timeline-metric:last-child { border-right: none; }
-    .timeline-metric .value {
-      font-family: 'Neusa', sans-serif;
-      font-size: 28px;
-      color: var(--x-black);
-      margin-bottom: 4px;
-    }
-    .timeline-metric .label {
-      font-size: 9px;
-      color: #666;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-    .chart-container { height: 200px; margin-top: 16px; }
-    
-    /* Table */
-    .data-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-    }
-    .data-table th {
-      text-align: left;
-      font-size: 10px;
-      font-weight: 700;
-      color: #666;
-      text-transform: uppercase;
-      padding: 10px 8px;
-      border-bottom: 2px solid #eee;
-      letter-spacing: 0.5px;
-      white-space: nowrap;
-    }
-    .data-table td {
-      padding: 10px 8px;
-      border-bottom: 1px solid #f5f5f5;
-    }
-    .data-table tr:hover {
-      background: var(--soft-pink);
-    }
-    
-    /* Services */
-    .services-section {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 24px;
-      align-items: center;
-    }
-    .service-list { display: flex; flex-direction: column; gap: 8px; }
-    .service-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px;
-      border-radius: 10px;
-      transition: background 0.2s;
-      font-size: 14px;
-    }
-    .service-item:hover { background: var(--soft-pink); }
-    .service-icon {
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    .service-icon svg {
-      width: 16px;
-      height: 16px;
-    }
-    .service-name { flex: 1; font-weight: 600; font-size: 13px; }
-    .service-clicks { font-weight: 700; min-width: 40px; color: var(--promo-pink); font-size: 13px; }
-    .service-percent { color: #888; font-size: 12px; min-width: 45px; text-align: right; }
-    .pie-chart { max-width: 200px; margin: 0 auto; display: none; }
-    
-    /* PR Cards */
-    .pr-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 20px;
-    }
-    .pr-card {
-      background: linear-gradient(135deg, var(--alt-grey) 0%, var(--gunmetal) 100%);
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid rgba(246, 71, 128, 0.3);
-    }
-    .pr-header {
-      padding: 20px;
-      text-align: center;
-    }
-    .pr-name {
-      font-family: 'Neusa', sans-serif;
-      font-size: 20px;
-      text-transform: uppercase;
-      margin-bottom: 16px;
-      color: var(--chayellow);
-    }
-    .pr-logo {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin: 0 auto 16px;
-      border: 2px solid var(--promo-pink);
-      display: block;
-    }
-    .pr-description {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 12px;
-      border-radius: 12px;
-      backdrop-filter: blur(10px);
-      font-size: 13px;
-      line-height: 1.5;
-    }
-    .pr-stats {
-      display: flex;
-      justify-content: center;
-      gap: 24px;
-      padding: 16px;
-      background: rgba(0,0,0,0.2);
-      flex-wrap: wrap;
-    }
-    .pr-stat { text-align: center; }
-    .pr-stat-icon { width: 24px; height: 24px; margin: 0 auto 4px; }
-    .pr-stat-icon svg { width: 100%; height: 100%; }
-    .pr-stat-value {
-      font-family: 'Neusa', sans-serif;
-      font-size: 22px;
-      color: var(--chayellow);
-    }
-    .pr-stat-label {
-      font-size: 9px;
-      text-transform: uppercase;
-      color: #aaa;
-      letter-spacing: 1px;
-    }
-    .pr-screenshot {
-      width: 100%;
-      max-height: 200px;
-      object-fit: cover;
-    }
-    .pr-cta {
-      padding: 16px;
-      text-align: center;
-      background: rgba(0,0,0,0.3);
-    }
-    
-    /* Buttons */
-    .btn {
-      display: inline-block;
-      padding: 10px 20px;
-      border-radius: 20px;
-      font-weight: 700;
-      font-size: 11px;
-      text-transform: uppercase;
-      text-decoration: none;
-      letter-spacing: 0.5px;
-      transition: transform 0.3s, box-shadow 0.3s;
-    }
-    .btn-pink {
-      background: var(--promo-pink);
-      color: #fff;
-    }
-    .btn-yellow {
-      background: var(--chayellow);
-      color: var(--x-black);
-    }
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(246, 71, 128, 0.3);
-    }
-    
-    /* Playlist */
-    .playlist-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-bottom: 24px;
-    }
-    .playlist-card {
-      text-align: center;
-      padding: 16px 12px;
-      background: linear-gradient(145deg, rgba(58, 47, 59, 0.6) 0%, rgba(12, 38, 42, 0.8) 100%);
-      border-radius: 12px;
-      border: 1px solid rgba(246, 71, 128, 0.15);
-      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
-      backdrop-filter: blur(10px);
-    }
-    .playlist-card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(29, 185, 84, 0.5);
-      box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-    }
-    .playlist-name {
-      font-weight: 700;
-      font-size: 12px;
-      margin-bottom: 6px;
-      color: #fff;
-      line-height: 1.3;
-    }
-    .playlist-cover {
-      width: 100%;
-      max-width: 120px;
-      aspect-ratio: 1;
-      border-radius: 8px;
-      object-fit: cover;
-      margin: 0 auto 12px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-      transition: transform 0.3s;
-    }
-    .playlist-card:hover .playlist-cover {
-      transform: scale(1.03);
-    }
-    
-    /* Database Links Section */
-    .databases-section {
-      padding: 60px 40px;
-      background: linear-gradient(180deg, var(--alt-grey) 0%, var(--gunmetal) 100%);
-    }
-    .database-links {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-      max-width: 900px;
-      margin: 0 auto 24px;
-    }
-    .database-card {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      padding: 24px;
-      background: rgba(0,0,0,0.3);
-      border: 1px solid rgba(246, 71, 128, 0.2);
-      border-radius: 12px;
-      text-decoration: none;
-      color: #fff;
-      transition: all 0.3s;
-    }
-    .database-card:hover {
-      background: rgba(246, 71, 128, 0.1);
-      border-color: var(--promo-pink);
-      transform: translateY(-4px);
-      box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-    }
-    .database-icon {
-      width: 60px;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--promo-pink);
-      border-radius: 12px;
-      flex-shrink: 0;
-    }
-    .database-icon.playlist {
-      background: #1DB954;
-    }
-    .database-icon svg {
-      color: #fff;
-    }
-    .database-info {
-      flex: 1;
-    }
-    .database-info h3 {
-      font-family: 'Neusa', sans-serif;
-      font-size: 18px;
-      text-transform: uppercase;
-      margin-bottom: 4px;
-    }
-    .database-info p {
-      font-size: 13px;
-      color: rgba(255,255,255,0.6);
-    }
-    .database-arrow {
-      color: rgba(255,255,255,0.4);
-      transition: transform 0.3s, color 0.3s;
-    }
-    .database-card:hover .database-arrow {
-      color: var(--chayellow);
-      transform: translateX(4px);
-    }
-    .database-password {
-      text-align: center;
-      padding: 16px;
-      background: rgba(0,0,0,0.2);
-      border-radius: 8px;
-      max-width: 400px;
-      margin: 0 auto;
-    }
-    .password-label {
-      color: rgba(255,255,255,0.5);
-      font-size: 13px;
-      margin-right: 8px;
-    }
-    .password-value {
-      background: rgba(224, 255, 79, 0.2);
-      color: var(--chayellow);
-      padding: 6px 16px;
-      border-radius: 4px;
-      font-family: monospace;
-      font-size: 15px;
-      letter-spacing: 1px;
-    }
-    
-    @media (max-width: 768px) {
-      .database-links {
-        grid-template-columns: 1fr;
-      }
-      .database-card {
-        padding: 16px;
-      }
-      .database-icon {
-        width: 48px;
-        height: 48px;
-      }
-      .database-icon svg {
-        width: 24px;
-        height: 24px;
-      }
-    }
-    
-    /* Footer */
-    footer {
-      background: var(--x-black);
-      padding: 48px 40px;
-      text-align: center;
-      border-top: 1px solid rgba(246, 71, 128, 0.2);
-    }
-    .footer-logos {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 48px;
-      margin-bottom: 24px;
-    }
-    .footer-logo { height: 40px; opacity: 0.8; }
-    .footer-text {
-      color: #666;
-      font-size: 14px;
-    }
-    
-    /* Loading */
-    .loading {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 24px;
-    }
-    .spinner {
-      width: 60px;
-      height: 60px;
-      border: 4px solid rgba(246, 71, 128, 0.2);
-      border-top-color: var(--promo-pink);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    
-    .hidden { display: none !important; }
-    
-    /* Smooth scroll */
-    html { scroll-behavior: smooth; }
+    @font-face{font-family:'Satoshi';src:url('/assets/Satoshi-Variable.woff2') format('woff2');font-weight:100 900;font-display:swap}
+    @font-face{font-family:'Neusa';src:url('/assets/Neusa-ExtraBold.otf') format('opentype');font-weight:800;font-display:swap}
+
+    :root{
+      --promo-pink:#F64780;--pink-deep:#D2305F;--on-pink:#FFEAEA;--pink-soft:rgba(246,71,128,.14);
+      --chayellow:#E0FF4F;--on-yellow:#0C262A;
+      --gunmetal:#0C262A;--surface:#12333A;--raised:#1A414A;--sunk:#092023;--x-black:#070707;
+      --line:rgba(226,246,240,.10);--line-strong:rgba(226,246,240,.22);
+      --ink:#F1F6F4;--ink-2:#B9CBC7;--muted:#7F9995;
+      --display:'Neusa','Bebas Neue',Impact,sans-serif;--body:'Satoshi','Helvetica Neue',Arial,sans-serif;
+      --r-sm:6px;--r:12px;--r-lg:20px;
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth;color-scheme:dark}
+    body{font-family:var(--body);background:var(--gunmetal);color:var(--ink);line-height:1.55;font-size:15px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+    a{color:inherit}
+    h1,h2,h3{font-family:var(--display);font-weight:800;text-transform:uppercase;letter-spacing:.02em;line-height:.95;text-wrap:balance}
+    .eyebrow{font-family:var(--display);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+    .num{font-variant-numeric:tabular-nums}
+    :focus-visible{outline:2px solid var(--chayellow);outline-offset:2px}
+    @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+    /* nav */
+    nav{position:sticky;top:0;z-index:50;background:rgba(9,32,35,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:12px 20px;gap:16px}
+    .nav-logo{height:24px;display:block}
+    .nav-menu{display:none;gap:4px;list-style:none;align-items:center}
+    .nav-menu a{text-decoration:none;font-family:var(--display);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);padding:8px 12px;border-radius:999px}
+    .nav-menu a:hover{color:var(--ink);background:var(--surface)}
+    .nav-menu a.active{color:var(--promo-pink)}
+    .nav-actions{display:none;gap:8px;align-items:center}
+    .nav-btn{text-decoration:none;font-family:var(--display);font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:8px 14px 7px;border-radius:999px}
+    .nav-btn-outline{border:1px solid var(--line-strong);color:var(--ink)}
+    .nav-btn-primary{background:var(--promo-pink);color:var(--on-pink)}
+    @media(min-width:769px){.nav-menu{display:flex}}
+
+    /* layout */
+    .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+    section{padding:44px 0;scroll-margin-top:70px}
+    section+section{border-top:1px solid var(--line)}
+    .sec-head{display:grid;gap:8px;margin-bottom:22px;max-width:70ch}
+    .sec-head h2{font-size:34px}
+    .lead{font-size:16px;color:var(--ink-2)}
+    .lead b{color:var(--ink);font-weight:700}
+    @media(min-width:769px){section{padding:64px 0}.sec-head h2{font-size:44px}.lead{font-size:18px}}
+
+    /* hero */
+    .hero{position:relative;overflow:hidden;background:var(--sunk);border-bottom:1px solid var(--line)}
+    .hero-bg{position:absolute;inset:-10%;background-size:cover;background-position:center;filter:blur(60px) saturate(.9);opacity:.45}
+    .hero-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(9,32,35,.2),rgba(9,32,35,.92))}
+    .hero .wrap{position:relative;display:grid;gap:24px;padding-top:40px;padding-bottom:40px}
+    .hero-artwork{width:160px;height:160px;border-radius:var(--r);object-fit:cover;box-shadow:0 24px 60px rgba(0,0,0,.5);display:none}
+    .hero h1{font-size:clamp(40px,9vw,72px)}
+    .hero-release{font-family:var(--display);font-size:22px;letter-spacing:.04em;text-transform:uppercase;color:var(--chayellow);margin-top:6px}
+    .hero-meta{display:flex;gap:10px 18px;flex-wrap:wrap;align-items:center;margin-top:16px}
+    .hero-meta .eyebrow{color:var(--ink-2)}
+    .hero-meta img{height:20px}
+    .hero-summary{margin-top:18px;font-size:16px;color:var(--ink-2);max-width:60ch}
+    .hero-summary b{color:var(--ink)}
+    @media(min-width:769px){.hero .wrap{grid-template-columns:220px 1fr;gap:40px;align-items:center;padding-top:64px;padding-bottom:64px}.hero-artwork{width:220px;height:220px}}
+
+    /* kpis */
+    .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-bottom:24px}
+    .kpi{background:var(--surface);padding:18px 16px}
+    .kpi .v{font-family:var(--display);font-size:34px;line-height:1;color:var(--chayellow)}
+    .kpi .l{font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);margin-top:6px}
+    .kpi .d{font-size:12px;color:var(--muted);margin-top:2px}
+    @media(min-width:769px){.kpis{grid-template-columns:repeat(4,1fr)}.kpi{padding:24px 22px}.kpi .v{font-size:44px}}
+
+    .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:20px;margin-bottom:16px}
+    .panel-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+    .panel-head h3{font-size:18px;letter-spacing:.06em}
+    .panel-head span{font-size:12.5px;color:var(--muted)}
+    @media(min-width:769px){.panel{padding:28px}}
+
+    .chart-wrap{height:220px}
+    @media(min-width:769px){.chart-wrap{height:280px}}
+    .legend{display:flex;gap:18px;margin-top:12px;font-size:12.5px;color:var(--ink-2)}
+    .legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:middle}
+
+    /* funnel */
+    .funnel{display:grid;gap:10px}
+    .step{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:end}
+    .step .bar{height:14px;border-radius:7px;background:var(--promo-pink);min-width:6px;transition:width .6s ease}
+    .step:nth-child(2) .bar{background:#F98BB0}
+    .step:nth-child(3) .bar{background:var(--chayellow)}
+    .step .lbl{display:flex;justify-content:flex-start;align-items:baseline;gap:12px;margin-bottom:6px}
+    .step .lbl b{font-family:var(--display);font-size:24px;letter-spacing:.02em}
+    .step .lbl span{font-size:13px;color:var(--ink-2)}
+    .step .pct{font-size:12.5px;color:var(--muted);min-width:64px;text-align:right;padding-bottom:1px}
+    .funnel-note{font-size:12.5px;color:var(--muted);margin-top:14px}
+
+    /* services */
+    .services{display:grid;gap:8px}
+    .svc{display:grid;grid-template-columns:32px 1fr auto;gap:12px;align-items:center}
+    .svc .ic{width:32px;height:32px;border-radius:8px;overflow:hidden;background:#fff;display:grid;place-items:center}
+    .svc .ic img,.svc .ic svg{width:100%;height:100%;object-fit:contain}
+    .svc .ic.flag{background:var(--sunk);border-radius:6px;overflow:hidden;font-size:18px}
+    .svc .ic.flag img{object-fit:cover;width:32px;height:24px;border-radius:3px}
+    .svc .track{display:grid;gap:5px}
+    .svc .name{font-weight:600;font-size:14px}
+    .svc .bar{height:6px;border-radius:3px;background:var(--sunk);overflow:hidden}
+    .svc .bar i{display:block;height:100%;background:var(--promo-pink);border-radius:3px}
+    .svc .n{text-align:right;font-size:13px;color:var(--ink-2)}
+    .svc .n b{display:block;font-family:var(--display);font-size:20px;color:var(--ink);letter-spacing:.02em}
+
+    /* table */
+    .data-table{width:100%;border-collapse:collapse;font-size:13.5px}
+    .data-table th{text-align:left;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:8px 10px;border-bottom:1px solid var(--line-strong);font-weight:700}
+    .data-table td{padding:10px;border-bottom:1px solid var(--line)}
+    .data-table td:not(:first-child),.data-table th:not(:first-child){text-align:right}
+    .table-wrap{overflow-x:auto}
+
+    /* PR */
+    .pr-grid{display:grid;gap:16px}
+    @media(min-width:769px){.pr-grid{grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:20px}}
+    .pr-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;display:flex;flex-direction:column}
+    .pr-media{position:relative;aspect-ratio:16/9;background:var(--sunk);overflow:hidden}
+    .pr-media img{width:100%;height:100%;object-fit:cover;display:block}
+    .pr-media::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(9,32,35,0) 40%,rgba(9,32,35,.85))}
+    .pr-site{position:absolute;left:16px;bottom:14px;right:16px;display:flex;align-items:center;gap:10px;z-index:1}
+    .pr-site img{width:36px;height:36px;border-radius:8px;object-fit:contain;background:#fff;padding:3px}
+    .pr-site b{font-family:var(--display);font-size:18px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink);text-shadow:0 1px 8px rgba(0,0,0,.5)}
+    .pr-body{padding:18px 18px 6px;display:grid;gap:8px;flex:1}
+    .pr-title{font-weight:700;font-size:16px;line-height:1.35}
+    .pr-desc{font-size:13.5px;color:var(--ink-2)}
+    .pr-stats{display:flex;gap:18px;padding:10px 18px 0;flex-wrap:wrap}
+    .pr-stat{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--ink-2)}
+    .pr-stat svg{width:15px;height:15px}
+    .pr-stat b{color:var(--ink);font-family:var(--display);font-size:16px;letter-spacing:.02em}
+    .pr-foot{padding:14px 18px 18px}
+    .btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-family:var(--display);font-size:13px;letter-spacing:.06em;text-transform:uppercase;padding:11px 18px 10px;border-radius:999px;transition:background .12s}
+    .btn-yellow{background:var(--chayellow);color:var(--on-yellow)}
+    .btn-yellow:hover{background:#eaff7a}
+    .btn-pink{background:var(--promo-pink);color:var(--on-pink)}
+    .btn-pink:hover{background:var(--pink-deep)}
+    .btn-ghost{border:1px solid var(--line-strong);color:var(--ink)}
+    .btn-ghost:hover{border-color:var(--ink)}
+
+    /* playlists */
+    .playlist-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    @media(min-width:769px){.playlist-grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}}
+    .playlist-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px;display:grid;gap:10px;text-decoration:none;transition:border-color .12s}
+    .playlist-card:hover{border-color:var(--line-strong)}
+    .playlist-cover{width:100%;aspect-ratio:1;border-radius:8px;object-fit:cover;display:block;background:var(--sunk)}
+    .playlist-name{font-family:var(--display);font-size:15px;letter-spacing:.03em;text-transform:uppercase;line-height:1.05}
+    .playlist-cur{font-size:12px;color:var(--muted);margin-top:-6px}
+    .playlist-go{font-size:12px;font-weight:700;color:var(--promo-pink)}
+
+    /* feedback + databases */
+    .cta-row{display:flex;gap:12px;flex-wrap:wrap}
+    .db-grid{display:grid;gap:12px}
+    @media(min-width:769px){.db-grid{grid-template-columns:1fr 1fr;gap:16px}}
+    .db-card{display:grid;grid-template-columns:44px 1fr auto;gap:14px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;text-decoration:none;transition:border-color .12s}
+    .db-card:hover{border-color:var(--promo-pink)}
+    .db-ic{width:44px;height:44px;border-radius:10px;background:var(--pink-soft);color:var(--promo-pink);display:grid;place-items:center}
+    .db-ic.yl{background:rgba(224,255,79,.14);color:var(--chayellow)}
+    .db-ic svg{width:22px;height:22px}
+    .db-card h3{font-size:17px;letter-spacing:.05em}
+    .db-card p{font-size:13px;color:var(--ink-2);margin-top:2px}
+    .db-card .arr{color:var(--muted)}
+    .db-pass{margin-top:14px;font-size:13px;color:var(--ink-2);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .db-pass code{font-family:ui-monospace,Menlo,monospace;background:var(--sunk);border:1px solid var(--line-strong);padding:4px 10px;border-radius:var(--r-sm);color:var(--chayellow)}
+
+    footer{border-top:1px solid var(--line);padding:32px 0 40px;color:var(--muted);font-size:12.5px}
+    footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+    .footer-logos{display:flex;gap:18px;align-items:center}
+    .footer-logos img{height:18px;opacity:.85}
+
+    .loading{min-height:100vh;display:grid;place-items:center;color:var(--ink-2)}
+    .spinner{width:44px;height:44px;border:3px solid var(--pink-soft);border-top-color:var(--promo-pink);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 14px}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .hidden{display:none!important}
   </style>
 </head>
 <body>
-  <div class="loading" id="loading">
-    <div class="spinner"></div>
-    <p style="color: var(--soft-pink);">Loading report...</p>
-  </div>
-  
+  <div class="loading" id="loading"><div><div class="spinner"></div><p>Loading your report…</p></div></div>
+
   <div id="report" class="hidden">
-    <!-- Navigation -->
     <nav>
       <img src="/assets/promo-logo.svg" alt="Promo" class="nav-logo">
       <ul class="nav-menu">
-        <li><a href="#social" class="nav-link active">Social</a></li>
-        <li><a href="#pr" class="nav-link">PR</a></li>
+        <li><a href="#social" class="nav-link active">Results</a></li>
+        <li><a href="#pr" class="nav-link">Press</a></li>
         <li><a href="#playlists" class="nav-link">Playlists</a></li>
+        <li><a href="#databases" class="nav-link">Resources</a></li>
       </ul>
-      <div class="nav-actions" id="staffActions" style="display: none;">
+      <div class="nav-actions" id="staffActions">
         <a href="/library" class="nav-btn nav-btn-outline">Library</a>
         <a href="#" id="editBtn" class="nav-btn nav-btn-primary">Edit</a>
       </div>
     </nav>
-    
-    <!-- Hero -->
-    <section class="hero">
+
+    <header class="hero">
       <div class="hero-bg" id="heroBg"></div>
-      <div class="hero-content">
-        <div class="hero-left">
-          <img id="heroArtwork" class="hero-artwork" style="display:none;" alt="Release Artwork">
-        </div>
-        <div class="hero-right">
-          <h1 id="artistName">Artist</h1>
-          <p id="releaseTitle" class="hero-release-title"></p>
-          <div class="promo-badge">
+      <div class="wrap">
+        <img id="heroArtwork" class="hero-artwork" alt="Release artwork">
+        <div>
+          <div class="eyebrow" id="heroEyebrow">Campaign report</div>
+          <h1 id="artistName" style="margin-top:8px">Artist</h1>
+          <p id="releaseTitle" class="hero-release"></p>
+          <div class="hero-meta">
             <img src="/assets/promo-logo.svg" alt="Promo">
+            <span class="eyebrow" id="heroDates"></span>
           </div>
-          <p class="hero-subtitle">Campaign Performance Report</p>
+          <p class="hero-summary" id="heroSummary"></p>
         </div>
       </div>
-      <div class="scroll-indicator"></div>
-    </section>
-    
-    <div class="section-divider"></div>
-    
-    <!-- Social Report -->
+    </header>
+
     <section id="social">
-      <div class="section-header">
-        <span class="section-badge">Social Report</span>
-        <h2 class="section-title">Campaign Results</h2>
-        <p class="section-subtitle">Here's how your campaign performed across all channels</p>
-      </div>
-      
-      <!-- Big Metrics -->
-      <div class="metrics-grid" id="bigMetrics"></div>
-      
-      <!-- Timeline -->
-      <div class="card">
-        <div class="card-header">Timeline</div>
-        <div class="timeline-metrics">
-          <div class="timeline-metric">
-            <div class="value" id="tlVisits">0</div>
-            <div class="label">Total Visits</div>
-          </div>
-          <div class="timeline-metric">
-            <div class="value" id="tlUsers">0</div>
-            <div class="label">Unique Users</div>
-          </div>
-          <div class="timeline-metric">
-            <div class="value" id="tlClicks">0</div>
-            <div class="label">Clicks to Service</div>
-          </div>
+      <div class="wrap">
+        <div class="sec-head">
+          <div class="eyebrow">Social &amp; SmartLink</div>
+          <h2>How your campaign performed</h2>
+          <p class="lead" id="socialLead"></p>
         </div>
-        <div class="chart-container"><canvas id="timelineChart"></canvas></div>
-      </div>
-      
-      <!-- Referrals -->
-      <div class="card" id="referralsCard">
-        <div class="card-header">Referrals</div>
-        <table class="data-table">
-          <thead><tr><th>Source</th><th>Visits</th><th>Song Previews</th><th>Clicks to Service</th></tr></thead>
-          <tbody id="referralsTable"></tbody>
-        </table>
-      </div>
-      
-      <!-- Services -->
-      <div class="card" id="servicesCard">
-        <div class="card-header">Clicks to Service</div>
-        <div class="services-section">
-          <div class="service-list" id="serviceList"></div>
-          <div class="pie-chart"><canvas id="servicesPie"></canvas></div>
+        <div class="kpis" id="bigMetrics"></div>
+        <div class="panel hidden" id="timelineCard">
+          <div class="panel-head"><h3>Over the campaign</h3><span id="timelineNote"></span></div>
+          <div class="chart-wrap"><canvas id="timelineChart"></canvas></div>
+          <div class="legend"><span><i style="background:var(--promo-pink)"></i>SmartLink visits</span><span><i style="background:var(--chayellow)"></i>Clicks to a service</span></div>
+        </div>
+        <div class="panel" id="funnelCard">
+          <div class="panel-head"><h3>From click to stream</h3><span>SmartLink journey over the whole campaign</span></div>
+          <div class="funnel" id="funnel"></div>
+          <p class="funnel-note" id="funnelNote"></p>
+        </div>
+        <div class="panel" id="servicesCard">
+          <div class="panel-head"><h3>Where people chose to listen</h3><span id="servicesTotal"></span></div>
+          <div class="services" id="serviceList"></div>
+        </div>
+        <div class="panel" id="countriesCard">
+          <div class="panel-head"><h3>Where your listeners are</h3><span id="countriesNote"></span></div>
+          <div class="services" id="countryList"></div>
+        </div>
+        <div class="panel" id="referralsCard">
+          <div class="panel-head"><h3>Where visits came from</h3><span>Top referrers</span></div>
+          <div class="table-wrap"><table class="data-table">
+            <thead><tr><th>Source</th><th>Visits</th><th>Song previews</th><th>Clicks to service</th></tr></thead>
+            <tbody id="referralsTable"></tbody>
+          </table></div>
         </div>
       </div>
     </section>
-    
-    <div class="section-divider"></div>
-    
-    <!-- PR Report -->
-    <section id="pr" style="background: linear-gradient(180deg, var(--gunmetal) 0%, var(--alt-grey) 100%);">
-      <div class="section-header">
-        <span class="section-badge">PR Report</span>
-        <h2 class="section-title">Press Coverage</h2>
-        <p class="section-subtitle">Check out where your music has been featured</p>
+
+    <section id="pr">
+      <div class="wrap">
+        <div class="sec-head">
+          <div class="eyebrow">Press &amp; PR</div>
+          <h2>Where you were featured</h2>
+          <p class="lead" id="prLead"></p>
+        </div>
+        <div class="pr-grid" id="prGrid"></div>
       </div>
-      <div class="pr-grid" id="prGrid"></div>
     </section>
-    
-    <div class="section-divider"></div>
-    
-    <!-- Playlists -->
+
     <section id="playlists">
-      <div class="section-header">
-        <span class="section-badge yellow">Playlisting</span>
-        <h2 class="section-title">Playlist Placements</h2>
-        <p class="section-subtitle">Your music on Spotify playlists</p>
-      </div>
-      <div class="playlist-grid" id="playlistGrid"></div>
-      <div class="metrics-grid" id="playlistStats"></div>
-    </section>
-    
-    <!-- Feedback Forms -->
-    <section id="feedback" class="hidden" style="padding:60px 40px; background:linear-gradient(135deg, rgba(246,71,128,0.08) 0%, var(--gunmetal) 100%);">
-      <div class="section-header">
-        <span class="section-badge">Feedback</span>
-        <h2 class="section-title">We'd Love Your Feedback</h2>
-        <p class="section-subtitle">Help us improve our campaigns by sharing your thoughts</p>
-      </div>
-      <div id="feedbackLinks" style="display:flex; gap:20px; justify-content:center; flex-wrap:wrap; max-width:700px; margin:0 auto;"></div>
-    </section>
-    
-    <div class="section-divider"></div>
-    
-    <!-- Database Links -->
-    <section id="databases" class="databases-section">
-      <div class="section-header">
-        <span class="section-badge">Resources</span>
-        <h2 class="section-title">Contact Databases</h2>
-        <p class="section-subtitle">Access our curated press and playlist contact databases</p>
-      </div>
-      <div class="database-links">
-        <a href="/database/press" target="_blank" class="database-card">
-          <div class="database-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"></path><path d="M18 14h-8"></path><path d="M15 18h-5"></path><path d="M10 6h8v4h-8V6Z"></path></svg>
-          </div>
-          <div class="database-info">
-            <h3>Press Database</h3>
-            <p>Blogs, magazines, and media contacts by genre</p>
-          </div>
-          <div class="database-arrow">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-          </div>
-        </a>
-        <a href="/database/playlist" target="_blank" class="database-card">
-          <div class="database-icon playlist">
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15V6"></path><path d="M18.5 18a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"></path><path d="M12 12H3"></path><path d="M16 6H3"></path><path d="M12 18H3"></path></svg>
-          </div>
-          <div class="database-info">
-            <h3>Playlist Database</h3>
-            <p>Spotify playlist curators and submission contacts</p>
-          </div>
-          <div class="database-arrow">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-          </div>
-        </a>
-      </div>
-      <div class="database-password">
-        <span class="password-label">Password:</span>
-        <code class="password-value">PromoDB2026</code>
+      <div class="wrap">
+        <div class="sec-head">
+          <div class="eyebrow">Playlisting</div>
+          <h2>Playlists that added you</h2>
+          <p class="lead" id="playlistLead"></p>
+        </div>
+        <div class="playlist-grid" id="playlistGrid"></div>
       </div>
     </section>
-    
-    <!-- Footer -->
+
+    <section id="feedback" class="hidden">
+      <div class="wrap">
+        <div class="sec-head">
+          <div class="eyebrow">Two minutes, please</div>
+          <h2>Tell us how it went</h2>
+          <p class="lead">Your feedback shapes how we run the next campaign.</p>
+        </div>
+        <div class="cta-row" id="feedbackLinks"></div>
+      </div>
+    </section>
+
+    <section id="databases">
+      <div class="wrap">
+        <div class="sec-head">
+          <div class="eyebrow">Keep going</div>
+          <h2>Contacts for your next release</h2>
+          <p class="lead">Our press and playlist contact databases are yours to use after the campaign.</p>
+        </div>
+        <div class="db-grid">
+          <a href="/database/press" target="_blank" class="db-card">
+            <div class="db-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8V6Z"/></svg></div>
+            <div><h3>Press database</h3><p>Blogs, magazines and media contacts by genre</p></div>
+            <span class="arr">→</span>
+          </a>
+          <a href="/database/playlist" target="_blank" class="db-card">
+            <div class="db-ic yl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15V6M18.5 18a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM12 12H3M16 6H3M12 18H3"/></svg></div>
+            <div><h3>Playlist database</h3><p>Spotify curators and submission contacts</p></div>
+            <span class="arr">→</span>
+          </a>
+        </div>
+        <div class="db-pass"><span>Password</span><code>PromoDB2026</code></div>
+      </div>
+    </section>
+
     <footer>
-      <div class="footer-logos">
-        <img src="/assets/promo-logo.svg" alt="Promo" class="footer-logo">
-        <img src="/assets/ditto-logo.svg" alt="Ditto" class="footer-logo">
+      <div class="wrap">
+        <div class="footer-logos"><img src="/assets/promo-logo.svg" alt="Promo"><img src="/assets/ditto-logo.svg" alt="Ditto"></div>
+        <span>Made by the Ditto Promo team · dittomusic.com</span>
       </div>
-      <p class="footer-text">Powered by Ditto Music • dittomusic.com</p>
     </footer>
   </div>
-  
+
   <script>
     const reportId = window.location.pathname.split('/').pop();
-    
-    // Set edit button href
     document.getElementById('editBtn').href = `/create?edit=${reportId}`;
-    
-    // Check if user is logged in (staff) - show edit/library buttons
-    fetch('/api/auth/check')
-      .then(res => res.json())
-      .then(data => {
-        if (data.authenticated) {
-          document.getElementById('staffActions').style.display = 'flex';
-        }
-      })
-      .catch(() => {}); // Silently fail - just don't show buttons
-    
-    // Smooth scroll navigation
+    fetch('/api/auth/check').then(r=>r.json()).then(d=>{ if(d.authenticated) document.getElementById('staffActions').style.display='flex'; }).catch(()=>{});
+
     document.addEventListener('DOMContentLoaded', () => {
-      const links = document.querySelectorAll('.nav-link');
-      links.forEach(link => {
-        link.addEventListener('click', (e) => {
-          e.preventDefault();
-          const target = link.getAttribute('href');
-          document.querySelector(target).scrollIntoView({ behavior: 'smooth' });
-          links.forEach(l => l.classList.remove('active'));
-          link.classList.add('active');
-        });
-      });
+      const links=[...document.querySelectorAll('.nav-link')];
+      links.forEach(link=>link.addEventListener('click',e=>{e.preventDefault();document.querySelector(link.getAttribute('href'))?.scrollIntoView({behavior:'smooth'});}));
+      const io=new IntersectionObserver(es=>{es.forEach(en=>{if(en.isIntersecting)links.forEach(l=>l.classList.toggle('active',l.getAttribute('href')==='#'+en.target.id));});},{rootMargin:'-30% 0px -60% 0px'});
+      document.querySelectorAll('section[id]').forEach(s=>io.observe(s));
     });
-    
+
     fetch(`/api/reports/${reportId}`)
-      .then(res => res.json())
-      .then(data => { if (data.error) throw new Error(data.error); renderReport(data); })
-      .catch(err => { document.getElementById('loading').innerHTML = `<p style="color:var(--promo-pink);">Error: ${err.message}</p><a href="/" style="color:var(--chayellow);">Return</a>`; });
-    
-    // SVG Icons - using files from /assets/store icons/ folder
+      .then(res=>res.json())
+      .then(data=>{ if(data.error) throw new Error(data.error); renderReport(data); })
+      .catch(err=>{ document.getElementById('loading').innerHTML=`<div><p style="color:var(--promo-pink)">Error: ${err.message}</p><a href="/" style="color:var(--chayellow)">Return</a></div>`; });
+
     const icons = {
-      facebook: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>',
-      instagram: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>',
-      x: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>',
-      spotify: '<img src="/assets/store icons/spotify-icon.svg" style="width:100%;height:100%;">',
-      apple: '<img src="/assets/store icons/apple-music-icon.svg" style="width:100%;height:100%;">',
-      youtube: '<img src="/assets/store icons/youtube-icon.svg" style="width:100%;height:100%;">',
-      youtubeMusic: '<img src="/assets/store icons/youtubemusic-icon.svg" style="width:100%;height:100%;">',
-      amazon: '<img src="/assets/store icons/amazonmusic-icon.svg" style="width:100%;height:100%;">',
-      deezer: '<img src="/assets/store icons/deezer-icon.svg" style="width:100%;height:100%;">',
-      tidal: '<img src="/assets/store icons/tidal-icon.svg" style="width:100%;height:100%;">',
-      soundcloud: '<img src="/assets/store icons/soundcloud_icon.svg" style="width:100%;height:100%;">',
-      pandora: '<img src="/assets/store icons/pandora_icon.webp" style="width:100%;height:100%;object-fit:contain;">',
-      boomplay: '<img src="/assets/store icons/boomplay-icon.svg" style="width:100%;height:100%;">',
-      napster: '<img src="/assets/store icons/napster-icon.svg" style="width:100%;height:100%;">',
-      tiktok: '<img src="/assets/store icons/tiktok-icon.svg" style="width:100%;height:100%;">',
-      iheart: '<img src="/assets/store icons/iheart-radio.svg" style="width:100%;height:100%;">',
-      anghami: '<img src="/assets/store icons/anghami-icon.svg" style="width:100%;height:100%;">',
-      audiomack: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M1.383 12.317c-.762 0-1.383.62-1.383 1.383v4.6c0 .764.62 1.383 1.383 1.383.764 0 1.384-.62 1.384-1.383V13.7c0-.764-.62-1.383-1.384-1.383zm5.533-3.682c-.763 0-1.383.62-1.383 1.383v8.282c0 .764.62 1.383 1.383 1.383.764 0 1.383-.62 1.383-1.383V10.018c0-.764-.62-1.383-1.383-1.383zm5.533-4.318c-.764 0-1.384.62-1.384 1.383V18.3c0 .764.62 1.383 1.384 1.383.763 0 1.383-.62 1.383-1.383V5.7c0-.764-.62-1.383-1.383-1.383zm5.534 2.948c-.764 0-1.384.62-1.384 1.383v9.652c0 .764.62 1.383 1.384 1.383.763 0 1.383-.62 1.383-1.383V8.648c0-.764-.62-1.383-1.383-1.383zm5.533 4.418c-.763 0-1.383.62-1.383 1.383v5.234c0 .764.62 1.383 1.383 1.383.764 0 1.384-.62 1.384-1.383v-5.234c0-.764-.62-1.383-1.384-1.383z"/></svg>'
+      facebook:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>',
+      instagram:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>',
+      x:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>',
+      audiomack:'<svg viewBox="0 0 24 24" fill="#FFA500"><path d="M1.383 12.317c-.762 0-1.383.62-1.383 1.383v4.6c0 .764.62 1.383 1.383 1.383.764 0 1.384-.62 1.384-1.383V13.7c0-.764-.62-1.383-1.384-1.383zm5.533-3.682c-.763 0-1.383.62-1.383 1.383v8.282c0 .764.62 1.383 1.383 1.383.764 0 1.383-.62 1.383-1.383V10.018c0-.764-.62-1.383-1.383-1.383zm5.533-4.318c-.764 0-1.384.62-1.384 1.383V18.3c0 .764.62 1.383 1.384 1.383.763 0 1.383-.62 1.383-1.383V5.7c0-.764-.62-1.383-1.383-1.383zm5.534 2.948c-.764 0-1.384.62-1.384 1.383v9.652c0 .764.62 1.383 1.384 1.383.763 0 1.383-.62 1.383-1.383V8.648c0-.764-.62-1.383-1.383-1.383zm5.533 4.418c-.763 0-1.383.62-1.383 1.383v5.234c0 .764.62 1.383 1.383 1.383.764 0 1.384-.62 1.384-1.383v-5.234c0-.764-.62-1.383-1.384-1.383z"/></svg>'
     };
-    
-    // Service colors
-    const serviceColors = {
-      'Spotify': '#1DB954', 'Apple Music': '#FC3C44', 'YouTube Music': '#FF0000', 'YouTube': '#FF0000',
-      'Amazon Music': '#FF9900', 'Amazon Music (Streaming)': '#FF9900', 'Deezer': '#FEAA2D', 
-      'TIDAL': '#000000', 'SoundCloud': '#FF5500', 'Pandora': '#224099', 'Audiomack': '#FFA500', 'Boomplay': '#FACD01'
-    };
-    
-    function getServiceIcon(name) {
-      const n = name.toLowerCase();
-      // All icons are now images from store icons folder
-      if (n.includes('spotify')) return { icon: icons.spotify, color: 'transparent', isImage: true };
-      if (n.includes('apple')) return { icon: icons.apple, color: 'transparent', isImage: true };
-      if (n.includes('youtube music')) return { icon: icons.youtubeMusic, color: 'transparent', isImage: true };
-      if (n.includes('youtube')) return { icon: icons.youtube, color: 'transparent', isImage: true };
-      if (n.includes('amazon')) return { icon: icons.amazon, color: 'transparent', isImage: true };
-      if (n.includes('deezer')) return { icon: icons.deezer, color: 'transparent', isImage: true };
-      if (n.includes('tidal')) return { icon: icons.tidal, color: 'transparent', isImage: true };
-      if (n.includes('soundcloud')) return { icon: icons.soundcloud, color: 'transparent', isImage: true };
-      if (n.includes('pandora')) return { icon: icons.pandora, color: 'transparent', isImage: true };
-      if (n.includes('boomplay')) return { icon: icons.boomplay, color: 'transparent', isImage: true };
-      if (n.includes('napster')) return { icon: icons.napster, color: 'transparent', isImage: true };
-      if (n.includes('tiktok')) return { icon: icons.tiktok, color: 'transparent', isImage: true };
-      if (n.includes('iheart')) return { icon: icons.iheart, color: 'transparent', isImage: true };
-      if (n.includes('anghami')) return { icon: icons.anghami, color: 'transparent', isImage: true };
-      if (n.includes('audiomack')) return { icon: icons.audiomack, color: '#FFA500' };
-      return { icon: icons.spotify, color: 'transparent', isImage: true };
+    const storeIcon = f => `<img src="/assets/store icons/${f}" alt="">`;
+    function getServiceIcon(name){
+      const n=name.toLowerCase();
+      if(n.includes('spotify'))return storeIcon('spotify-icon.svg');
+      if(n.includes('apple'))return storeIcon('apple-music-icon.svg');
+      if(n.includes('youtube music'))return storeIcon('youtubemusic-icon.svg');
+      if(n.includes('youtube'))return storeIcon('youtube-icon.svg');
+      if(n.includes('amazon'))return storeIcon('amazonmusic-icon.svg');
+      if(n.includes('deezer'))return storeIcon('deezer-icon.svg');
+      if(n.includes('tidal'))return storeIcon('tidal-icon.svg');
+      if(n.includes('soundcloud'))return storeIcon('soundcloud_icon.svg');
+      if(n.includes('pandora'))return storeIcon('pandora_icon.webp');
+      if(n.includes('boomplay'))return storeIcon('boomplay-icon.svg');
+      if(n.includes('napster'))return storeIcon('napster-icon.svg');
+      if(n.includes('tiktok'))return storeIcon('tiktok-icon.svg');
+      if(n.includes('iheart'))return storeIcon('iheart-radio.svg');
+      if(n.includes('anghami'))return storeIcon('anghami-icon.svg');
+      if(n.includes('audiomack'))return icons.audiomack;
+      return storeIcon('spotify-icon.svg');
     }
-    
-    function renderReport(data) {
+    const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+    const looksLikeConsentWall = t => /consent|cookies|privacy|use your data/i.test(t||'');
+
+    function renderReport(data){
       document.getElementById('loading').classList.add('hidden');
       document.getElementById('report').classList.remove('hidden');
-      document.title = `${data.artistName} - Promo Report`;
-      document.getElementById('artistName').textContent = data.artistName || 'Artist';
-      
-      // Hide sections based on visibility toggles
-      const vis = data.sectionVisibility || {};
-      if (vis.social === false) {
-        document.getElementById('social').classList.add('hidden');
-        document.querySelector('.nav-link[href="#social"]')?.parentElement?.remove();
-        // Hide the divider after hero (before social)
-        document.getElementById('social').previousElementSibling?.classList.add('hidden');
+      document.title=`${data.artistName} - Promo Report`;
+      document.getElementById('artistName').textContent=data.artistName||'Artist';
+      if(data.releaseTitle) document.getElementById('releaseTitle').textContent=data.releaseTitle;
+      if(data.dateRange) document.getElementById('heroDates').textContent=data.dateRange;
+      if(data.heroArtwork){ const a=document.getElementById('heroArtwork'); a.src=data.heroArtwork; a.style.display='block'; document.getElementById('heroBg').style.backgroundImage=`url(${data.heroArtwork})`; }
+
+      const vis=data.sectionVisibility||{};
+      const hide=(id,href)=>{document.getElementById(id).classList.add('hidden');document.querySelector(`.nav-link[href="${href}"]`)?.parentElement?.remove();};
+      if(vis.social===false)hide('social','#social');
+      if(vis.pr===false)hide('pr','#pr');
+      if(vis.playlist===false)hide('playlists','#playlists');
+
+      const A=data.analytics||{};
+      const visits=A.totalVisits||0, users=A.uniqueUsers||0, clicks=A.clicksToService||0;
+      const impressions=A.impressions||0, videoViews=A.videoViews||0;
+      const prCount=(data.prPlacements||[]).length, plCount=(data.playlists||[]).length;
+
+      // hero summary sentence: only claims we have numbers for
+      const bits=[];
+      if(prCount)bits.push(`<b>${prCount}</b> press feature${prCount===1?'':'s'}`);
+      if(plCount)bits.push(`<b>${plCount}</b> playlist add${plCount===1?'':'s'}`);
+      if(visits)bits.push(`<b>${fmt(visits)}</b> SmartLink visits`);
+      document.getElementById('heroSummary').innerHTML=bits.length?`Over the campaign: ${bits.join(', ')}.`:'';
+
+      document.getElementById('socialLead').innerHTML=visits
+        ?`<b>${fmt(visits)}</b> people visited your SmartLink${users?` (<b>${fmt(users)}</b> unique)`:''}${clicks?`, and <b>${fmt(clicks)}</b> clicked through to a music service`:''}.`
+        :'SmartLink and ad results for the campaign.';
+
+      document.getElementById('bigMetrics').innerHTML=[
+        [impressions,'Impressions','Ad displays'],[visits,'Link clicks','SmartLink visits'],[clicks,'Service clicks','Through to a music platform'],[videoViews,'Video views','Unique viewers']
+      ].map(([v,l,d])=>`<div class="kpi"><div class="v num">${fmt(v)}</div><div class="l">${l}</div><div class="d">${d}</div></div>`).join('');
+
+      // timeline: only drawn from a real series (analytics.timeline = [{date, visits, clicks}]).
+      // The previous version generated daily points at random, so nothing is drawn when the data is absent.
+      const tl=Array.isArray(A.timeline)?A.timeline.filter(t=>t&&t.date):[];
+      if(tl.length>1&&window.Chart){
+        document.getElementById('timelineCard').classList.remove('hidden');
+        document.getElementById('timelineNote').textContent=`${tl.length} ${tl.length>8?'days':'points'} from Feature.fm`;
+        const css=getComputedStyle(document.documentElement);
+        new Chart(document.getElementById('timelineChart').getContext('2d'),{type:'line',
+          data:{labels:tl.map(t=>t.label||t.date),datasets:[
+            {label:'Visits',data:tl.map(t=>t.visits||0),borderColor:'#F64780',backgroundColor:'rgba(246,71,128,.12)',fill:true,tension:.3,borderWidth:2,pointRadius:2},
+            {label:'Clicks',data:tl.map(t=>t.clicks||0),borderColor:'#E0FF4F',backgroundColor:'rgba(224,255,79,.08)',fill:true,tension:.3,borderWidth:2,pointRadius:2}]},
+          options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+            scales:{y:{beginAtZero:true,grid:{color:'rgba(226,246,240,.08)'},ticks:{color:css.getPropertyValue('--muted').trim(),font:{size:11}}},
+                    x:{grid:{display:false},ticks:{color:css.getPropertyValue('--muted').trim(),font:{size:11},maxTicksLimit:8}}}}});
       }
-      if (vis.pr === false) {
-        document.getElementById('pr').classList.add('hidden');
-        document.querySelector('.nav-link[href="#pr"]')?.parentElement?.remove();
-        document.getElementById('pr').previousElementSibling?.classList.add('hidden');
-      }
-      if (vis.playlist === false) {
-        document.getElementById('playlists').classList.add('hidden');
-        document.querySelector('.nav-link[href="#playlists"]')?.parentElement?.remove();
-        document.getElementById('playlists').previousElementSibling?.classList.add('hidden');
-      }
-      
-      // Show hero artwork if available
-      if (data.heroArtwork) {
-        const artworkEl = document.getElementById('heroArtwork');
-        artworkEl.src = data.heroArtwork;
-        artworkEl.style.display = 'block';
-        // Set blurred background
-        document.getElementById('heroBg').style.backgroundImage = `url(${data.heroArtwork})`;
-      }
-      
-      // Show release title
-      if (data.releaseTitle) {
-        document.getElementById('releaseTitle').textContent = data.releaseTitle;
-      }
-      
-      const visits = data.analytics?.totalVisits || 0;
-      const users = data.analytics?.uniqueUsers || 0;
-      const clicks = data.analytics?.clicksToService || 0;
-      
-      document.getElementById('bigMetrics').innerHTML = `
-        <div class="metric-card"><div class="metric-value">${fmt(data.analytics?.impressions||0)}</div><div class="metric-label">Impressions</div><div class="metric-desc">Ad displays</div></div>
-        <div class="metric-card"><div class="metric-value">${fmt(visits)}</div><div class="metric-label">Link Clicks</div><div class="metric-desc">Smartlink visits</div></div>
-        <div class="metric-card"><div class="metric-value">${fmt(clicks)}</div><div class="metric-label">Service Clicks</div><div class="metric-desc">Music platform</div></div>
-        <div class="metric-card"><div class="metric-value">${fmt(data.analytics?.videoViews||0)}</div><div class="metric-label">Video Views</div><div class="metric-desc">Unique viewers</div></div>
-      `;
-      
-      document.getElementById('tlVisits').textContent = fmt(visits);
-      document.getElementById('tlUsers').textContent = fmt(users);
-      document.getElementById('tlClicks').textContent = fmt(clicks);
-      createChart(visits, clicks);
-      
-      const refs = data.analytics?.referrals || [];
-      if (refs.length) {
-        document.getElementById('referralsTable').innerHTML = refs.map(r => `<tr><td><strong>${r.name}</strong></td><td>${r.visits}</td><td>${r.songPreviews||0}</td><td>${r.clicksToService||0}</td></tr>`).join('');
-      } else { document.getElementById('referralsCard').classList.add('hidden'); }
-      
-      const svcs = data.analytics?.services || [];
-      if (svcs.length) {
-        const total = svcs.reduce((s,x)=>s+x.clicks,0);
-        document.getElementById('serviceList').innerHTML = svcs.map(s => {
-          const pct = total ? ((s.clicks/total)*100).toFixed(1) : 0;
-          const svc = getServiceIcon(s.name);
-          const iconStyle = svc.isImage ? 'background:transparent; padding:0; border-radius:8px; overflow:hidden;' : `background:${svc.color}; color:#fff; padding:8px;`;
-          return `<div class="service-item"><div class="service-icon" style="${iconStyle}">${svc.icon}</div><span class="service-name">${s.name}</span><span class="service-clicks">${s.clicks}</span><span class="service-percent">${pct}%</span></div>`;
+
+      // funnel (works from the totals we always have)
+      if(visits){
+        const steps=[[visits,'Visited your SmartLink'],[users,'Unique people'],[clicks,'Clicked through to listen']].filter(s=>s[0]);
+        const max=steps[0][0];
+        document.getElementById('funnel').innerHTML=steps.map(([v,l],i)=>`<div class="step"><div><div class="lbl"><b class="num">${fmt(v)}</b><span>${l}</span></div><div class="bar" style="width:${Math.max(4,v/max*100)}%"></div></div><div class="pct num">${i?Math.round(v/max*100)+'%':''}</div></div>`).join('');
+        document.getElementById('funnelNote').textContent=clicks&&visits?`${Math.round(clicks/visits*100)}% of visits turned into a click to a streaming service. Anything above 60% is strong for a SmartLink.`:'';
+      } else document.getElementById('funnelCard').classList.add('hidden');
+
+      const svcs=A.services||[];
+      if(svcs.length){
+        const total=svcs.reduce((s,x)=>s+(x.clicks||0),0), top=Math.max(...svcs.map(s=>s.clicks||0));
+        document.getElementById('servicesTotal').textContent=`${fmt(total)} clicks across ${svcs.length} service${svcs.length===1?'':'s'}`;
+        document.getElementById('serviceList').innerHTML=svcs.map(s=>{const pct=total?(s.clicks/total*100):0;return `<div class="svc"><div class="ic">${getServiceIcon(s.name)}</div><div class="track"><div class="name">${esc(s.name)}</div><div class="bar"><i style="width:${Math.max(1,s.clicks/top*100)}%"></i></div></div><div class="n num"><b>${fmt(s.clicks)}</b>${pct.toFixed(pct<10?1:0)}%</div></div>`;}).join('');
+      } else document.getElementById('servicesCard').classList.add('hidden');
+
+      const countries=(A.countries||[]).filter(c=>c.visits>0).slice(0,8);
+      if(countries.length){
+        const total=(A.countries||[]).reduce((s,c)=>s+(c.visits||0),0), top=countries[0].visits;
+        document.getElementById('countriesNote').textContent=`Top ${countries.length} of ${(A.countries||[]).length} countries by SmartLink visits`;
+        document.getElementById('countryList').innerHTML=countries.map(c=>{const pct=total?c.visits/total*100:0;return `<div class="svc"><div class="ic flag">${c.code?`<img src="https://flagcdn.com/w80/${esc(String(c.code).toLowerCase())}.png" alt="${esc(c.name)} flag" loading="lazy">`:`<span>${c.flag||''}</span>`}</div><div class="track"><div class="name">${esc(c.name)}</div><div class="bar"><i style="width:${Math.max(1,c.visits/top*100)}%;background:var(--chayellow)"></i></div></div><div class="n num"><b>${fmt(c.visits)}</b>${pct.toFixed(pct<10?1:0)}%</div></div>`;}).join('');
+      } else document.getElementById('countriesCard').classList.add('hidden');
+
+      const refs=A.referrals||[];
+      if(refs.length) document.getElementById('referralsTable').innerHTML=refs.map(r=>`<tr><td><strong>${esc(r.name)}</strong></td><td class="num">${r.visits}</td><td class="num">${r.songPreviews||0}</td><td class="num">${r.clicksToService||0}</td></tr>`).join('');
+      else document.getElementById('referralsCard').classList.add('hidden');
+
+      if(prCount){
+        document.getElementById('prLead').innerHTML=`<b>${prCount}</b> publication${prCount===1?' wrote':'s wrote'} about ${esc(data.releaseTitle||'your release')}. Tap through to read each piece.`;
+        document.getElementById('prGrid').innerHTML=data.prPlacements.map(pr=>{
+          const img=pr.heroImage||pr.screenshotImage||'';
+          const title=looksLikeConsentWall(pr.title)?'':pr.title;
+          const desc=looksLikeConsentWall(pr.description)?'':pr.description;
+          const stats=[pr.fbLikes&&['#1877F2',icons.facebook,pr.fbLikes,'Facebook'],pr.twitter&&['#fff',icons.x,pr.twitter,'X'],pr.instagram&&['#E4405F',icons.instagram,pr.instagram,'Instagram']].filter(Boolean);
+          return `<article class="pr-card">
+            <div class="pr-media">${img?`<img src="${esc(img)}" alt="">`:''}<div class="pr-site">${pr.logoImage?`<img src="${esc(pr.logoImage)}" alt="">`:''}<b>${esc(pr.name)}</b></div></div>
+            <div class="pr-body">${title?`<div class="pr-title">${esc(title)}</div>`:''}${desc?`<div class="pr-desc">${esc(desc)}</div>`:''}</div>
+            ${stats.length?`<div class="pr-stats">${stats.map(([c,ic,v,l])=>`<span class="pr-stat"><span style="color:${c};display:inline-flex">${ic}</span><b>${esc(v)}</b>${l}</span>`).join('')}</div>`:''}
+            ${pr.articleUrl?`<div class="pr-foot"><a href="${esc(pr.articleUrl)}" target="_blank" rel="noopener" class="btn btn-yellow">Read the article</a></div>`:''}
+          </article>`;
         }).join('');
-        createPie(svcs);
-      } else { document.getElementById('servicesCard').classList.add('hidden'); }
-      
-      if (data.prPlacements?.length) {
-        document.getElementById('prGrid').innerHTML = data.prPlacements.map(pr => `
-          <div class="pr-card">
-            ${pr.heroImage?`<img src="${pr.heroImage}" class="pr-screenshot" style="max-height:250px;">`:''}
-            <div class="pr-header">
-              <div style="display:flex; align-items:center; gap:16px; margin-bottom:16px;">
-                ${pr.logoImage?`<img src="${pr.logoImage}" style="width:50px; height:50px; border-radius:8px; object-fit:contain; background:#fff;">`:''}
-                <div class="pr-name" style="margin-bottom:0;">${pr.name}</div>
-              </div>
-              ${pr.title?`<div style="font-size:16px; color:#fff; margin-bottom:12px; font-weight:600;">${pr.title}</div>`:''}
-              ${pr.description?`<div class="pr-description">${pr.description}</div>`:''}
-            </div>
-            ${(pr.fbLikes||pr.twitter||pr.instagram)?`
-            <div class="pr-stats">
-              ${pr.fbLikes?`<div class="pr-stat"><div class="pr-stat-icon" style="color:#1877F2;">${icons.facebook}</div><div class="pr-stat-value">${pr.fbLikes}</div><div class="pr-stat-label">Facebook</div></div>`:''}
-              ${pr.twitter?`<div class="pr-stat"><div class="pr-stat-icon" style="color:#fff;">${icons.x}</div><div class="pr-stat-value">${pr.twitter}</div><div class="pr-stat-label">X</div></div>`:''}
-              ${pr.instagram?`<div class="pr-stat"><div class="pr-stat-icon" style="color:#E4405F;">${icons.instagram}</div><div class="pr-stat-value">${pr.instagram}</div><div class="pr-stat-label">Instagram</div></div>`:''}
-            </div>
-            `:''}
-            ${pr.articleUrl?`<div class="pr-cta"><a href="${pr.articleUrl}" target="_blank" class="btn btn-yellow">Read Article</a></div>`:''}
-          </div>
-        `).join('');
-      }
-      
-      if (data.playlists?.length) {
-        document.getElementById('playlistGrid').innerHTML = data.playlists.map(pl => `
-          <div class="playlist-card">
-            ${pl.coverImage?`<img src="${pl.coverImage}" class="playlist-cover">`:`<div class="playlist-cover" style="background:linear-gradient(135deg,#1db954,#191414);display:flex;align-items:center;justify-content:center;font-size:48px;">🎵</div>`}
-            <div class="playlist-name">${pl.name || 'Playlist'}</div>
-            ${pl.spotifyUrl?`<a href="${pl.spotifyUrl}" target="_blank" class="btn btn-pink" style="margin-top:12px;">Listen</a>`:''}
-          </div>
-        `).join('');
-        document.getElementById('playlistStats').innerHTML = `
-          <div class="metric-card"><div class="metric-value">${data.playlists.length}</div><div class="metric-label">Total Playlists</div></div>
-        `;
-      }
-      
-      // Feedback forms
-      const fb = data.feedbackForms || {};
-      if (fb.artist || fb.manager) {
+      } else document.getElementById('pr').classList.add('hidden');
+
+      if(plCount){
+        const aud=data.spotifyAudience?`, reaching a combined audience of <b>${esc(data.spotifyAudience)}</b> followers`:'';
+        document.getElementById('playlistLead').innerHTML=`<b>${plCount}</b> Spotify playlist${plCount===1?'':'s'} added ${esc(data.releaseTitle||'your release')}${aud}.`;
+        document.getElementById('playlistGrid').innerHTML=data.playlists.map(pl=>`
+          <a class="playlist-card" ${pl.spotifyUrl?`href="${esc(pl.spotifyUrl)}" target="_blank" rel="noopener"`:''}>
+            ${pl.coverImage?`<img src="${esc(pl.coverImage)}" class="playlist-cover" alt="">`:`<div class="playlist-cover"></div>`}
+            <div class="playlist-name">${esc(pl.name||'Playlist')}</div>
+            ${pl.curator?`<div class="playlist-cur">${esc(pl.curator)}${pl.followers?` · ${esc(pl.followers)} followers`:''}</div>`:''}
+            ${pl.spotifyUrl?`<span class="playlist-go">Open on Spotify →</span>`:''}
+          </a>`).join('');
+      } else document.getElementById('playlists').classList.add('hidden');
+
+      const fb=data.feedbackForms||{};
+      if(fb.artist||fb.manager){
         document.getElementById('feedback').classList.remove('hidden');
-        let html = '';
-        if (fb.artist) {
-          html += `<a href="https://docs.google.com/forms/d/e/1FAIpQLSecPtMobZrovhq3R3u9YJpZzMpAWlLGKS76K7c-kY9EHj0fSA/viewform" target="_blank" class="btn btn-pink" style="padding:16px 32px; font-size:14px;">Artist Feedback Survey</a>`;
-        }
-        if (fb.manager) {
-          html += `<a href="https://docs.google.com/forms/d/e/1FAIpQLSeCfCFAqNQS6z52k85qbXP9nQU-dehXErrZr2KmzLaZ96P1xg/viewform" target="_blank" class="btn btn-yellow" style="padding:16px 32px; font-size:14px;">Manager Feedback Survey</a>`;
-        }
-        document.getElementById('feedbackLinks').innerHTML = html;
+        document.getElementById('feedbackLinks').innerHTML=
+          (fb.artist?`<a href="https://docs.google.com/forms/d/e/1FAIpQLSecPtMobZrovhq3R3u9YJpZzMpAWlLGKS76K7c-kY9EHj0fSA/viewform" target="_blank" rel="noopener" class="btn btn-pink">Artist feedback</a>`:'')+
+          (fb.manager?`<a href="https://docs.google.com/forms/d/e/1FAIpQLSeCfCFAqNQS6z52k85qbXP9nQU-dehXErrZr2KmzLaZ96P1xg/viewform" target="_blank" rel="noopener" class="btn btn-ghost">Manager feedback</a>`:'');
       }
     }
-    
-    function createChart(v, c) {
-      const ctx = document.getElementById('timelineChart').getContext('2d');
-      const days = 14, labels = [], vData = [], cData = [];
-      let vRem = v, cRem = c;
-      for (let i = days-1; i >= 0; i--) {
-        const d = new Date(); d.setDate(d.getDate()-i);
-        labels.push(d.toLocaleDateString('en-US',{month:'short',day:'numeric'}));
-        const vv = i===0 ? vRem : Math.floor(Math.random()*(vRem/(i+1)*1.5));
-        const cc = i===0 ? cRem : Math.floor(Math.random()*(cRem/(i+1)*1.5));
-        vData.push(vv); cData.push(cc); vRem -= vv; cRem -= cc;
-      }
-      new Chart(ctx, {
-        type: 'line',
-        data: { labels, datasets: [
-          { label: 'Visits', data: vData, borderColor: '#F64780', backgroundColor: 'rgba(246,71,128,0.1)', fill: true, tension: 0.4, borderWidth: 3 },
-          { label: 'Clicks', data: cData, borderColor: '#E0FF4F', backgroundColor: 'rgba(224,255,79,0.1)', fill: true, tension: 0.4, borderWidth: 3 }
-        ]},
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false, beginAtZero: true }, x: { grid: { display: false }, ticks: { font: { size: 11 }, color: '#999' } } } }
-      });
-    }
-    
-    function createPie(services) {
-      const ctx = document.getElementById('servicesPie').getContext('2d');
-      const colors = ['#1DB954','#fc3c44','#ff0000','#224099','#feaa2d','#000','#00A8E1','#facd01'];
-      new Chart(ctx, {
-        type: 'doughnut',
-        data: { labels: services.map(s=>s.name), datasets: [{ data: services.map(s=>s.clicks), backgroundColor: services.map((_,i)=>colors[i%colors.length]), borderWidth: 0 }] },
-        options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } }, cutout: '65%' }
-      });
-    }
-    
-    function fmt(n) { return n >= 1e6 ? (n/1e6).toFixed(1)+'M' : n >= 1e3 ? (n/1e3).toFixed(1).replace(/\.0$/,'')+'k' : n.toLocaleString(); }
+    function fmt(n){n=Number(n)||0;return n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e3?(n/1e3).toFixed(1).replace(/\.0$/,'')+'k':n.toLocaleString();}
   </script>
 </body>
 </html>

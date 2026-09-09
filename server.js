@@ -10,6 +10,7 @@ import { google } from 'googleapis';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { r2Put, r2Get, r2Delete, r2List, isConfigured as r2IsConfigured } from './r2.js';
+import { createHandbookStore, registerPublicHandbookRoutes, registerStaffHandbookRoutes } from './handbooks.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -195,9 +196,31 @@ if (USE_R2) {
   app.use('/uploads', express.static(UPLOADS_DIR));
 }
 
-// Public report viewing
-app.get('/report/:id', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'report.html'));
+// Validate report IDs to prevent path traversal
+function isValidReportId(id) {
+  return /^[a-f0-9\-]+$/.test(id);
+}
+
+// Public report viewing.
+// Reports carry a template version. Anything created before v2 (no version field)
+// keeps rendering with the original template so links already sent to clients
+// don't change under them; new reports use the current design.
+async function loadReport(id) {
+  if (USE_R2) {
+    const result = await r2Get(`reports/${id}.json`);
+    return result ? JSON.parse(result.body.toString('utf-8')) : null;
+  }
+  const reportPath = path.join(REPORTS_DIR, `${id}.json`);
+  return fs.existsSync(reportPath) ? JSON.parse(fs.readFileSync(reportPath, 'utf-8')) : null;
+}
+const REPORT_TEMPLATE_VERSION = 2;
+app.get('/report/:id', async (req, res) => {
+  const { id } = req.params;
+  let version = 1;
+  if (isValidReportId(id)) {
+    try { const data = await loadReport(id); if (data && Number(data.version) >= 2) version = Number(data.version); } catch (err) { console.warn('Report lookup failed:', err.message); }
+  }
+  res.sendFile(path.join(__dirname, 'public', version >= 2 ? 'report.html' : 'report-legacy.html'));
 });
 
 // Database configuration
@@ -331,10 +354,6 @@ app.post('/api/cron/restore', restoreUpload.single('backup'), async (req, res) =
   }
 });
 
-// Validate report IDs to prevent path traversal
-function isValidReportId(id) {
-  return /^[a-f0-9\-]+$/.test(id);
-}
 
 // Validate URLs for scrape endpoints to prevent SSRF
 const ALLOWED_SCRAPE_DOMAINS = [
@@ -380,6 +399,11 @@ app.get('/api/reports/:id', async (req, res) => {
   }
 });
 
+// Social Handbook: storage + public client routes (the link is the key, same as reports)
+const handbookStore = createHandbookStore({ USE_R2, DATA_DIR, r2Get, r2Put, r2Delete, r2List });
+const handbookClientLimiter = rateLimit({ windowMs: 60 * 1000, max: 60, standardHeaders: true, legacyHeaders: false });
+registerPublicHandbookRoutes(app, { store: handbookStore, publicDir: path.join(__dirname, 'public'), clientLimiter: handbookClientLimiter });
+
 // Protected routes (everything below requires login)
 app.use(requireAuth);
 
@@ -412,6 +436,9 @@ app.get('/create', (req, res) => {
 app.get('/library', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'library.html'));
 });
+
+// Social Handbook: staff builder, list and config
+registerStaffHandbookRoutes(app, { store: handbookStore, publicDir: path.join(__dirname, 'public') });
 
 // Upload image endpoint
 app.post('/api/upload', upload.single('image'), async (req, res) => {
@@ -578,14 +605,11 @@ app.post('/api/scrape-spotify-playlist', async (req, res) => {
 
 // Scrape Feature.fm analytics
 app.post('/api/scrape-ffm', async (req, res) => {
-  const { url } = req.body;
+  const { url, startDate, endDate } = req.body;
   if (!url) return res.status(400).json({ error: 'URL required' });
-  if (!isAllowedScrapeUrl(url)) return res.status(400).json({ error: 'URL not allowed' });
-  
-  console.log(`Scraping: ${url}`);
   
   try {
-    const data = await scrapeFeatureFm(url);
+    const data = await scrapeFeatureFm(url, startDate, endDate);
     res.json(data);
   } catch (error) {
     console.error('Scrape error:', error);
@@ -597,14 +621,15 @@ app.post('/api/scrape-ffm', async (req, res) => {
 app.post('/api/reports', async (req, res) => {
   const reportId = uuidv4().slice(0, 8);
   const {
-    artistName, releaseTitle, dateRange, heroArtwork, heroArtworkBlurred, smartLink,
+    artistName, releaseTitle, dateRange, campaignStart, campaignEnd, heroArtwork, heroArtworkBlurred, smartLink,
     sectionVisibility, analytics, prPlacements, playlists,
     totalPlaylists, spotifyAudience, feedbackForms
   } = req.body;
   const reportData = {
     id: reportId,
+    version: REPORT_TEMPLATE_VERSION,
     createdAt: new Date().toISOString(),
-    artistName, releaseTitle, dateRange, heroArtwork, heroArtworkBlurred, smartLink,
+    artistName, releaseTitle, dateRange, campaignStart, campaignEnd, heroArtwork, heroArtworkBlurred, smartLink,
     sectionVisibility, analytics, prPlacements, playlists,
     totalPlaylists, spotifyAudience, feedbackForms
   };
@@ -753,227 +778,156 @@ app.delete('/api/reports/:id', async (req, res) => {
   }
 });
 
-// Feature.fm scraper function
-async function scrapeFeatureFm(url) {
-  const browser = await chromium.launch({ 
-    headless: true,
-    args: ['--disable-gpu', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-sandbox', '--single-process', '--no-zygote']
-  });
-  const context = await browser.newContext({ viewport: { width: 1400, height: 2000 } });
-  const page = await context.newPage();
-  
+// ---------------------------------------------------------------------------
+// Feature.fm import
+//
+// A "Share analytics" link (console.feature.fm/analytics/<uuid>/general) is a
+// public page that reads from console-api.feature.fm/v2/smartlink-shared-analytics.
+// That API needs no login and accepts start/end, so the numbers are pulled for
+// the campaign window rather than the console's default last-30-days view.
+// The private console URL (24-hex id, no dashes) requires a login and is rejected
+// with a helpful message. No browser is involved.
+// ---------------------------------------------------------------------------
+
+const FFM_API = 'https://console-api.feature.fm/v2/smartlink-shared-analytics';
+const FFM_UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36';
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+function ffmSharedId(url) {
+  const m = String(url).match(/analytics\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/i);
+  return m ? m[1] : null;
+}
+
+// Minutes offset for Europe/London at a given instant (0 in winter, 60 in summer)
+function londonOffsetMinutes(date) {
+  const part = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/London', timeZoneName: 'shortOffset' })
+    .formatToParts(date).find(p => p.type === 'timeZoneName')?.value || 'GMT';
+  const m = part.match(/([+-])(\d+)(?::(\d+))?/);
+  return m ? (m[1] === '-' ? -1 : 1) * (parseInt(m[2], 10) * 60 + (m[3] ? parseInt(m[3], 10) : 0)) : 0;
+}
+// Epoch ms for a YYYY-MM-DD at London midnight (or end of day)
+function londonMs(iso, endOfDay) {
+  const [y, mo, d] = iso.split('-').map(Number);
+  const utc = Date.UTC(y, mo - 1, d, endOfDay ? 23 : 0, endOfDay ? 59 : 0, endOfDay ? 59 : 0, endOfDay ? 999 : 0);
+  return utc - londonOffsetMinutes(new Date(utc)) * 60000;
+}
+const isoDate = d => `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
+const prettyDate = iso => { const [y, m, d] = iso.split('-').map(Number); return `${d} ${MONTHS[m - 1]} ${y}`; };
+// "Aug 10 2026" -> "2026-08-10"
+function ffmDateToIso(str) {
+  const m = String(str).match(/^([A-Z][a-z]{2}) (\d{1,2}) (\d{4})$/);
+  if (!m) { const d = new Date(str); return isNaN(d) ? null : isoDate(d); }
+  return `${m[3]}-${String(MONTHS.indexOf(m[1]) + 1).padStart(2, '0')}-${m[2].padStart(2, '0')}`;
+}
+
+async function ffmGet(id, entry, range) {
+  const q = new URLSearchParams({ entry, timezone: String(range.tz) });
+  if (range.start) { q.set('start', String(range.start)); q.set('end', String(range.end)); }
+  const res = await fetch(`${FFM_API}/${id}?${q}`, { headers: { accept: 'application/json', 'user-agent': FFM_UA } });
+  if (!res.ok) throw new Error(`Feature.fm ${entry} request failed (${res.status})`);
+  const json = await res.json();
+  if (json.status !== 'success') throw new Error(`Feature.fm ${entry}: ${json.message || 'unexpected response'}`);
+  return json.data?.smartlinkAnalytics?.[entry];
+}
+
+// Release title, link and artwork from the shared page's embedded Next.js state (plain HTML, no JS needed)
+async function ffmReleaseInfo(id) {
+  const out = { title: '', link: '', artwork: '', artist: '' };
   try {
-    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
-    await page.waitForTimeout(5000);
-    
-    // Auto-scroll to load ALL content
-    await page.evaluate(async () => {
-      await new Promise((resolve) => {
-        let totalHeight = 0;
-        const timer = setInterval(() => {
-          window.scrollBy(0, 300);
-          totalHeight += 300;
-          if (totalHeight >= document.body.scrollHeight + 1000) {
-            clearInterval(timer);
-            window.scrollTo(0, 0);
-            resolve();
-          }
-        }, 100);
-      });
-    });
-    await page.waitForTimeout(3000);
-    
-    // Extract ALL Feature.fm data
-    const data = await page.evaluate(() => {
-      const result = {
-        release: { title: '', link: '', artwork: '' },
-        dateRange: '',
-        overview: { totalVisits: 0, uniqueUsers: 0, clicksToService: 0 },
-        channels: [],
-        referrals: [],
-        services: [],
-        countries: []
-      };
-      
-      // Get release info
-      const linkEl = document.querySelector('a[href*="ditto.fm"]');
-      if (linkEl) {
-        result.release.link = linkEl.href || linkEl.textContent;
-      }
-      
-      // Get artwork
-      const artworkImg = document.querySelector('img[src*="artwork"], img[src*="cover"], img[alt*="artwork"]');
-      if (artworkImg) {
-        result.release.artwork = artworkImg.src;
-      }
-      
-      // Get date range - look for the date picker text
-      const dateElements = document.querySelectorAll('*');
-      for (const el of dateElements) {
-        const text = el.textContent?.trim() || '';
-        const dateMatch = text.match(/([A-Z][a-z]{2} \d{1,2}, \d{4})\s*-\s*([A-Z][a-z]{2} \d{1,2}, \d{4})/);
-        if (dateMatch && el.children.length < 3) {
-          result.dateRange = dateMatch[0];
-          break;
-        }
-      }
-      
-      // Get title from header area
-      const headerText = document.body.innerText.substring(0, 500);
-      const titleMatch = headerText.match(/^([\s\S]*?)https:\/\/ditto\.fm/);
-      if (titleMatch) {
-        result.release.title = titleMatch[1]
-          .replace(/INSIGHTS|CONVERSION|favicon[^\s]*/gi, '')
-          .replace(/\s+/g, ' ')
-          .trim();
-      }
-      
-      // ===== EXTRACT OVERVIEW METRICS =====
-      // Find all large numbers near specific labels
-      const allText = document.body.innerText;
-      
-      // Total Visits
-      const visitsMatch = allText.match(/(\d+)\s*Total Visits/i) || 
-                          allText.match(/(\d+)[\s\n]+Total Visits/i);
-      if (visitsMatch) result.overview.totalVisits = parseInt(visitsMatch[1]);
-      
-      // Unique Users
-      const usersMatch = allText.match(/(\d+)\s*Unique Users/i) ||
-                         allText.match(/(\d+)[\s\n]+Unique Users/i);
-      if (usersMatch) result.overview.uniqueUsers = parseInt(usersMatch[1]);
-      
-      // Clicks to Service  
-      const clicksMatch = allText.match(/(\d+)\s*Clicks to Service/i) ||
-                          allText.match(/(\d+)[\s\n]+Clicks to Service/i);
-      if (clicksMatch) result.overview.clicksToService = parseInt(clicksMatch[1]);
-      
-      // ===== EXTRACT REFERRALS TABLE =====
-      // Look for the REFERRALS section and parse each row
-      const referralNames = ['direct', 'instagram.com', 'facebook.com', 'tiktok.com', 
-                             'twitter.com', 'youtube.com', 'google.com', 'ditto.fm',
-                             'dashboard.dittomusic.com', 'l.instagram.com', 't.co',
-                             'linktr.ee', 'linkin.bio'];
-      
-      referralNames.forEach(name => {
-        // Match pattern: referrer name followed by numbers
-        const escapedName = name.replace(/\./g, '\\.');
-        const regex = new RegExp(escapedName + '[\\s\\n]+(\\d+)[\\s\\n]*([\\d.]+%)?[\\s\\n]*(\\d+)?[\\s\\n]*([\\d.]+%)?[\\s\\n]*(\\d+)?', 'i');
-        const match = allText.match(regex);
-        
-        if (match && parseInt(match[1]) > 0) {
-          result.referrals.push({
-            name: name,
-            visits: parseInt(match[1]) || 0,
-            visitsPercent: match[2] || '',
-            songPreviews: parseInt(match[3]) || 0,
-            clicksToService: parseInt(match[5]) || 0
-          });
-        }
-      });
-      
-      // Sort referrals by visits
-      result.referrals.sort((a, b) => b.visits - a.visits);
-      
-      // ===== EXTRACT SERVICES (CLICKS TO SERVICE) =====
-      const servicePatterns = [
-        { name: 'Spotify', icon: '🟢' },
-        { name: 'Apple Music', icon: '🍎' },
-        { name: 'YouTube Music', icon: '🔴' },
-        { name: 'YouTube', icon: '▶️' },
-        { name: 'Pandora', icon: '🎵' },
-        { name: 'Deezer', icon: '💜' },
-        { name: 'TIDAL', icon: '⬛' },
-        { name: 'Amazon Music', icon: '📦' },
-        { name: 'Amazon Music (Streaming)', icon: '📦' },
-        { name: 'Boomplay', icon: '🔵' },
-        { name: 'SoundCloud', icon: '☁️' },
-        { name: 'Audiomack', icon: '🎧' }
-      ];
-      
-      servicePatterns.forEach(({ name, icon }) => {
-        const escapedName = name.replace(/[\(\)]/g, '\\$&');
-        const regex = new RegExp(escapedName + '\\s*(\\d+)\\s*([\\d.]+%)?', 'i');
-        const match = allText.match(regex);
-        
-        if (match && parseInt(match[1]) > 0) {
-          // Avoid duplicates
-          if (!result.services.find(s => s.name === name)) {
-            result.services.push({
-              name,
-              icon,
-              clicks: parseInt(match[1]),
-              percentage: match[2] || ''
-            });
-          }
-        }
-      });
-      
-      result.services.sort((a, b) => b.clicks - a.clicks);
-      
-      // Calculate percentages if not present
-      const totalClicks = result.services.reduce((sum, s) => sum + s.clicks, 0);
-      result.services.forEach(s => {
-        if (!s.percentage && totalClicks > 0) {
-          s.percentage = ((s.clicks / totalClicks) * 100).toFixed(1) + '%';
-        }
-      });
-      
-      // ===== EXTRACT COUNTRIES =====
-      const countryPatterns = [
-        'United Kingdom', 'United States', 'Australia', 'Canada', 'Germany', 
-        'France', 'Ireland', 'Netherlands', 'Brazil', 'Mexico', 'Spain', 'Italy',
-        'India', 'Japan', 'South Africa', 'New Zealand', 'Sweden', 'Norway',
-        'Denmark', 'Finland', 'Belgium', 'Austria', 'Switzerland', 'Poland', 'Portugal'
-      ];
-      
-      countryPatterns.forEach(country => {
-        // Match country followed by numbers (visits, song previews, clicks)
-        const regex = new RegExp(country + '\\s*[^\\d]*(\\d+)\\s*([\\d.]+%)?', 'i');
-        const match = allText.match(regex);
-        
-        if (match && parseInt(match[1]) > 0) {
-          if (!result.countries.find(c => c.name === country)) {
-            result.countries.push({
-              name: country,
-              visits: parseInt(match[1]),
-              percentage: match[2] || ''
-            });
-          }
-        }
-      });
-      
-      result.countries.sort((a, b) => b.visits - a.visits);
-      
-      // Calculate country percentages
-      const totalVisits = result.overview.totalVisits || result.countries.reduce((sum, c) => sum + c.visits, 0);
-      result.countries.forEach(c => {
-        if (!c.percentage && totalVisits > 0) {
-          c.percentage = ((c.visits / totalVisits) * 100).toFixed(1) + '%';
-        }
-      });
-      
-      return result;
-    });
-    
-    // Take full page screenshot
-    const screenshotBuffer = await page.screenshot({ fullPage: true });
-    const screenshotFilename = `ffm-${Date.now()}.png`;
-    if (USE_R2) {
-      await r2Put(`uploads/${screenshotFilename}`, screenshotBuffer, 'image/png');
-    } else {
-      fs.writeFileSync(path.join(UPLOADS_DIR, screenshotFilename), screenshotBuffer);
-    }
-    data.screenshot = `/uploads/${screenshotFilename}`;
-    
-    await browser.close();
-    
-    console.log('Scraped data:', JSON.stringify(data, null, 2));
-    return data;
-    
-  } catch (error) {
-    await browser.close();
-    throw error;
+    const res = await fetch(`https://console.feature.fm/analytics/${id}/general`, { headers: { 'user-agent': FFM_UA } });
+    const html = await res.text();
+    const m = html.match(/<script id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/);
+    if (!m) return out;
+    const d = JSON.parse(m[1])?.props?.initialState?.smartlink?.data || {};
+    out.title = d.title || '';
+    out.artist = d.artistName || d.artist?.name || (Array.isArray(d.artists) ? d.artists.map(a => a.name || a).join(', ') : '') || '';
+    const slug = d.shortId || d.slug || d.linkId || '';
+    out.link = d.url || d.shortUrl || (d.domain && slug ? `${d.domain.replace(/\/$/, '')}/${slug}` : '') || '';
+    const imgs = d._signedImages || {};
+    // cloudinary-cdn.feature.fm refuses requests without a console Referer (403), so serve the
+    // same signed transform from the ffm.to CDN, which is what the smart links themselves use.
+    out.artwork = (imgs.image316x316 || imgs.image280x280 || d.image || d.artwork || '').replace('cloudinary-cdn.feature.fm', 'cloudinary-cdn.ffm.to');
+  } catch (err) {
+    console.warn('Feature.fm release info unavailable:', err.message);
   }
+  return out;
+}
+
+const tableRows = (block, keys) => {
+  // block.columns = [{name:'Visits', total, breakdown:[[name, count, pct], ...]}, ...]
+  const cols = Object.fromEntries((block?.columns || []).map(c => [c.name, c]));
+  const byName = {};
+  const add = (colName, field, pctField) => {
+    for (const [name, count, pct] of cols[colName]?.breakdown || []) {
+      byName[name] = byName[name] || { name };
+      byName[name][field] = count || 0;
+      if (pctField) byName[name][pctField] = pct == null ? '' : `${pct}%`;
+    }
+  };
+  add('Visits', 'visits', 'visitsPercent');
+  add('Song Previews', 'songPreviews', 'previewsPercent');
+  add('Clicks To Service', 'clicksToService', 'clicksPercent');
+  return Object.values(byName).sort((a, b) => (b.visits || 0) - (a.visits || 0));
+};
+
+const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
+const flagOf = code => /^[A-Z]{2}$/.test(code) ? String.fromCodePoint(...[...code].map(c => 0x1F1E6 + c.charCodeAt(0) - 65)) : '';
+
+async function scrapeFeatureFm(url, startDate, endDate) {
+  const id = ffmSharedId(url);
+  if (!id) {
+    if (/console\.feature\.fm\/analytics\/[0-9a-f]{24}/i.test(url)) {
+      throw new Error('That is the private console link, which needs a Feature.fm login. In Feature.fm open the smart link’s analytics, click “Share”, and paste the shared link (its id contains dashes).');
+    }
+    throw new Error('Paste a Feature.fm shared analytics link, e.g. https://console.feature.fm/analytics/<id-with-dashes>/general');
+  }
+  const range = { tz: 0 };
+  if (startDate && endDate) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(startDate) || !/^\d{4}-\d{2}-\d{2}$/.test(endDate)) throw new Error('Campaign dates must be YYYY-MM-DD');
+    range.start = londonMs(startDate, false);
+    range.end = londonMs(endDate, true);
+    range.tz = londonOffsetMinutes(new Date(range.start));
+  }
+  console.log(`Feature.fm import ${id} ${startDate || 'all-time'} → ${endDate || ''}`);
+
+  const [overall, overtime, referrals, services, locations, channels, release] = await Promise.all([
+    ffmGet(id, 'overall', range), ffmGet(id, 'overtime', range), ffmGet(id, 'referrals', range),
+    ffmGet(id, 'services', range), ffmGet(id, 'locations', range), ffmGet(id, 'channels', range), ffmReleaseInfo(id)
+  ]);
+
+  // Daily series. The API omits days with no visits, so fill the gaps with zeros across the window.
+  const points = {};
+  for (const p of overtime || []) { const iso = ffmDateToIso(p.date); if (iso) points[iso] = { visits: p.visits || 0, clicks: p.clicks || 0 }; }
+  const dates = Object.keys(points).sort();
+  const first = startDate || dates[0], last = endDate || dates[dates.length - 1];
+  const timeline = [];
+  if (first && last) {
+    for (let t = Date.UTC(...first.split('-').map((n, i) => Number(n) - (i === 1 ? 1 : 0))); ; t += 864e5) {
+      const iso = isoDate(new Date(t));
+      if (iso > last) break;
+      const p = points[iso] || { visits: 0, clicks: 0 };
+      timeline.push({ date: iso, label: prettyDate(iso).replace(/ \d{4}$/, ''), visits: p.visits, clicks: p.clicks });
+      if (timeline.length > 400) break;
+    }
+  }
+
+  const data = {
+    source: 'feature.fm-api',
+    sharedId: id,
+    release: { title: release.title, link: release.link, artwork: release.artwork, artist: release.artist },
+    dateRange: startDate && endDate ? `${prettyDate(startDate)} - ${prettyDate(endDate)}` : 'All time',
+    campaignStart: startDate || '', campaignEnd: endDate || '',
+    overview: { totalVisits: overall?.visits || 0, uniqueUsers: overall?.unique || 0, clicksToService: overall?.clicks || 0 },
+    timeline,
+    timelineSource: timeline.length ? 'feature.fm' : '',
+    referrals: tableRows(referrals),
+    channels: tableRows(channels),
+    services: (services || []).map(s => ({ name: s.name, clicks: s.totals || 0, percentage: `${s.percentage ?? 0}%`, iconUrl: s._signedImages?.icon40x40 || s.icon || '' }))
+      .sort((a, b) => b.clicks - a.clicks),
+    countries: tableRows(locations).map(c => ({ code: c.name, name: (() => { try { return regionNames.of(c.name); } catch { return c.name; } })(), flag: flagOf(c.name), visits: c.visits || 0, percentage: c.visitsPercent || '', clicksToService: c.clicksToService || 0 }))
+  };
+  console.log(`Feature.fm import: ${data.overview.totalVisits} visits, ${data.overview.clicksToService} clicks, ${data.services.length} services, ${data.referrals.length} referrers, ${data.countries.length} countries, ${timeline.length} days`);
+  return data;
 }
 
 // Article scraper function for PR placements

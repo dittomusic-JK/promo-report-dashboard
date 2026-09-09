@@ -421,6 +421,7 @@
     <div class="nav-links">
       <a href="/">Home</a>
       <a href="/library">Library</a>
+      <a href="/handbooks">Handbooks</a>
     </div>
   </nav>
   
@@ -492,12 +493,23 @@
         </div>
         
         <div class="section-content" id="sectionSocial">
+        <div class="row">
+          <div class="form-group">
+            <label>Campaign start</label>
+            <input type="date" name="campaignStart" id="campaignStart">
+          </div>
+          <div class="form-group">
+            <label>Campaign end</label>
+            <input type="date" name="campaignEnd" id="campaignEnd">
+          </div>
+        </div>
         <div class="form-group">
-          <label>Feature.fm Analytics URL</label>
+          <label>Feature.fm shared analytics link</label>
           <div class="import-row">
-            <input type="url" id="ffmUrl" placeholder="https://console.feature.fm/analytics/...">
+            <input type="url" id="ffmUrl" placeholder="https://console.feature.fm/analytics/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/general">
             <button type="button" class="btn btn-secondary" id="importBtn">Import Data</button>
           </div>
+          <p style="color:#aaaacc; font-size:12px; margin-top:6px;">Use the link from “Share analytics” in Feature.fm (its id has dashes). The private console URL needs a login and won’t import. Numbers are pulled for exactly the campaign dates above.</p>
           <div id="importStatus" class="import-status" style="display: none;"></div>
         </div>
         
@@ -942,12 +954,16 @@
         const res = await fetch('/api/scrape-article', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url })
+          body: JSON.stringify({ url, startDate, endDate })
         });
         
         const data = await res.json();
         
         if (data.error) throw new Error(data.error);
+        
+        // Fill the human-readable date range if the team hasn't typed one
+        const drEl = document.querySelector('[name="dateRange"]');
+        if (drEl && !drEl.value && data.dateRange) drEl.value = data.dateRange;
         
         // Store the data
         fetchedPR[index] = data;
@@ -1050,12 +1066,16 @@
         const res = await fetch('/api/scrape-spotify-playlist', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url })
+          body: JSON.stringify({ url, startDate, endDate })
         });
         
         const data = await res.json();
         
         if (data.error) throw new Error(data.error);
+        
+        // Fill the human-readable date range if the team hasn't typed one
+        const drEl = document.querySelector('[name="dateRange"]');
+        if (drEl && !drEl.value && data.dateRange) drEl.value = data.dateRange;
         
         // Store the data
         fetchedPlaylists[index] = data;
@@ -1117,7 +1137,10 @@
     // Import Feature.fm data
     document.getElementById('importBtn').addEventListener('click', async () => {
       const url = document.getElementById('ffmUrl').value;
-      if (!url) return alert('Please enter a Feature.fm URL');
+      if (!url) return alert('Please enter a Feature.fm shared analytics link');
+      const startDate = document.getElementById('campaignStart').value;
+      const endDate = document.getElementById('campaignEnd').value;
+      if (!startDate || !endDate) return alert('Enter the campaign start and end dates first, so the numbers cover the campaign and not the last 30 days');
       
       const statusEl = document.getElementById('importStatus');
       statusEl.style.display = 'block';
@@ -1128,12 +1151,16 @@
         const res = await fetch('/api/scrape-ffm', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url })
+          body: JSON.stringify({ url, startDate, endDate })
         });
         
         const data = await res.json();
         
         if (data.error) throw new Error(data.error);
+        
+        // Fill the human-readable date range if the team hasn't typed one
+        const drEl = document.querySelector('[name="dateRange"]');
+        if (drEl && !drEl.value && data.dateRange) drEl.value = data.dateRange;
         
         // Populate form fields
         if (data.overview) {
@@ -1155,7 +1182,7 @@
         window.ffmData = data;
         
         statusEl.className = 'import-status success';
-        statusEl.textContent = `✓ Imported: ${data.overview?.totalVisits || 0} visits, ${data.overview?.clicksToService || 0} clicks to service`;
+        statusEl.textContent = `✓ Imported: ${data.overview?.totalVisits || 0} visits, ${data.overview?.clicksToService || 0} clicks to service, ${data.services?.length || 0} services, ${data.referrals?.length || 0} referrers` + (data.timeline?.length ? `, ${data.timeline.length}-day timeline` : ', no daily timeline found');
         
       } catch (err) {
         statusEl.className = 'import-status error';
@@ -1189,6 +1216,8 @@
           document.querySelector('[name="artistName"]').value = report.artistName || '';
           document.querySelector('[name="releaseTitle"]').value = report.releaseTitle || '';
           document.querySelector('[name="dateRange"]').value = report.dateRange || '';
+          document.getElementById('campaignStart').value = report.campaignStart || '';
+          document.getElementById('campaignEnd').value = report.campaignEnd || '';
           document.querySelector('[name="smartLink"]').value = report.smartLink || '';
           document.querySelector('[name="totalPlaylists"]').value = report.totalPlaylists || '';
           document.querySelector('[name="spotifyAudience"]').value = report.spotifyAudience || '';
@@ -1205,7 +1234,8 @@
             window.ffmData = {
               referrals: report.analytics.referrals || [],
               services: report.analytics.services || [],
-              countries: report.analytics.countries || []
+              countries: report.analytics.countries || [],
+              timeline: report.analytics.timeline || []
             };
           }
           
@@ -1344,6 +1374,8 @@
         artistName: formData.get('artistName'),
         releaseTitle: formData.get('releaseTitle'),
         dateRange: formData.get('dateRange'),
+        campaignStart: formData.get('campaignStart') || '',
+        campaignEnd: formData.get('campaignEnd') || '',
         smartLink: formData.get('smartLink'),
         heroArtwork: heroArtwork,
         sectionVisibility: {
@@ -1359,7 +1391,8 @@
           videoViews: parseInt(formData.get('videoViews')) || 0,
           referrals: window.ffmData?.referrals || [],
           services: window.ffmData?.services || [],
-          countries: window.ffmData?.countries || []
+          countries: window.ffmData?.countries || [],
+          timeline: window.ffmData?.timeline || []
         },
         prPlacements: [],
         playlists: [],

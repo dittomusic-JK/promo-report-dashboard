@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Handbooks - Promo</title>
+<style>
+    @font-face {
+      font-family: 'Satoshi';
+      src: url('/assets/Satoshi-Variable.woff2') format('woff2');
+      font-weight: 100 900;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Neusa';
+      src: url('/assets/Neusa-ExtraBold.otf') format('opentype');
+      font-weight: 800;
+      font-display: swap;
+    }
+    
+    :root {
+      --promo-pink: #F64780;
+      --chayellow: #E0FF4F;
+      --gunmetal: #0C262A;
+      --x-black: #070707;
+      --alt-grey: #3A2F3B;
+      --soft-pink: #FFEAEA;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Satoshi', -apple-system, sans-serif;
+      background: var(--gunmetal);
+      color: #fff;
+      min-height: 100vh;
+    }
+    
+    /* Navigation */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 40px;
+      background: var(--x-black);
+      border-bottom: 1px solid rgba(246, 71, 128, 0.2);
+    }
+    .nav-logo { height: 36px; }
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+    }
+    .nav-links a {
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: #fff; }
+    .nav-links a.active { color: var(--chayellow); }
+    .nav-actions {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-family: 'Neusa', sans-serif;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-primary {
+      background: var(--promo-pink);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(246, 71, 128, 0.4);
+    }
+    .btn-secondary {
+      background: var(--chayellow);
+      color: var(--x-black);
+    }
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(224, 255, 79, 0.3);
+    }
+    .btn-ghost {
+      background: transparent;
+      color: rgba(255,255,255,0.7);
+      padding: 8px;
+    }
+    .btn-ghost:hover {
+      color: #fff;
+      background: rgba(255,255,255,0.1);
+    }
+    
+    /* Main Content */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px;
+    }
+    
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+    }
+    .header h1 {
+      font-family: 'Neusa', sans-serif;
+      font-size: 32px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    /* Search */
+    .search-box {
+      display: flex;
+      align-items: center;
+      background: var(--alt-grey);
+      border-radius: 8px;
+      padding: 0 16px;
+      width: 320px;
+      border: 2px solid transparent;
+      transition: border-color 0.2s;
+    }
+    .search-box:focus-within {
+      border-color: var(--promo-pink);
+    }
+    .search-box svg {
+      width: 20px;
+      height: 20px;
+      color: rgba(255,255,255,0.4);
+      flex-shrink: 0;
+    }
+    .search-box input {
+      background: none;
+      border: none;
+      color: #fff;
+      font-family: 'Satoshi', sans-serif;
+      font-size: 14px;
+      padding: 12px;
+      width: 100%;
+      outline: none;
+    }
+    .search-box input::placeholder {
+      color: rgba(255,255,255,0.4);
+    }
+    
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 80px 40px;
+    }
+    .empty-state h2 {
+      font-family: 'Neusa', sans-serif;
+      font-size: 24px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      color: var(--chayellow);
+    }
+    .empty-state p {
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 24px;
+    }
+    
+    /* Reports List */
+    .reports-list {
+      background: var(--alt-grey);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    
+    .list-header {
+      display: grid;
+      grid-template-columns: 60px 1fr 180px 140px 120px;
+      gap: 16px;
+      padding: 16px 24px;
+      background: rgba(0,0,0,0.2);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgba(255,255,255,0.5);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .report-row {
+      display: grid;
+      grid-template-columns: 60px 1fr 180px 140px 120px;
+      gap: 16px;
+      padding: 16px 24px;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      transition: background 0.2s;
+    }
+    .report-row:last-child {
+      border-bottom: none;
+    }
+    .report-row:hover {
+      background: rgba(246, 71, 128, 0.05);
+    }
+    
+    .report-artwork {
+      width: 48px;
+      height: 48px;
+      border-radius: 6px;
+      object-fit: cover;
+      background: var(--gunmetal);
+    }
+    .report-artwork-placeholder {
+      width: 48px;
+      height: 48px;
+      border-radius: 6px;
+      background: var(--gunmetal);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    
+    .report-info {
+      min-width: 0;
+    }
+    .report-title {
+      font-weight: 600;
+      font-size: 15px;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .report-artist {
+      font-size: 13px;
+      color: var(--promo-pink);
+    }
+    
+    .report-date {
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+    }
+    
+    .report-actions {
+      display: flex;
+      gap: 4px;
+      justify-content: flex-end;
+    }
+    
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      color: rgba(255,255,255,0.5);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .icon-btn:hover {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+    }
+    .icon-btn.view:hover { color: var(--chayellow); }
+    .icon-btn.edit:hover { color: var(--promo-pink); }
+    .icon-btn.share:hover { color: #1DB954; }
+    .icon-btn.delete:hover { 
+      color: #ff4444;
+      background: rgba(255, 68, 68, 0.1);
+    }
+    .icon-btn.copied {
+      color: #22c55e !important;
+      background: rgba(34, 197, 94, 0.1);
+    }
+    
+    .icon-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+    
+    /* Loading */
+    .loading {
+      text-align: center;
+      padding: 60px;
+      color: rgba(255,255,255,0.5);
+    }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(246, 71, 128, 0.2);
+      border-top-color: var(--promo-pink);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    /* Delete Confirmation Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal {
+      background: var(--alt-grey);
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 400px;
+      text-align: center;
+    }
+    .modal h3 {
+      font-family: 'Neusa', sans-serif;
+      font-size: 20px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      color: var(--chayellow);
+    }
+    .modal p {
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 24px;
+      font-size: 14px;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+    .btn-cancel {
+      background: var(--gunmetal);
+      color: #fff;
+    }
+    .btn-delete {
+      background: #ff4444;
+      color: #fff;
+    }
+  
+    .cards{display:grid;gap:14px}
+    .hb{display:grid;grid-template-columns:56px 1fr auto;gap:16px;align-items:center;background:var(--alt-grey);border-radius:14px;padding:14px 18px;text-decoration:none;color:#fff}
+    .hb .thumb{width:56px;height:56px;border-radius:10px;object-fit:cover;background:var(--gunmetal)}
+    .hb b{font-family:'Neusa',sans-serif;font-size:18px;text-transform:uppercase;letter-spacing:.5px;display:block}
+    .hb small{color:rgba(255,255,255,.6);font-size:12.5px;display:block;margin-top:2px}
+    .hb .meta{display:flex;gap:14px;align-items:center;font-size:12px;color:rgba(255,255,255,.7);flex-wrap:wrap;justify-content:flex-end}
+    .pill{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:4px 8px;border-radius:4px;border:1px solid rgba(255,255,255,.25)}
+    .pill.sent{color:var(--chayellow);border-color:rgba(224,255,79,.5)}
+    .hb .acts{display:flex;gap:6px}
+    .hb .acts button{background:transparent;border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:6px;padding:6px 10px;font-size:12px;cursor:pointer;font-family:'Satoshi',sans-serif}
+    .hb .acts button:hover{border-color:var(--promo-pink)}
+    .empty{color:rgba(255,255,255,.6);padding:40px;text-align:center;background:var(--alt-grey);border-radius:14px}
+    .lib{margin-top:48px}
+    .lib table{width:100%;border-collapse:collapse;font-size:13px}
+    .lib th{text-align:left;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);padding:8px;border-bottom:1px solid rgba(255,255,255,.15)}
+    .lib td{padding:8px;border-bottom:1px solid rgba(255,255,255,.08);vertical-align:top}
+    .lib td:last-child{color:rgba(255,255,255,.7)}
+    .search{display:flex;gap:10px;margin-bottom:20px}
+    .search input{flex:1;background:var(--x-black);border:2px solid transparent;border-radius:8px;padding:12px 16px;color:#fff;font-family:'Satoshi',sans-serif;font-size:14px}
+    .search input:focus{outline:none;border-color:var(--promo-pink)}
+  </style>
+</head>
+<body>
+  <nav>
+    <img src="/assets/promo-logo.svg" alt="Promo" class="nav-logo">
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/library">Library</a>
+      <a href="/handbooks" class="active">Handbooks</a>
+    </div>
+    <div class="nav-actions">
+      <a href="/handbooks/new" class="btn btn-secondary">+ New Handbook</a>
+      <a href="/create" class="btn btn-ghost">+ New Report</a>
+    </div>
+  </nav>
+  <div class="container">
+    <div class="header"><h1 style="font-family:'Neusa',sans-serif;font-size:32px;text-transform:uppercase">Social Handbooks</h1></div>
+    <div class="search"><input id="q" placeholder="Search by artist or release…"></div>
+    <div class="cards" id="cards"></div>
+
+    <div class="lib" id="library">
+      <div class="header"><div><h2 style="font-family:'Neusa',sans-serif;font-size:22px;text-transform:uppercase">Idea library</h2><p style="color:rgba(255,255,255,.6);font-size:13px;margin-top:4px">The shared bank every handbook draws from. <span id="libCount"></span></p></div><button class="btn btn-ghost" id="libToggle">Show</button></div>
+      <div id="libBody" style="display:none"><table><thead><tr><th>Idea</th><th>Format</th><th>Platforms</th><th>Phase</th><th>Text</th></tr></thead><tbody id="libRows"></tbody></table><p style="color:rgba(255,255,255,.5);font-size:12px;margin-top:10px">Editing the library in place is coming next. For now, tweak wording per handbook in the builder.</p></div>
+    </div>
+  </div>
+  <script>
+    const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+    const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const d=s=>{if(!s)return '';const [y,m,dd]=s.split('-').map(Number);return `${dd} ${MON[m-1]}`;};
+    async function load(q=''){
+      const rows=await fetch('/api/handbooks?q='+encodeURIComponent(q)).then(r=>r.json());
+      const el=document.getElementById('cards');
+      if(!rows.length){el.innerHTML=`<div class="empty">${q?'No handbooks match that search.':'No handbooks yet. Create the first one.'}</div>`;return;}
+      el.innerHTML=rows.map(h=>`<div class="hb">
+        ${h.hero?`<img class="thumb" src="${esc(h.hero)}" alt="">`:'<div class="thumb"></div>'}
+        <a href="/handbooks/${h.id}" style="text-decoration:none;color:#fff"><b>${esc(h.artistName||'Untitled')}${h.releaseTitle?' · '+esc(h.releaseTitle):''}</b><small>${h.campaignStart?d(h.campaignStart)+' – '+d(h.campaignEnd)+' · '+h.weeks+' weeks':'No dates yet'} · ${h.posts} posts${h.status==='sent'?` · ${h.done}/${h.posts} posted · opened ${h.opens}×`:''}</small></a>
+        <div class="meta"><span class="pill ${h.status==='sent'?'sent':''}">${h.status==='sent'?'Live':'Draft'}</span>
+          <div class="acts"><button onclick="location.href='/handbooks/${h.id}'">Edit</button><button onclick="window.open('/handbook/${h.id}','_blank')">View</button><button onclick="copyLink('${h.id}',this)">Copy link</button><button onclick="del('${h.id}','${esc(h.artistName)}')">Delete</button></div></div>
+      </div>`).join('');
+    }
+    async function copyLink(id,btn){try{await navigator.clipboard.writeText(location.origin+'/handbook/'+id);btn.textContent='Copied';setTimeout(()=>btn.textContent='Copy link',1500);}catch{prompt('Copy this link',location.origin+'/handbook/'+id);}}
+    async function del(id,name){if(!confirm(`Delete the handbook for ${name}? The client link will stop working.`))return;await fetch('/api/handbooks/'+id,{method:'DELETE'});load(document.getElementById('q').value);}
+    document.getElementById('q').addEventListener('input',e=>load(e.target.value));
+    document.getElementById('libToggle').addEventListener('click',async e=>{const b=document.getElementById('libBody');const show=b.style.display==='none';b.style.display=show?'block':'none';e.target.textContent=show?'Hide':'Show';
+      if(show&&!b.dataset.loaded){const lib=await fetch('/api/handbook-config/library').then(r=>r.json());document.getElementById('libRows').innerHTML=lib.ideas.map(i=>`<tr><td><b>${esc(i.title)}</b></td><td>${esc(i.format)}</td><td>${i.platforms.map(p=>p==='ig'?'Instagram':'TikTok').join(', ')}</td><td>${({pre:'Pre-release',rel:'Release week',post:'Post-release',any:'Any time'})[i.phase]}</td><td>${esc(i.body)}</td></tr>`).join('');b.dataset.loaded='1';}});
+    fetch('/api/handbook-config/library').then(r=>r.json()).then(l=>document.getElementById('libCount').textContent=`${l.ideas.length} ideas.`);
+    load(); if(location.hash==='#library'){document.getElementById('libToggle').click();document.getElementById('library').scrollIntoView();}
+  </script>
+</body>
+</html>
