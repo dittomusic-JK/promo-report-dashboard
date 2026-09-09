@@ -82,6 +82,14 @@ function normaliseHandbook(input, existing = {}) {
   if (input.heroMode !== undefined) hb.heroMode = ['auto', 'background', 'artwork', 'press'].includes(input.heroMode) ? input.heroMode : 'auto';
   if (input.platforms !== undefined) hb.platforms = [...new Set((input.platforms || []).filter(p => p === 'ig' || p === 'tt'))];
   if (input.intro !== undefined) hb.intro = clean(input.intro, 1000);
+  if (input.hubCampaignId !== undefined) hb.hubCampaignId = String(input.hubCampaignId || '').replace(/\D/g, '') || null;
+  if (input.brief && typeof input.brief === 'object') {
+    hb.brief = Object.fromEntries(['about', 'biography', 'influences', 'comparisons', 'events', 'contributors', 'lyrics', 'assetLinks', 'musicVideo', 'additional'].map(k => [k, clean(input.brief[k], 4000)]));
+  }
+  if (input.socials && typeof input.socials === 'object') {
+    hb.socials = Object.fromEntries(['instagram', 'tiktok', 'facebook', 'twitter'].map(k => [k, clean(input.socials[k], 300)]));
+  }
+  if (input.contact && typeof input.contact === 'object') hb.contact = { name: clean(input.contact.name, 120), email: clean(input.contact.email, 200) };
   if (Array.isArray(input.posts)) {
     hb.posts = input.posts.slice(0, 200).map(p => ({
       id: /^[a-z0-9-]{1,40}$/i.test(p.id || '') ? p.id : newId(),

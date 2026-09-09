@@ -221,6 +221,30 @@ h1,h2,h3,h4{font-family:var(--display);font-weight:800;text-transform:uppercase;
 .mod .body .html img{max-width:120px;border-radius:4px}
 .mod .body textarea{font-family:ui-monospace,Menlo,monospace;font-size:12px;min-height:160px}
 .stat .l{margin-top:4px}
+.hub{border:1px solid var(--line);border-radius:var(--r);background:var(--sunk);padding:12px 14px;margin-bottom:16px}
+.hub-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
+.hub-head b{font-family:var(--display);font-size:16px;letter-spacing:.05em;text-transform:uppercase;display:block}
+.hub-body{display:grid;gap:8px}
+.hub-row{display:flex;gap:8px;align-items:center}
+.hub-row input{flex:1}
+.hub-list{display:grid;gap:4px;max-height:220px;overflow:auto}
+.hub-item{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:8px 10px;border-radius:var(--r-sm);background:var(--surface);border:1px solid transparent;font-size:13px}
+.hub-item:hover{border-color:var(--line-strong)}
+.hub-item small{display:block;color:var(--muted);font-size:11.5px}
+.hub-item .st{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:3px;padding:2px 5px;margin-left:6px}
+.hub-item .st.ok{color:var(--yellow);border-color:rgba(224,255,79,.4)}
+.hub-linked{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;color:var(--ink-2)}
+.hub-linked b{color:var(--ink)}
+.brief{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);margin-bottom:12px}
+.brief summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:10px 14px}
+.brief summary::-webkit-details-marker{display:none}
+.brief summary b{font-family:var(--display);font-size:15px;letter-spacing:.05em;text-transform:uppercase}
+.brief summary .plus{color:var(--muted);font-size:18px}
+.brief[open] summary .plus{transform:rotate(45deg)}
+.brief-body{padding:0 14px 14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.brief-body div{background:var(--sunk);border-radius:var(--r-sm);padding:10px 12px;font-size:13px;color:var(--ink-2);white-space:pre-wrap}
+.brief-body label{margin-bottom:4px}
+.brief-body a{color:var(--pink)}
 </style>
 </head>
 <body>
@@ -253,6 +277,10 @@ h1,h2,h3,h4{font-family:var(--display);font-weight:800;text-transform:uppercase;
     <div class="setup">
       <div class="card">
         <h3>Campaign</h3>
+        <div class="hub" id="hub">
+          <div class="hub-head"><div><div class="eyebrow">Ditto hub</div><b>Start from a questionnaire</b></div><span class="help" id="hubState">Checking…</span></div>
+          <div class="hub-body" id="hubBody"></div>
+        </div>
         <div class="fields">
           <div><label>Artist name</label><input id="fArtist" placeholder="e.g. Vanessa Forero"></div>
           <div><label>Release title</label><input id="fRelease" placeholder="e.g. Days Before"></div>
@@ -289,6 +317,7 @@ h1,h2,h3,h4{font-family:var(--display);font-weight:800;text-transform:uppercase;
           <div class="counts" id="counts"></div>
         </div>
         <div class="warns" id="warns"></div>
+        <details class="brief hidden" id="briefBox"><summary><span class="eyebrow">From the questionnaire</span><b id="briefTitle">Artist brief</b><span class="plus">+</span></summary><div class="brief-body" id="briefBody"></div></details>
         <div class="grid" id="grid"></div>
         <p class="note">Tokens like <b style="color:var(--yellow)">{release}</b>, <b style="color:var(--yellow)">{artist}</b> and <b style="color:var(--yellow)">{genre}</b> fill from Setup, so ideas stay reusable. Click a post to edit its wording for this artist only. If the artist moves a post, their date wins on their page and shows under Client activity.</p>
       </div>
@@ -340,7 +369,7 @@ h1,h2,h3,h4{font-family:var(--display);font-weight:800;text-transform:uppercase;
   const pathId=location.pathname.split('/').filter(Boolean)[1];
   let ID=pathId&&pathId!=='new'?pathId:null;
   let L=[], MODCFG={modules:[],intro:''};
-  const S={weeks:4,package:'promo',posts:[],sel:null,heroMode:'auto',artwork:'',pressShot:'',filter:'all',q:'',status:'draft',sentAt:null,modules:null,client:{done:{},moved:{},activity:[]},dirty:false};
+  const S={weeks:4,package:'promo',posts:[],sel:null,heroMode:'auto',artwork:'',pressShot:'',filter:'all',q:'',status:'draft',sentAt:null,modules:null,client:{done:{},moved:{},activity:[]},dirty:false,hubCampaignId:null,brief:null,socials:null,contact:null};
   let uid=1; const newId=()=>'p'+Date.now().toString(36)+(uid++).toString(36);
   const start=()=>{const v=$('fStart').value;return v?parse(v):null;};
   const days=()=>S.weeks*7;
@@ -366,7 +395,7 @@ h1,h2,h3,h4{font-family:var(--display);font-weight:800;text-transform:uppercase;
     $('previewBtn').href=ID?`/handbook/${ID}`:'#';
     $('previewBtn').classList.toggle('hidden',!ID);
   }
-  ['fArtist','fRelease','fGenre','fSmart','fStart','fRelDate','fManager','fIntro'].forEach(id=>$(id).addEventListener('input',()=>{markDirty();renderSetup();renderCal();}));
+  ['fArtist','fRelease','fGenre','fSmart','fStart','fRelDate','fManager','fIntro'].forEach(id=>$(id).addEventListener('input',()=>{markDirty();renderSetup();renderCal();if(id==='fArtist')renderBrief();}));
   document.querySelectorAll('.tier button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tier button').forEach(x=>x.classList.toggle('on',x===b));S.weeks=+b.dataset.weeks;S.package=S.weeks===6?'plus':'promo';S.posts=S.posts.filter(p=>p.day<days());markDirty();renderSetup();renderCal();}));
   document.querySelectorAll('[data-plat]').forEach(c=>c.addEventListener('change',()=>{c.parentElement.classList.toggle('on',c.checked);markDirty();renderCal();}));
   $('chain').addEventListener('click',e=>{const row=e.target.closest('[data-src]');if(!row||e.target.closest('button'))return;S.heroMode=row.dataset.src==='press'&&!S.pressShot?S.heroMode:row.dataset.src;markDirty();renderSetup();});
@@ -388,6 +417,56 @@ h1,h2,h3,h4{font-family:var(--display);font-weight:800;text-transform:uppercase;
     }catch(err){toast('Could not read that link: '+err.message);}
     $('artBtn').textContent='Get artwork';
   });
+
+  // ---------- Ditto hub import
+  let HUB={configured:false,campaigns:null};
+  function renderHub(){
+    const body=$('hubBody'), state=$('hubState');
+    if(S.hubCampaignId){
+      state.textContent='';
+      body.innerHTML=`<div class="hub-linked"><span>Linked to hub campaign <b>#${esc(S.hubCampaignId)}</b>${S.contact?.name?` · ${esc(S.contact.name)}`:''}${S.contact?.email?` · <a href="mailto:${esc(S.contact.email)}" style="color:var(--pink)">${esc(S.contact.email)}</a>`:''}</span><button class="btn btn-ghost sm" type="button" id="hubRefresh" ${HUB.configured?'':'disabled'}>Re-import</button></div>`;
+      $('hubRefresh')?.addEventListener('click',()=>importHub(S.hubCampaignId));
+      return;
+    }
+    if(!HUB.configured){
+      state.textContent='Not connected';
+      body.innerHTML=`<div class="help">Set <b>HUB_API_TOKEN</b> on the server and this box lists submitted questionnaires so a handbook starts pre-filled. Until then, fill the fields by hand.</div>`;
+      return;
+    }
+    state.textContent='Connected';
+    body.innerHTML=`<div class="hub-row"><input id="hubQ" placeholder="Search customer, email or campaign id…"><button class="btn btn-ghost sm" type="button" id="hubGo">Import</button></div><div class="hub-list" id="hubList"><div class="help">Loading questionnaires…</div></div>`;
+    const list=()=>{const q=($('hubQ').value||'').toLowerCase();const rows=(HUB.campaigns||[]).filter(c=>!q||c.customer.toLowerCase().includes(q)||c.email.toLowerCase().includes(q)||String(c.id)===q).slice(0,40);
+      $('hubList').innerHTML=rows.length?rows.map(c=>`<div class="hub-item"><div>${esc(c.customer||c.email||'Campaign '+c.id)} <span class="st ${c.statusId===2?'ok':''}">${esc(c.status||'')}</span><small>${esc(c.package)} · #${c.id}${c.submitted?' · submitted '+esc(c.submitted):''}${c.startDate?' · starts '+esc(c.startDate):''}</small></div><button class="btn btn-pink sm" type="button" data-hub="${c.id}" ${c.statusId===2?'':'title="Questionnaire not submitted yet"'}>Use</button></div>`).join(''):'<div class="help">No campaigns match.</div>';
+      $('hubList').querySelectorAll('[data-hub]').forEach(b=>b.addEventListener('click',()=>importHub(b.dataset.hub)));};
+    $('hubQ').addEventListener('input',list);
+    $('hubGo').addEventListener('click',()=>{const v=($('hubQ').value||'').trim();if(/^\d+$/.test(v))importHub(v);else toast('Pick a campaign from the list, or type its id');});
+    if(HUB.campaigns) list();
+    else fetch('/api/hub/campaigns').then(r=>r.json()).then(j=>{if(j.error)throw new Error(j.error);HUB.campaigns=j.campaigns.filter(c=>c.statusId===2||c.submitted);list();}).catch(err=>{$('hubList').innerHTML=`<div class="help unsaved">${esc(err.message)} You can still type a campaign id and press Import.</div>`;});
+  }
+  async function importHub(id){
+    toast('Importing questionnaire…');
+    try{
+      const r=await fetch(`/api/hub/campaigns/${id}/questionnaire`); const q=await r.json(); if(q.error) throw new Error(q.error);
+      const setIfEmpty=(el,v)=>{if(v&&!$(el).value){$(el).value=v;}};
+      setIfEmpty('fArtist',q.artistName); setIfEmpty('fRelease',q.releaseTitle); setIfEmpty('fRelDate',q.releaseDate); setIfEmpty('fGenre',q.genre); setIfEmpty('fSmart',q.smartLink||q.releaseLink); setIfEmpty('fStart',q.campaignStart);
+      document.querySelectorAll('[data-plat]').forEach(c=>{if(c.dataset.plat==='tt'){c.checked=q.platforms.includes('tt');c.parentElement.classList.toggle('on',c.checked);}});
+      S.hubCampaignId=String(q.hubCampaignId||id); S.brief=q.brief; S.socials=q.socials; S.contact=q.contact;
+      if(!S.pressShot&&q.pressShots.length){
+        try{const pr=await fetch(`/api/hub/campaigns/${id}/press-shot`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:q.pressShots[0]})});const pj=await pr.json();if(pj.url){S.pressShot=pj.url;S.heroMode='auto';}}catch{}
+      }
+      markDirty(); renderSetup(); renderHub(); renderBrief(); renderCal();
+      toast(`Imported ${q.artistName||'campaign '+id}${q.pressShots.length?' with press shot':''}`);
+    }catch(err){toast('Import failed: '+err.message);}
+  }
+  function renderBrief(){
+    const b=S.brief; const box=$('briefBox');
+    if(!b||!Object.values(b).some(Boolean)){box.classList.add('hidden');return;}
+    box.classList.remove('hidden');
+    $('briefTitle').textContent=`${$('fArtist').value||'Artist'} brief from the questionnaire`;
+    const L={about:'About the release',biography:'Biography',influences:'Influences',comparisons:'Comparisons',events:'Upcoming live events',contributors:'Contributors',lyrics:'Lyrics',assetLinks:'Asset links',musicVideo:'Music video',additional:'Additional notes'};
+    const soc=S.socials?Object.entries(S.socials).filter(([,v])=>v).map(([k,v])=>`<a href="${esc(v)}" target="_blank" rel="noopener">${k}</a>`).join(' · '):'';
+    $('briefBody').innerHTML=Object.entries(L).filter(([k])=>b[k]).map(([k,l])=>`<div><label>${l}</label>${/^https?:\/\//.test(b[k])?`<a href="${esc(b[k])}" target="_blank" rel="noopener">${esc(b[k])}</a>`:esc(b[k])}</div>`).join('')+(soc?`<div><label>Socials</label>${soc}</div>`:'');
+  }
 
   // ---------- calendar
   function renderCal(){
@@ -532,7 +611,7 @@ h1,h2,h3,h4{font-family:var(--display);font-weight:800;text-transform:uppercase;
     return {artistName:$('fArtist').value,releaseTitle:$('fRelease').value,releaseDate:$('fRelDate').value,genre:$('fGenre').value,smartLink:$('fSmart').value,promoManager:$('fManager').value,
       campaignStart:$('fStart').value,campaignEnd:s?iso(addDays(s,days()-1)):'',weeks:S.weeks,package:S.package,platforms:plats(),heroMode:S.heroMode,artwork:S.artwork,pressShot:S.pressShot,intro:$('fIntro').value,
       posts:s?S.posts.map(p=>({id:p.id,date:iso(addDays(s,p.day)),title:p.title,body:p.body,format:p.format,platforms:p.platforms,sourceIdeaId:p.sourceIdeaId,release:!!p.release})):[],
-      modules:moduleState().map(m=>({id:m.id,on:m.on,html:m.html}))};
+      modules:moduleState().map(m=>({id:m.id,on:m.on,html:m.html})),hubCampaignId:S.hubCampaignId,brief:S.brief||undefined,socials:S.socials||undefined,contact:S.contact||undefined};
   }
   async function save(silent){
     if(!$('fArtist').value.trim()) {toast('Add the artist name first');return false;}
@@ -576,11 +655,13 @@ h1,h2,h3,h4{font-family:var(--display);font-weight:800;text-transform:uppercase;
         document.querySelectorAll('[data-plat]').forEach(c=>{c.checked=(h.platforms||['ig','tt']).includes(c.dataset.plat);c.parentElement.classList.toggle('on',c.checked);});
         S.heroMode=h.heroMode||'auto';S.artwork=h.artwork||'';S.pressShot=h.pressShot||'';S.status=h.status||'draft';S.sentAt=h.sentAt||null;S.client=h.client||{done:{},moved:{},activity:[]};
         S.modules=(h.modules&&h.modules.length)?h.modules.map(m=>({id:m.id,on:m.on!==false,html:m.html})):null;
+        S.hubCampaignId=h.hubCampaignId||null;S.brief=h.brief||null;S.socials=h.socials||null;S.contact=h.contact||null;
         const s=h.campaignStart?parse(h.campaignStart):null;
         S.posts=(h.posts||[]).map(p=>({...p,day:s?Math.round((parse(p.date)-s)/864e5):0}));
       }
     } else { const t=new Date(); $('fStart').value=iso(addDays(t,(8-t.getDay())%7||7)); }
-    renderSetup();renderCal();renderMods();renderActivity();
+    renderSetup();renderCal();renderMods();renderActivity();renderBrief();
+    fetch('/api/hub/status').then(r=>r.json()).then(j=>{HUB.configured=!!j.configured;renderHub();}).catch(()=>{HUB.configured=false;renderHub();});
   }
   boot().catch(err=>toast('Could not load: '+err.message));
 })();

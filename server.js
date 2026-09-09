@@ -11,6 +11,7 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { r2Put, r2Get, r2Delete, r2List, isConfigured as r2IsConfigured } from './r2.js';
 import { createHandbookStore, registerPublicHandbookRoutes, registerStaffHandbookRoutes } from './handbooks.js';
+import { registerHubRoutes, hubConfigured } from './hub.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -439,6 +440,10 @@ app.get('/library', (req, res) => {
 
 // Social Handbook: staff builder, list and config
 registerStaffHandbookRoutes(app, { store: handbookStore, publicDir: path.join(__dirname, 'public') });
+
+// Ditto Promo hub: pull questionnaires straight into a handbook or report (needs HUB_API_TOKEN)
+registerHubRoutes(app, { USE_R2, UPLOADS_DIR, r2Put });
+console.log(hubConfigured() ? '✓ Hub import enabled' : '· Hub import off (set HUB_API_TOKEN to enable)');
 
 // Upload image endpoint
 app.post('/api/upload', upload.single('image'), async (req, res) => {
