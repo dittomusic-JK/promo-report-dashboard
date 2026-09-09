@@ -24,6 +24,8 @@ http.createServer((req, res) => {
   if (!/^Bearer test$/.test(auth)) { res.writeHead(401, { 'content-type': 'application/json' }); return res.end('{"message":"Unauthenticated."}'); }
   const json = o => { res.writeHead(200, { 'content-type': 'application/json' }); res.end(JSON.stringify(o)); };
   if (req.url === '/campaigns') return json({ data: campaigns });
+  if (req.url === '/api/admin/campaigns/incoming') return json(campaigns.filter(c => c.user_campaign_status_id < 3));
+  if (req.url === '/api/admin/campaigns/social' || req.url === '/api/admin/campaigns/press') return json([]);
   if (req.url === '/questionnaire/228') return json(q);
   if (req.url === '/questionnaire/228/press-shots') return json(['http://localhost:8790/s3/campaigns/228/user-assets/press.jpg?X-Amz-Signature=fake']);
   if (req.url.startsWith('/s3/')) { res.writeHead(200, { 'content-type': 'image/jpeg' }); return res.end(img); }

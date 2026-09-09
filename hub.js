@@ -1,12 +1,15 @@
 /**
  * Ditto Promo hub (promo.dittomusic.com) integration.
  *
- * The hub's own front end reads campaigns and questionnaires as JSON using a
- * bearer token. With HUB_API_TOKEN set in the environment, the dashboard can
- * pull the same data server-side, so a handbook (or report) can be started
- * straight from a submitted questionnaire with no copy-and-paste.
+ * The hub is a Laravel app. Its front end calls two kinds of route:
+ *   /api/admin/...        token-authenticated (Authorization: Bearer <api_token>)
+ *   /questionnaire/{id}   web route, needs the browser session cookie
+ * Campaign lists come from the token-authenticated API. Questionnaire answers
+ * only exist on the web route until the hub team exposes them under /api/admin,
+ * so HUB_COOKIE (a staff session cookie) can be supplied as an interim bridge.
  *
- * Env: HUB_API_TOKEN (required), HUB_BASE_URL (default https://promo.dittomusic.com)
+ * Env: HUB_API_TOKEN (required), HUB_COOKIE (optional, e.g. "laravel_session=..."),
+ *      HUB_BASE_URL (default https://promo.dittomusic.com)
  */
 import path from 'path';
 import fs from 'fs';
@@ -14,11 +17,14 @@ import { v4 as uuidv4 } from 'uuid';
 
 const HUB_BASE = (process.env.HUB_BASE_URL || 'https://promo.dittomusic.com').replace(/\/$/, '');
 const TOKEN = process.env.HUB_API_TOKEN || '';
+const COOKIE = process.env.HUB_COOKIE || '';
 export const hubConfigured = () => !!TOKEN;
 
 async function hubGet(p) {
-  const res = await fetch(`${HUB_BASE}${p}`, { headers: { accept: 'application/json', 'x-requested-with': 'XMLHttpRequest', authorization: `Bearer ${TOKEN}` }, redirect: 'manual' });
-  if (res.status === 401 || res.status === 419 || res.status === 302) throw new Error('The hub rejected the token. HUB_API_TOKEN may have expired.');
+  const headers = { accept: 'application/json', 'x-requested-with': 'XMLHttpRequest', authorization: `Bearer ${TOKEN}` };
+  if (COOKIE) headers.cookie = COOKIE;
+  const res = await fetch(`${HUB_BASE}${p}`, { headers, redirect: 'manual' });
+  if (res.status === 401 || res.status === 419 || res.status === 302) throw new Error(p.startsWith('/api/') ? 'The hub rejected the token. HUB_API_TOKEN may have expired.' : 'The hub needs a browser session for questionnaire answers. Set HUB_COOKIE, or ask the hub team to expose the questionnaire under /api/admin.');
   if (!res.ok) throw new Error(`Hub responded ${res.status} for ${p}`);
   const ct = res.headers.get('content-type') || '';
   if (!/json/i.test(ct)) throw new Error(`Hub returned ${ct.split(';')[0] || 'a non-JSON response'} for ${p}. The token may not be valid without a browser session.`);
@@ -73,14 +79,24 @@ export function normaliseCampaign(c) {
 }
 
 export function registerHubRoutes(app, { USE_R2, UPLOADS_DIR, r2Put }) {
-  app.get('/api/hub/status', (req, res) => res.json({ configured: hubConfigured(), base: HUB_BASE }));
+  app.get('/api/hub/status', (req, res) => res.json({ configured: hubConfigured(), sessionBridge: !!COOKIE, base: HUB_BASE }));
 
   // Campaign list, newest questionnaire submissions first
   app.get('/api/hub/campaigns', async (req, res) => {
     if (!hubConfigured()) return res.status(503).json({ error: 'Hub import is not set up. Add HUB_API_TOKEN to the environment.' });
     try {
-      const raw = await hubGet('/campaigns');
-      const list = Array.isArray(raw) ? raw : (raw.data || raw.campaigns || []);
+      // Token-authenticated admin API, one list per status; fall back to the web route if it isn't there
+      const statuses = ['incoming', 'social', 'press'];
+      let list = [];
+      try {
+        const results = await Promise.all(statuses.map(st => hubGet(`/api/admin/campaigns/${st}`).catch(() => null)));
+        for (const raw of results) { if (!raw) continue; const arr = Array.isArray(raw) ? raw : (raw.data || raw.campaigns || []); list.push(...arr); }
+        if (!list.length) throw new Error('empty');
+      } catch {
+        const raw = await hubGet('/campaigns');
+        list = Array.isArray(raw) ? raw : (raw.data || raw.campaigns || []);
+      }
+      list = list.filter((c, i, a) => a.findIndex(x => x.id === c.id) === i);
       const q = String(req.query.q || '').toLowerCase();
       const rows = list.map(normaliseCampaign)
         .filter(c => !q || c.customer.toLowerCase().includes(q) || c.email.toLowerCase().includes(q) || String(c.id) === q)
@@ -95,7 +111,9 @@ export function registerHubRoutes(app, { USE_R2, UPLOADS_DIR, r2Put }) {
     const id = String(req.params.id).replace(/\D/g, '');
     if (!id) return res.status(400).json({ error: 'Campaign id must be a number' });
     try {
-      const [doc, shots] = await Promise.all([hubGet(`/questionnaire/${id}`), hubGet(`/questionnaire/${id}/press-shots`).catch(() => [])]);
+      const qPath = async () => { try { return await hubGet(`/api/admin/campaign/${id}/questionnaire`); } catch { return hubGet(`/questionnaire/${id}`); } };
+      const sPath = async () => { try { return await hubGet(`/api/admin/campaign/${id}/press-shots`); } catch { return hubGet(`/questionnaire/${id}/press-shots`).catch(() => []); } };
+      const [doc, shots] = await Promise.all([qPath(), sPath()]);
       res.json(normaliseQuestionnaire(doc, shots));
     } catch (err) { res.status(502).json({ error: err.message }); }
   });
@@ -107,7 +125,7 @@ export function registerHubRoutes(app, { USE_R2, UPLOADS_DIR, r2Put }) {
     const { url } = req.body || {};
     try {
       let src = url;
-      if (!src) { const shots = await hubGet(`/questionnaire/${id}/press-shots`); src = Array.isArray(shots) ? shots[0] : null; }
+      if (!src) { const shots = await hubGet(`/api/admin/campaign/${id}/press-shots`).catch(() => hubGet(`/questionnaire/${id}/press-shots`)); src = Array.isArray(shots) ? shots[0] : null; }
       const allowed = /^https:\/\/[a-z0-9.-]*amazonaws\.com\//i.test(src || '') || (process.env.NODE_ENV !== 'production' && /^http:\/\/localhost:\d+\//.test(src || ''));
       if (!src || !allowed) return res.status(400).json({ error: 'No press shot on this questionnaire' });
       const r = await fetch(src);
