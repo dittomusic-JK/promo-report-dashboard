@@ -212,6 +212,10 @@ h1,h2,h3,h4{font-family:var(--display);font-weight:800;text-transform:uppercase;
 .pi{display:inline-grid;place-items:center;width:16px;height:16px;border-radius:4px;color:var(--ink-2)}
 .pi svg{width:12px;height:12px}.pi.ig{color:var(--pink)}.pi.tt{color:var(--ink)}
 .tag svg{width:11px;height:11px;vertical-align:-2px;margin-right:3px}
+.idea.used{opacity:.55}
+.idea.used:hover{opacity:.85}
+.usedtick{display:inline-grid;place-items:center;width:16px;height:16px;border-radius:50%;background:var(--yellow);color:var(--on-yellow);font-size:11px;margin-right:6px;vertical-align:-2px;font-family:var(--body)}
+.tag.on-cal{color:var(--yellow);border-color:rgba(224,255,79,.4)}
 .checks label svg{width:14px;height:14px}
 .top nav a{cursor:pointer}
 .hidden{display:none!important}
@@ -469,9 +473,9 @@ h1,h2,h3,h4{font-family:var(--display);font-weight:800;text-transform:uppercase;
   }
 
   // ---------- calendar
-  function renderCal(){
+  function renderCal(keepSide){
     const s=start();
-    if(!s){$('grid').innerHTML='<div class="notice" style="padding:20px;color:var(--muted)">Set the campaign start date in Setup to build the calendar.</div>';$('counts').innerHTML='';$('warns').innerHTML='';$('tabCount').textContent=S.posts.length;renderSide();return;}
+    if(!s){$('grid').innerHTML='<div class="notice" style="padding:20px;color:var(--muted)">Set the campaign start date in Setup to build the calendar.</div>';$('counts').innerHTML='';$('warns').innerHTML='';$('tabCount').textContent=S.posts.length;if(!keepSide)renderSide();return;}
     const rel=$('fRelDate').value;
     let h='<div class="hdr">'+DOW.map(d=>`<div>${d}</div>`).join('')+'</div>';
     for(let w=0;w<S.weeks;w++){
@@ -502,7 +506,7 @@ h1,h2,h3,h4{font-family:var(--display);font-weight:800;text-transform:uppercase;
     if(plats().includes('tt')&&S.posts.length&&!tt)warns.push('TikTok is switched on but no TikTok posts are planned.');
     $('warns').innerHTML=warns.map(w=>`<div class="warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>${w}</div>`).join('');
     document.querySelector('[data-tab=calendar] .n').classList.toggle('warn',warns.length>0);
-    renderSide();
+    if(!keepSide)renderSide();
   }
   function addIdea(ideaId,day){
     const i=L.find(x=>x.id===ideaId); if(!i) return;
@@ -510,14 +514,32 @@ h1,h2,h3,h4{font-family:var(--display);font-weight:800;text-transform:uppercase;
     S.posts.push({id:newId(),sourceIdeaId:i.id,title:i.title,format:i.format,platforms:pl.length?pl:[p[0]||'ig'],body:i.body,day,release:i.id==='happy-release-day'});
     S.sel={kind:'post',id:S.posts[S.posts.length-1].id}; markDirty(); renderCal();
   }
+  // Release already out before the campaign starts: a post-release plan across the whole run
+  const PLAN_POST4=[[0,'artwork-post'],[2,'live-photos'],[4,'create-a-playlist'],[5,'ama'],[7,'creative-reels'],[9,'start-a-routine'],[10,'acoustic-version'],[11,'playlisting-thank-you'],[12,'reshare-fan-stories'],[13,'ig-live-listening-party'],[15,'bts-video'],[16,'track-vs-track'],[17,'transitional-video'],[19,'the-journey'],[20,'lyric-graphic'],[21,'press-features'],[22,'rehearsal-storyline-bands'],[24,'fan-duets-and-stitches'],[25,'artist-background'],[26,'video-response'],[27,'thank-you-post']];
+  const PLAN_POST6=PLAN_POST4.concat([[29,'spotify-wrapped-style-graphic'],[31,'behindthesong-reel'],[33,'merch-competition'],[35,'get-ready-with-me'],[37,'trending-audio-your-niche'],[39,'tease-something-new'],[41,'anniversary-post']]);
+  // Release after the campaign ends: build hype without a release-day post
+  const PLAN_PRE4=[[0,'artwork-reveal-2'],[2,'write-a-song-with-me'],[4,'create-a-playlist-2'],[5,'ama'],[7,'teaser-snippet-2'],[9,'story-teaser'],[10,'acoustic-version'],[12,'get-them-guessing'],[13,'live-photos'],[15,'bts-video'],[16,'competition'],[18,'transitional-video'],[19,'presave-party'],[21,'start-the-countdown'],[22,'rehearsal-storyline-bands'],[24,'press-features'],[25,'artist-background'],[26,'video-response'],[27,'tease-something-new']];
+  const PLAN_PRE6=PLAN_PRE4.concat([[29,'lyric-graphic'],[31,'creative-reels'],[33,'the-journey'],[35,'behindthesong-reel'],[37,'get-ready-with-me'],[39,'trending-audio-your-niche'],[41,'thank-you-post']]);
+  const pick=(ideaId)=>L.find(x=>x.id===ideaId)?ideaId:null;
   $('suggestBtn').addEventListener('click',()=>{
     const s=start(); if(!s) return toast('Set the campaign start date first');
     if(S.posts.length&&!confirm('Replace the current calendar with a suggested plan?')) return;
     S.posts=[];S.sel=null;
     const rel=$('fRelDate').value; const relOff=rel?Math.round((parse(rel)-s)/864e5):11;
-    const shift=relOff-11;
-    (S.weeks===6?PLAN6:PLAN4).forEach(([d,ideaId])=>{let day=d+shift;if(day<0||day>=days())return;addIdea(ideaId,day);});
-    S.sel=null;renderCal();toast(`Suggested ${S.posts.length} posts around the release date`);
+    let plan, label;
+    if(relOff<2){ plan=S.weeks===6?PLAN_POST6:PLAN_POST4; label='a post-release plan (the release is already out)'; }
+    else if(relOff>=days()-1){ plan=S.weeks===6?PLAN_PRE6:PLAN_PRE4; label='a pre-release plan (the release lands after the campaign)'; }
+    else {
+      // standard plan centred on the release; shift, then wrap any posts that fall off the edges back into the run
+      const base=S.weeks===6?PLAN6:PLAN4, shift=relOff-11;
+      plan=base.map(([d,id])=>[d+shift,id]);
+      const free=()=>[...Array(days()).keys()].filter(d=>!plan.some(([x])=>x===d));
+      // posts that fall off the start move to the end of the run (they become post-release content); ones off the end move to the start
+      plan=plan.map(([d,id])=>{ if(d>=0&&d<days()) return [d,id]; const f=free(); const slot=d<0?f[f.length-1]:f[0]; return slot===undefined?null:[slot,id]; }).filter(Boolean);
+      label='a plan around the release date';
+    }
+    plan.forEach(([d,ideaId])=>{ if(d<0||d>=days()) return; const id=pick(ideaId); if(id) addIdea(id,d); });
+    S.sel=null;renderCal();toast(`Suggested ${S.posts.length} posts: ${label}`);
   });
   $('clearBtn').addEventListener('click',()=>{if(S.posts.length&&!confirm('Clear every post from the calendar?'))return;S.posts=[];S.sel=null;markDirty();renderCal();});
   const grid=$('grid');
@@ -539,14 +561,24 @@ h1,h2,h3,h4{font-family:var(--display);font-weight:800;text-transform:uppercase;
           <div><label>Platforms</label><div class="checks"><label class="${p.platforms.includes('ig')?'on':''}"><input type="checkbox" data-ep="ig" ${p.platforms.includes('ig')?'checked':''}>${PICON.ig}Instagram</label><label class="${p.platforms.includes('tt')?'on':''}"><input type="checkbox" data-ep="tt" ${p.platforms.includes('tt')?'checked':''}>${PICON.tt}TikTok</label></div></div></div>
           <div><label><input type="checkbox" id="eRel" ${p.release?'checked':''} style="width:auto;margin-right:6px;vertical-align:middle">Highlight as the release-day post</label></div>
           <div><label>Wording for this artist</label><textarea id="eB">${esc(p.body)}</textarea><div class="tok">Preview: ${fillHtml(p.body)}</div></div>
-          <div class="row"><button class="btn btn-ghost sm" id="eDel" type="button">Remove</button><button class="btn btn-pink sm" id="eDone" type="button">Done</button></div>
+          <div class="row"><button class="btn btn-ghost sm" id="eDel" type="button">Remove</button>${p.sourceIdeaId?'':'<button class="btn btn-ghost sm" id="eLib" type="button" title="Add this post to the shared idea library">Save to library</button>'}<button class="btn btn-pink sm" id="eDone" type="button">Done</button></div>
         </div>`;
-      $('eT').addEventListener('input',e=>{p.title=e.target.value;markDirty();renderCal();});
+      $('eT').addEventListener('input',e=>{p.title=e.target.value;markDirty();const b=grid.querySelector(`[data-post="${p.id}"] b`);if(b)b.textContent=p.title;});
       $('eB').addEventListener('input',e=>{p.body=e.target.value;markDirty();side.querySelector('.tok').innerHTML='Preview: '+fillHtml(p.body);const el=grid.querySelector(`[data-post="${p.id}"] span:last-child`);if(el)el.innerHTML=fillHtml(p.body);});
-      $('eF').addEventListener('change',e=>{p.format=e.target.value;markDirty();renderCal();});
-      $('eRel').addEventListener('change',e=>{p.release=e.target.checked;markDirty();renderCal();});
-      side.querySelectorAll('[data-ep]').forEach(c=>c.addEventListener('change',()=>{const v=[...side.querySelectorAll('[data-ep]')].filter(x=>x.checked).map(x=>x.dataset.ep);if(v.length){p.platforms=v;markDirty();renderCal();}else c.checked=true;}));
+      $('eF').addEventListener('change',e=>{p.format=e.target.value;markDirty();renderCal(true);});
+      $('eRel').addEventListener('change',e=>{p.release=e.target.checked;markDirty();renderCal(true);});
+      side.querySelectorAll('[data-ep]').forEach(c=>c.addEventListener('change',()=>{const v=[...side.querySelectorAll('[data-ep]')].filter(x=>x.checked).map(x=>x.dataset.ep);if(v.length){p.platforms=v;markDirty();renderCal(true);}else c.checked=true;}));
       $('eDel').addEventListener('click',()=>{S.posts=S.posts.filter(x=>x!==p);S.sel=null;markDirty();renderCal();});
+      $('eLib')?.addEventListener('click',async()=>{
+        if(!p.title.trim()||!p.body.trim()) return toast('Give the post a title and some wording first');
+        try{
+          const lib=await fetch('/api/handbook-config/library').then(r=>r.json());
+          const base=p.title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'idea'; let id=base,n=2; while(lib.ideas.some(i=>i.id===id)) id=base+'-'+(n++);
+          lib.ideas.push({id,title:p.title.trim(),format:p.format,platforms:p.platforms,phase:'any',category:'custom',body:p.body.trim()});
+          const r=await fetch('/api/handbook-config/library',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(lib)}); const j=await r.json(); if(j.error) throw new Error(j.error);
+          L=lib.ideas; p.sourceIdeaId=id; markDirty(); renderCal(); toast('Added to the idea library');
+        }catch(err){toast('Could not save to library: '+err.message);}
+      });
       $('eDone').addEventListener('click',()=>{S.sel=null;renderCal();});
       return;
     }
@@ -557,7 +589,7 @@ h1,h2,h3,h4{font-family:var(--display);font-weight:800;text-transform:uppercase;
       <div class="srch"><input id="q" placeholder="Search ${L.length} ideas…" value="${esc(S.q)}"></div>
       <div class="list">
         <div class="idea" data-idea="custom"><div><b>Custom post</b><div class="custom">Blank post you write from scratch for this artist.</div></div><button class="plus" data-plus="custom" type="button">+</button></div>
-        ${items.map(i=>`<div class="idea" draggable="true" data-idea="${esc(i.id)}"><div><b>${esc(i.title)}</b><div class="tags"><span class="tag">${esc(i.format)}</span>${i.platforms.map(x=>`<span class="tag ${x}">${PICON[x]}${PNAME[x]}</span>`).join('')}<span class="tag ph">${PH[i.phase]||''}</span></div></div><button class="plus" title="Add" data-plus="${esc(i.id)}" type="button">+</button></div>`).join('')}
+        ${items.map(i=>{const used=S.posts.filter(p=>p.sourceIdeaId===i.id).length;return `<div class="idea${used?' used':''}" draggable="true" data-idea="${esc(i.id)}" title="${used?'Already on the calendar '+(used>1?used+' times':'')+' – you can add it again':''}"><div><b>${used?'<span class="usedtick">✓</span>':''}${esc(i.title)}</b><div class="tags"><span class="tag">${esc(i.format)}</span>${i.platforms.map(x=>`<span class="tag ${x}">${PICON[x]}${PNAME[x]}</span>`).join('')}<span class="tag ph">${PH[i.phase]||''}</span>${used?`<span class="tag on-cal">On calendar${used>1?' ×'+used:''}</span>`:''}</div></div><button class="plus" title="Add" data-plus="${esc(i.id)}" type="button">+</button></div>`;}).join('')}
       </div>`;
     side.querySelectorAll('[data-f]').forEach(b=>b.addEventListener('click',()=>{S.filter=b.dataset.f;renderSide();}));
     $('q').addEventListener('input',e=>{S.q=e.target.value.toLowerCase();const pos=e.target.selectionStart;renderSide();const q=$('q');q.focus();q.setSelectionRange(pos,pos);});

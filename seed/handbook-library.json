@@ -1035,6 +1035,64 @@
    "phase": "any",
    "category": "tiktok",
    "body": "#BehindTheSong is being pushed by TikTok, show the BTS of the creation of one of your songs, or the process of writing it"
+  },
+  {
+   "id": "acoustic-version",
+   "title": "Acoustic version",
+   "format": "Reel",
+   "platforms": [
+    "ig",
+    "tt"
+   ],
+   "phase": "any",
+   "category": "video",
+   "body": "Share an acoustic performance of a track from {release}. Consider ways to make the frame visually interesting, maybe a stand-out outfit or a unique background to hook audiences in. In the caption, direct fans to the smartlink in your bio."
+  },
+  {
+   "id": "story-teaser",
+   "title": "Story teaser",
+   "format": "Story",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "pre",
+   "category": "presave",
+   "body": "Post a snippet to your story with the lead track off {release}, reminding your fans that it is out very soon! It is important to have this in as many places as possible. Direct your audience to the smartlink in your bio to pre-save the release."
+  },
+  {
+   "id": "tease-something-new",
+   "title": "Tease something new",
+   "format": "Feed",
+   "platforms": [
+    "ig",
+    "tt"
+   ],
+   "phase": "post",
+   "category": "misc",
+   "body": "Post a snippet to your feed to tease your fans with what you have coming next! It is really important to maintain the hype you have created so that your next release is just as successful, but also so that your audience stays engaged."
+  },
+  {
+   "id": "get-them-guessing",
+   "title": "Get them guessing",
+   "format": "Story",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "pre",
+   "category": "presave",
+   "body": "In your stories, post an image relating to {release} and ask your fans what they think the next track will be called. Use the quiz tool and create a multiple-answer quiz for your fans to try! A fun way to get fans engaged with the release."
+  },
+  {
+   "id": "start-the-countdown",
+   "title": "Start the countdown",
+   "format": "Story",
+   "platforms": [
+    "ig",
+    "tt"
+   ],
+   "phase": "pre",
+   "category": "presave",
+   "body": "Each day from today, post on your story with a press shot or still from the music video with the numbers counting down to release day overlaid in the Instagram font of your choice. This will build suspense and anticipation for {release}!"
   }
  ]
 }

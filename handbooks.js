@@ -42,7 +42,14 @@ export function createHandbookStore({ USE_R2, DATA_DIR, r2Get, r2Put, r2Delete, 
   async function config(name) {
     const key = `handbook-config/${name}.json`;
     let doc = await get(key);
-    if (!doc) { doc = seed(`handbook-${name}.json`); await put(key, doc); }
+    if (!doc) { doc = seed(`handbook-${name}.json`); await put(key, doc); return doc; }
+    // Non-destructive top-up: any seed entry the stored document doesn't know about is added,
+    // so new stock ideas/modules reach existing deployments without touching the team's edits.
+    const seeded = seed(`handbook-${name}.json`);
+    const listKey = name === 'library' ? 'ideas' : 'modules';
+    const have = new Set((doc[listKey] || []).map(x => x.id));
+    const missing = (seeded[listKey] || []).filter(x => !have.has(x.id) && !(doc.retired || []).includes(x.id));
+    if (missing.length) { doc[listKey] = [...(doc[listKey] || []), ...missing]; doc.updatedAt = new Date().toISOString(); await put(key, doc); }
     return doc;
   }
   return { get, put, del, list, config, seed };

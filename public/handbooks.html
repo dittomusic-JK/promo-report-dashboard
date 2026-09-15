@@ -378,7 +378,19 @@
     .lib td:last-child{color:rgba(255,255,255,.7)}
     .search{display:flex;gap:10px;margin-bottom:20px}
     .search input{flex:1;background:var(--x-black);border:2px solid transparent;border-radius:8px;padding:12px 16px;color:#fff;font-family:'Satoshi',sans-serif;font-size:14px}
-    .search input:focus{outline:none;border-color:var(--promo-pink)}
+.search input:focus{outline:none;border-color:var(--promo-pink)}
+    .lib-editor{background:var(--alt-grey);border-radius:12px;padding:16px;margin-bottom:14px;display:grid;gap:10px}
+    .lib-editor .g{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:10px}
+    .lib-editor label{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:4px;font-weight:700}
+    .lib-editor input,.lib-editor select,.lib-editor textarea{width:100%;background:var(--x-black);border:2px solid transparent;border-radius:8px;padding:10px 12px;color:#fff;font-family:'Satoshi',sans-serif;font-size:13px}
+    .lib-editor textarea{min-height:90px;resize:vertical}
+    .lib-editor input:focus,.lib-editor select:focus,.lib-editor textarea:focus{outline:none;border-color:var(--promo-pink)}
+    .lib-editor .chk{display:flex;gap:12px;align-items:center;padding-top:22px;font-size:13px}
+    .lib-editor .chk input{width:auto;accent-color:var(--promo-pink)}
+    .lib-editor .row{display:flex;gap:8px;justify-content:flex-end}
+    .lib .rowbtn{background:transparent;border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:6px;padding:4px 9px;font-size:12px;cursor:pointer;font-family:'Satoshi',sans-serif;margin-left:4px}
+    .lib .rowbtn:hover{border-color:var(--promo-pink)}
+    .lib tr.custom td:first-child b::after{content:' custom';font-size:10px;color:var(--chayellow);letter-spacing:.08em;text-transform:uppercase;margin-left:6px}
   </style>
 </head>
 <body>
@@ -401,7 +413,12 @@
 
     <div class="lib" id="library">
       <div class="header"><div><h2 style="font-family:'Neusa',sans-serif;font-size:22px;text-transform:uppercase">Idea library</h2><p style="color:rgba(255,255,255,.6);font-size:13px;margin-top:4px">The shared bank every handbook draws from. <span id="libCount"></span></p></div><button class="btn btn-ghost" id="libToggle">Show</button></div>
-      <div id="libBody" style="display:none"><table><thead><tr><th>Idea</th><th>Format</th><th>Platforms</th><th>Phase</th><th>Text</th></tr></thead><tbody id="libRows"></tbody></table><p style="color:rgba(255,255,255,.5);font-size:12px;margin-top:10px">Editing the library in place is coming next. For now, tweak wording per handbook in the builder.</p></div>
+      <div id="libBody" style="display:none">
+        <div class="search" style="margin-bottom:12px"><input id="libQ" placeholder="Filter ideas…"><button class="btn btn-secondary" id="libNew" type="button">+ New idea</button></div>
+        <div id="libEditor" class="lib-editor" style="display:none"></div>
+        <table><thead><tr><th>Idea</th><th>Format</th><th>Platforms</th><th>Phase</th><th>Text</th><th></th></tr></thead><tbody id="libRows"></tbody></table>
+        <p style="color:rgba(255,255,255,.5);font-size:12px;margin-top:10px">Changes apply to every handbook built from now on. Handbooks already created keep their own wording. Tokens: {release} {artist} {genre} {year}.</p>
+      </div>
     </div>
   </div>
   <script>
@@ -422,8 +439,43 @@
     async function copyLink(id,btn){try{await navigator.clipboard.writeText(location.origin+'/handbook/'+id);btn.textContent='Copied';setTimeout(()=>btn.textContent='Copy link',1500);}catch{prompt('Copy this link',location.origin+'/handbook/'+id);}}
     async function del(id,name){if(!confirm(`Delete the handbook for ${name}? The client link will stop working.`))return;await fetch('/api/handbooks/'+id,{method:'DELETE'});load(document.getElementById('q').value);}
     document.getElementById('q').addEventListener('input',e=>load(e.target.value));
-    document.getElementById('libToggle').addEventListener('click',async e=>{const b=document.getElementById('libBody');const show=b.style.display==='none';b.style.display=show?'block':'none';e.target.textContent=show?'Hide':'Show';
-      if(show&&!b.dataset.loaded){const lib=await fetch('/api/handbook-config/library').then(r=>r.json());document.getElementById('libRows').innerHTML=lib.ideas.map(i=>`<tr><td><b>${esc(i.title)}</b></td><td>${esc(i.format)}</td><td>${i.platforms.map(p=>p==='ig'?'Instagram':'TikTok').join(', ')}</td><td>${({pre:'Pre-release',rel:'Release week',post:'Post-release',any:'Any time'})[i.phase]}</td><td>${esc(i.body)}</td></tr>`).join('');b.dataset.loaded='1';}});
+    // ---- idea library: list, add, edit, retire
+    let LIB=null; const PH={pre:'Pre-release',rel:'Release week',post:'Post-release',any:'Any time'};
+    async function loadLib(){ if(!LIB) LIB=await fetch('/api/handbook-config/library').then(r=>r.json()); return LIB; }
+    async function saveLib(){ const r=await fetch('/api/handbook-config/library',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(LIB)}); const j=await r.json(); if(j.error) throw new Error(j.error); document.getElementById('libCount').textContent=`${LIB.ideas.length} ideas.`; }
+    function renderLib(){
+      const q=(document.getElementById('libQ').value||'').toLowerCase();
+      const rows=LIB.ideas.filter(i=>!q||(i.title+' '+i.body).toLowerCase().includes(q));
+      document.getElementById('libRows').innerHTML=rows.map(i=>`<tr class="${i.category==='custom'?'custom':''}"><td><b>${esc(i.title)}</b></td><td>${esc(i.format)}</td><td>${i.platforms.map(p=>p==='ig'?'Instagram':'TikTok').join(', ')}</td><td>${PH[i.phase]||''}</td><td>${esc(i.body)}</td><td style="white-space:nowrap"><button class="rowbtn" data-edit="${esc(i.id)}">Edit</button><button class="rowbtn" data-retire="${esc(i.id)}">Retire</button></td></tr>`).join('')||'<tr><td colspan="6" style="color:rgba(255,255,255,.5)">No ideas match.</td></tr>';
+    }
+    function openEditor(idea){
+      const ed=document.getElementById('libEditor'); const isNew=!idea; const i=idea||{id:'',title:'',format:'Feed',platforms:['ig'],phase:'any',category:'custom',body:''};
+      ed.style.display='grid';
+      ed.innerHTML=`<div class="g"><div><label>Title</label><input id="edT" value="${esc(i.title)}"></div>
+        <div><label>Format</label><select id="edF">${['Feed','Carousel','Reel','Story','Live'].map(f=>`<option${f===i.format?' selected':''}>${f}</option>`).join('')}</select></div>
+        <div><label>Phase</label><select id="edP">${Object.entries(PH).map(([k,v])=>`<option value="${k}"${k===i.phase?' selected':''}>${v}</option>`).join('')}</select></div>
+        <div class="chk"><label><input type="checkbox" id="edIG" ${i.platforms.includes('ig')?'checked':''}> Instagram</label><label><input type="checkbox" id="edTT" ${i.platforms.includes('tt')?'checked':''}> TikTok</label></div></div>
+        <div><label>Wording (use {release}, {artist}, {genre} so it works for every artist)</label><textarea id="edB">${esc(i.body)}</textarea></div>
+        <div class="row"><button class="btn btn-ghost" type="button" id="edCancel">Cancel</button><button class="btn btn-primary" type="button" id="edSave">${isNew?'Add idea':'Save changes'}</button></div>`;
+      ed.scrollIntoView({block:'nearest'}); document.getElementById('edT').focus();
+      document.getElementById('edCancel').onclick=()=>{ed.style.display='none';};
+      document.getElementById('edSave').onclick=async()=>{
+        const title=document.getElementById('edT').value.trim(), body=document.getElementById('edB').value.trim();
+        const platforms=[document.getElementById('edIG').checked?'ig':null,document.getElementById('edTT').checked?'tt':null].filter(Boolean);
+        if(!title||!body) return alert('Add a title and some wording'); if(!platforms.length) return alert('Pick at least one platform');
+        const rec={title,body,format:document.getElementById('edF').value,phase:document.getElementById('edP').value,platforms};
+        if(isNew){const base=title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'idea';let id=base,n=2;while(LIB.ideas.some(x=>x.id===id))id=base+'-'+(n++);LIB.ideas.unshift({id,category:'custom',...rec});}
+        else Object.assign(i,rec);
+        try{await saveLib();ed.style.display='none';renderLib();}catch(err){alert('Save failed: '+err.message);}
+      };
+    }
+    document.getElementById('libToggle').addEventListener('click',async e=>{const b=document.getElementById('libBody');const show=b.style.display==='none';b.style.display=show?'block':'none';e.target.textContent=show?'Hide':'Show';if(show){await loadLib();renderLib();}});
+    document.getElementById('libQ').addEventListener('input',renderLib);
+    document.getElementById('libNew').addEventListener('click',()=>openEditor(null));
+    document.getElementById('libRows').addEventListener('click',async e=>{
+      const ed=e.target.closest('[data-edit]'); if(ed){openEditor(LIB.ideas.find(i=>i.id===ed.dataset.edit));return;}
+      const rt=e.target.closest('[data-retire]'); if(rt){const i=LIB.ideas.find(x=>x.id===rt.dataset.retire);if(!confirm(`Retire “${i.title}”? It disappears from the library for new handbooks. Existing handbooks keep it.`))return;LIB.ideas=LIB.ideas.filter(x=>x!==i);LIB.retired=[...(LIB.retired||[]),i.id];try{await saveLib();renderLib();}catch(err){alert('Save failed: '+err.message);}}
+    });
     fetch('/api/handbook-config/library').then(r=>r.json()).then(l=>document.getElementById('libCount').textContent=`${l.ideas.length} ideas.`);
     load(); if(location.hash==='#library'){document.getElementById('libToggle').click();document.getElementById('library').scrollIntoView();}
   </script>
