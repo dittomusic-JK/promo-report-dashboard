@@ -954,7 +954,7 @@
         const res = await fetch('/api/scrape-article', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url, startDate, endDate })
+          body: JSON.stringify({ url })
         });
         
         const data = await res.json();
@@ -1066,7 +1066,7 @@
         const res = await fetch('/api/scrape-spotify-playlist', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url, startDate, endDate })
+          body: JSON.stringify({ url })
         });
         
         const data = await res.json();
