@@ -225,6 +225,8 @@ h1,h2,h3,h4{font-family:var(--display);font-weight:800;text-transform:uppercase;
 .mod .body .html img{max-width:120px;border-radius:4px}
 .mod .body textarea{font-family:ui-monospace,Menlo,monospace;font-size:12px;min-height:160px}
 .stat .l{margin-top:4px}
+.tpl{width:auto;background:var(--surface);border:1px solid var(--line-strong);border-radius:999px;padding:7px 32px 6px 12px;font-family:var(--display);text-transform:uppercase;letter-spacing:.06em;font-size:12px;color:var(--ink);cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23B9CBC7' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;background-size:12px}
+.tpl:hover{border-color:var(--ink)}
 .hub{border:1px solid var(--line);border-radius:var(--r);background:var(--sunk);padding:12px 14px;margin-bottom:16px}
 .hub-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
 .hub-head b{font-family:var(--display);font-size:16px;letter-spacing:.05em;text-transform:uppercase;display:block}
@@ -316,6 +318,7 @@ h1,h2,h3,h4{font-family:var(--display);font-weight:800;text-transform:uppercase;
       <div>
         <div class="toolbar">
           <button class="btn btn-yellow sm" id="suggestBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8"/></svg>Suggest a plan</button>
+          <select id="tplSel" class="tpl" title="Start from a template plan"><option value="">Templates…</option><option value="fri4">Friday release · 4 weeks</option><option value="fri6">Friday release · 6 weeks</option><option value="post">Already released</option></select>
           <button class="btn btn-ghost sm" id="clearBtn" type="button">Clear</button>
           <span class="sp"></span>
           <div class="counts" id="counts"></div>
@@ -521,25 +524,41 @@ h1,h2,h3,h4{font-family:var(--display);font-weight:800;text-transform:uppercase;
   const PLAN_PRE4=[[0,'artwork-reveal-2'],[2,'write-a-song-with-me'],[4,'create-a-playlist-2'],[5,'ama'],[7,'teaser-snippet-2'],[9,'story-teaser'],[10,'acoustic-version'],[12,'get-them-guessing'],[13,'live-photos'],[15,'bts-video'],[16,'competition'],[18,'transitional-video'],[19,'presave-party'],[21,'start-the-countdown'],[22,'rehearsal-storyline-bands'],[24,'press-features'],[25,'artist-background'],[26,'video-response'],[27,'tease-something-new']];
   const PLAN_PRE6=PLAN_PRE4.concat([[29,'lyric-graphic'],[31,'creative-reels'],[33,'the-journey'],[35,'behindthesong-reel'],[37,'get-ready-with-me'],[39,'trending-audio-your-niche'],[41,'thank-you-post']]);
   const pick=(ideaId)=>L.find(x=>x.id===ideaId)?ideaId:null;
+  // Shift the standard plan so its release-day post lands on `relOff`; posts pushed off the start go to the end of the run, off the end go to the start
+  function shiftedPlan(base,relOff){
+    let plan=base.map(([d,id])=>[d+(relOff-11),id]);
+    const free=()=>[...Array(days()).keys()].filter(d=>!plan.some(([x])=>x===d));
+    return plan.map(([d,id])=>{ if(d>=0&&d<days()) return [d,id]; const f=free(); const slot=d<0?f[f.length-1]:f[0]; return slot===undefined?null:[slot,id]; }).filter(Boolean);
+  }
+  function applyPlan(plan,label){
+    S.posts=[];S.sel=null;
+    plan.forEach(([d,ideaId])=>{ if(d<0||d>=days()) return; const id=pick(ideaId); if(id) addIdea(id,d); });
+    S.sel=null;markDirty();renderCal();toast(`${S.posts.length} posts: ${label}`);
+  }
+  const setWeeks=w=>{S.weeks=w;S.package=w===6?'plus':'promo';document.querySelectorAll('.tier button').forEach(x=>x.classList.toggle('on',+x.dataset.weeks===w));renderSetup();};
   $('suggestBtn').addEventListener('click',()=>{
     const s=start(); if(!s) return toast('Set the campaign start date first');
     if(S.posts.length&&!confirm('Replace the current calendar with a suggested plan?')) return;
-    S.posts=[];S.sel=null;
     const rel=$('fRelDate').value; const relOff=rel?Math.round((parse(rel)-s)/864e5):11;
-    let plan, label;
-    if(relOff<2){ plan=S.weeks===6?PLAN_POST6:PLAN_POST4; label='a post-release plan (the release is already out)'; }
-    else if(relOff>=days()-1){ plan=S.weeks===6?PLAN_PRE6:PLAN_PRE4; label='a pre-release plan (the release lands after the campaign)'; }
-    else {
-      // standard plan centred on the release; shift, then wrap any posts that fall off the edges back into the run
-      const base=S.weeks===6?PLAN6:PLAN4, shift=relOff-11;
-      plan=base.map(([d,id])=>[d+shift,id]);
-      const free=()=>[...Array(days()).keys()].filter(d=>!plan.some(([x])=>x===d));
-      // posts that fall off the start move to the end of the run (they become post-release content); ones off the end move to the start
-      plan=plan.map(([d,id])=>{ if(d>=0&&d<days()) return [d,id]; const f=free(); const slot=d<0?f[f.length-1]:f[0]; return slot===undefined?null:[slot,id]; }).filter(Boolean);
-      label='a plan around the release date';
+    if(relOff<2) applyPlan(S.weeks===6?PLAN_POST6:PLAN_POST4,'post-release plan (the release is already out)');
+    else if(relOff>=days()-1) applyPlan(S.weeks===6?PLAN_PRE6:PLAN_PRE4,'pre-release plan (the release lands after the campaign)');
+    else applyPlan(shiftedPlan(S.weeks===6?PLAN6:PLAN4,relOff),'plan around the release date');
+  });
+  $('tplSel').addEventListener('change',e=>{
+    const v=e.target.value; e.target.value=''; if(!v) return;
+    const s=start(); if(!s) return toast('Set the campaign start date first');
+    if(S.posts.length&&!confirm('Replace the current calendar with this template?')) return;
+    if(v==='fri4'||v==='fri6'){
+      setWeeks(v==='fri4'?4:6);
+      const firstFriday=(4-((s.getDay()+6)%7)+7)%7;           // day offset of the first Friday in the run (Mon=0 … Fri=4)
+      if(!$('fRelDate').value){ $('fRelDate').value=iso(addDays(s,firstFriday)); }
+      const rel=$('fRelDate').value; const relOff=Math.round((parse(rel)-s)/864e5);
+      const target=(relOff>=0&&relOff<days())?relOff:firstFriday;
+      applyPlan(shiftedPlan(S.weeks===6?PLAN6:PLAN4,target),`Friday release · ${S.weeks} weeks`);
+      if(target!==relOff) toast('Release date is outside the campaign, so the release post sits on the first Friday');
+    } else if(v==='post'){
+      applyPlan(S.weeks===6?PLAN_POST6:PLAN_POST4,`already released · ${S.weeks} weeks`);
     }
-    plan.forEach(([d,ideaId])=>{ if(d<0||d>=days()) return; const id=pick(ideaId); if(id) addIdea(id,d); });
-    S.sel=null;renderCal();toast(`Suggested ${S.posts.length} posts: ${label}`);
   });
   $('clearBtn').addEventListener('click',()=>{if(S.posts.length&&!confirm('Clear every post from the calendar?'))return;S.posts=[];S.sel=null;markDirty();renderCal();});
   const grid=$('grid');
