@@ -1093,6 +1093,87 @@
    "phase": "pre",
    "category": "presave",
    "body": "Each day from today, post on your story with a press shot or still from the music video with the numbers counting down to release day overlaid in the Instagram font of your choice. This will build suspense and anticipation for {release}!"
+  },
+  {
+   "id": "set-snippet",
+   "title": "Set snippet",
+   "format": "Reel",
+   "platforms": [
+    "ig",
+    "tt"
+   ],
+   "phase": "any",
+   "category": "dj",
+   "body": "Post a 20–30 second clip of {release} dropping in a set or mix, with the crowd or the room reacting. Caption it with where and when, tag the venue or party, and send fans to the smartlink in your bio."
+  },
+  {
+   "id": "mini-mix",
+   "title": "Mini mix",
+   "format": "Reel",
+   "platforms": [
+    "tt",
+    "ig"
+   ],
+   "phase": "any",
+   "category": "dj",
+   "body": "Record a 60-second mini mix that ends on {release}. Keep the camera on your hands and the decks, add track IDs as text overlays, and ask fans to name a track you should mix in next."
+  },
+  {
+   "id": "how-the-drop-was-made",
+   "title": "How the drop was made",
+   "format": "Reel",
+   "platforms": [
+    "ig",
+    "tt"
+   ],
+   "phase": "any",
+   "category": "dj",
+   "body": "Screen-record your DAW and walk through how the drop in {release} came together: the sample, the drum layering, the filter sweep. Producers love seeing the session, and it gives non-producers a reason to listen again."
+  },
+  {
+   "id": "track-id-reveal",
+   "title": "Track ID reveal",
+   "format": "Story",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "dj",
+   "body": "Post a clip of a track from a recent set with the ID hidden, and use the question sticker so fans can guess. Reveal it a few hours later, then reveal that your own {release} was the one before it."
+  },
+  {
+   "id": "stems-remix-call",
+   "title": "Stems and remix call",
+   "format": "Feed",
+   "platforms": [
+    "ig",
+    "tt"
+   ],
+   "phase": "post",
+   "category": "dj",
+   "body": "Share the stems (or a loop) from {release} and invite producers to flip it. Set a deadline, repost the best entries to your story, and play your favourite in your next set or live."
+  },
+  {
+   "id": "mix-upload-announcement",
+   "title": "Mix or radio show announcement",
+   "format": "Feed",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "dj",
+   "body": "Announce a new mix, guest mix or radio show that features {release}. Post the artwork with a snippet, tag the station or series, and pin the link in your bio next to your smartlink."
+  },
+  {
+   "id": "genre-playlist",
+   "title": "Genre playlist",
+   "format": "Feed",
+   "platforms": [
+    "ig"
+   ],
+   "phase": "any",
+   "category": "dj",
+   "body": "Build a Spotify playlist of the {genre} tracks you’re playing out right now, with {release} at the top. Share it to your feed and story, tag the artists in it, and ask fans to follow it for monthly updates."
   }
  ]
 }

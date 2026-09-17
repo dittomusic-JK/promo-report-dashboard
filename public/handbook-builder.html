@@ -318,7 +318,7 @@ h1,h2,h3,h4{font-family:var(--display);font-weight:800;text-transform:uppercase;
       <div>
         <div class="toolbar">
           <button class="btn btn-yellow sm" id="suggestBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8"/></svg>Suggest a plan</button>
-          <select id="tplSel" class="tpl" title="Start from a template plan"><option value="">Templates…</option><option value="fri4">Friday release · 4 weeks</option><option value="fri6">Friday release · 6 weeks</option><option value="post">Already released</option></select>
+          <select id="tplSel" class="tpl" title="Start from a template plan"><option value="">Templates…</option><option value="fri4">Friday release · 4 weeks</option><option value="fri6">Friday release · 6 weeks</option><option value="post">Already released</option><option value="dj">Already released · DJ / producer</option></select>
           <button class="btn btn-ghost sm" id="clearBtn" type="button">Clear</button>
           <span class="sp"></span>
           <div class="counts" id="counts"></div>
@@ -520,6 +520,9 @@ h1,h2,h3,h4{font-family:var(--display);font-weight:800;text-transform:uppercase;
   // Release already out before the campaign starts: a post-release plan across the whole run
   const PLAN_POST4=[[0,'artwork-post'],[2,'live-photos'],[4,'create-a-playlist'],[5,'ama'],[7,'creative-reels'],[9,'start-a-routine'],[10,'acoustic-version'],[11,'playlisting-thank-you'],[12,'reshare-fan-stories'],[13,'ig-live-listening-party'],[15,'bts-video'],[16,'track-vs-track'],[17,'transitional-video'],[19,'the-journey'],[20,'lyric-graphic'],[21,'press-features'],[22,'rehearsal-storyline-bands'],[24,'fan-duets-and-stitches'],[25,'artist-background'],[26,'video-response'],[27,'thank-you-post']];
   const PLAN_POST6=PLAN_POST4.concat([[29,'spotify-wrapped-style-graphic'],[31,'behindthesong-reel'],[33,'merch-competition'],[35,'get-ready-with-me'],[37,'trending-audio-your-niche'],[39,'tease-something-new'],[41,'anniversary-post']]);
+  // Already-released plan for a DJ or producer: sets, mixes, production and the scene, no lyric or band ideas
+  const PLAN_DJ4=[[0,'artwork-post'],[2,'set-snippet'],[4,'genre-playlist'],[5,'reshare-fan-stories'],[7,'how-the-drop-was-made'],[9,'ig-live-dj-set'],[10,'reshare-your-live-footage'],[11,'playlisting-thank-you'],[12,'track-id-reveal'],[14,'mini-mix'],[16,'transitional-video'],[17,'press-features'],[19,'live-b2b-session'],[20,'trending-audio-your-niche'],[21,'moodboard-post'],[23,'mix-upload-announcement'],[24,'local-artist-shoutout'],[26,'stems-remix-call'],[27,'thank-you-post']];
+  const PLAN_DJ6=PLAN_DJ4.concat([[29,'spotify-wrapped-style-graphic'],[31,'day-in-the-life'],[33,'live-event-promo'],[35,'behindthesong-reel'],[37,'creative-reels'],[39,'tease-something-new'],[41,'anniversary-post']]);
   // Release after the campaign ends: build hype without a release-day post
   const PLAN_PRE4=[[0,'artwork-reveal-2'],[2,'write-a-song-with-me'],[4,'create-a-playlist-2'],[5,'ama'],[7,'teaser-snippet-2'],[9,'story-teaser'],[10,'acoustic-version'],[12,'get-them-guessing'],[13,'live-photos'],[15,'bts-video'],[16,'competition'],[18,'transitional-video'],[19,'presave-party'],[21,'start-the-countdown'],[22,'rehearsal-storyline-bands'],[24,'press-features'],[25,'artist-background'],[26,'video-response'],[27,'tease-something-new']];
   const PLAN_PRE6=PLAN_PRE4.concat([[29,'lyric-graphic'],[31,'creative-reels'],[33,'the-journey'],[35,'behindthesong-reel'],[37,'get-ready-with-me'],[39,'trending-audio-your-niche'],[41,'thank-you-post']]);
@@ -558,6 +561,8 @@ h1,h2,h3,h4{font-family:var(--display);font-weight:800;text-transform:uppercase;
       if(target!==relOff) toast('Release date is outside the campaign, so the release post sits on the first Friday');
     } else if(v==='post'){
       applyPlan(S.weeks===6?PLAN_POST6:PLAN_POST4,`already released · ${S.weeks} weeks`);
+    } else if(v==='dj'){
+      applyPlan(S.weeks===6?PLAN_DJ6:PLAN_DJ4,`already released, DJ / producer · ${S.weeks} weeks`);
     }
   });
   $('clearBtn').addEventListener('click',()=>{if(S.posts.length&&!confirm('Clear every post from the calendar?'))return;S.posts=[];S.sel=null;markDirty();renderCal();});
