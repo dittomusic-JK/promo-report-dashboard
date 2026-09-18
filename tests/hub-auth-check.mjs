@@ -1,8 +1,20 @@
 // Checks whether a dashboard2 service account can read the Promo hub server-to-server.
 // Prints status codes and response shapes only. Never prints credentials or the token.
 // Run:  HUB_AUTH_EMAIL=... HUB_AUTH_PASSWORD=... node tests/hub-auth-check.mjs [campaignId]
-const email = process.env.HUB_AUTH_EMAIL, password = process.env.HUB_AUTH_PASSWORD;
-if (!email || !password) { console.error('Set HUB_AUTH_EMAIL and HUB_AUTH_PASSWORD'); process.exit(1); }
+//  or:  node tests/hub-auth-check.mjs [campaignId] path/to/.env   (reads HUB_AUTH_* or DITTO_TRENDS_* from that file)
+import fs from 'fs';
+let email = process.env.HUB_AUTH_EMAIL, password = process.env.HUB_AUTH_PASSWORD;
+const envFile = process.argv[3];
+if ((!email || !password) && envFile) {
+  const vars = {};
+  for (const line of fs.readFileSync(envFile, 'utf8').split(/\r?\n/)) {
+    const m = line.match(/^\s*(HUB_AUTH_EMAIL|HUB_AUTH_PASSWORD|DITTO_TRENDS_EMAIL|DITTO_TRENDS_PASSWORD)\s*=\s*(.*)$/);
+    if (m) vars[m[1]] = m[2].trim().replace(/^(["'])(.*)\1$/, '$2');
+  }
+  email = email || vars.HUB_AUTH_EMAIL || vars.DITTO_TRENDS_EMAIL;
+  password = password || vars.HUB_AUTH_PASSWORD || vars.DITTO_TRENDS_PASSWORD;
+}
+if (!email || !password) { console.error('Set HUB_AUTH_EMAIL and HUB_AUTH_PASSWORD, or pass an env file as the second argument'); process.exit(1); }
 const AUTH_URL = process.env.HUB_AUTH_URL || 'https://dashboard2.dittomusic.com/authentication_token';
 const BASE = (process.env.HUB_BASE_URL || 'https://promo.dittomusic.com').replace(/\/$/, '');
 const id = process.argv[2] || '228';
