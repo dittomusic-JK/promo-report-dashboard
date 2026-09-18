@@ -8,23 +8,58 @@
  * only exist on the web route until the hub team exposes them under /api/admin,
  * so HUB_COOKIE (a staff session cookie) can be supplied as an interim bridge.
  *
- * Env: HUB_API_TOKEN (required), HUB_COOKIE (optional, e.g. "laravel_session=..."),
- *      HUB_BASE_URL (default https://promo.dittomusic.com)
+ * Auth, in order of preference:
+ *   HUB_AUTH_EMAIL + HUB_AUTH_PASSWORD  a service account that logs in to dashboard2's
+ *       /authentication_token (same pattern as ditto-web's Trends client). The JWT lasts
+ *       weeks; it is cached in memory and renewed shortly before it expires, or on a 401.
+ *   HUB_API_TOKEN                       a static bearer token, if the hub team issues one.
+ * Optional: HUB_COOKIE (interim session bridge, "laravel_session=..."),
+ *           HUB_AUTH_URL (default https://dashboard2.dittomusic.com/authentication_token),
+ *           HUB_BASE_URL (default https://promo.dittomusic.com)
  */
 import path from 'path';
 import fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 
 const HUB_BASE = (process.env.HUB_BASE_URL || 'https://promo.dittomusic.com').replace(/\/$/, '');
-const TOKEN = process.env.HUB_API_TOKEN || '';
+const STATIC_TOKEN = process.env.HUB_API_TOKEN || '';
+const AUTH_EMAIL = process.env.HUB_AUTH_EMAIL || '';
+const AUTH_PASSWORD = process.env.HUB_AUTH_PASSWORD || '';
+const AUTH_URL = process.env.HUB_AUTH_URL || 'https://dashboard2.dittomusic.com/authentication_token';
 const COOKIE = process.env.HUB_COOKIE || '';
-export const hubConfigured = () => !!TOKEN;
+const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36';
+export const hubConfigured = () => !!(STATIC_TOKEN || (AUTH_EMAIL && AUTH_PASSWORD));
+export const hubAuthMode = () => (AUTH_EMAIL && AUTH_PASSWORD) ? 'service-account' : STATIC_TOKEN ? 'static-token' : 'none';
 
-async function hubGet(p) {
-  const headers = { accept: 'application/json', 'x-requested-with': 'XMLHttpRequest', authorization: `Bearer ${TOKEN}` };
+// ---- service-account login with an in-memory token cache
+let cache = null;      // { token, exp }
+let inFlight = null;
+const jwtExp = jwt => { try { return JSON.parse(Buffer.from(jwt.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'), 'base64').toString()).exp || 0; } catch { return 0; } };
+async function login() {
+  const res = await fetch(AUTH_URL, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json', 'user-agent': UA }, body: JSON.stringify({ email: AUTH_EMAIL, password: AUTH_PASSWORD }), signal: AbortSignal.timeout(15000) });
+  if (!res.ok) throw new Error(`Hub service login failed (${res.status}). Check HUB_AUTH_EMAIL / HUB_AUTH_PASSWORD and that the account allows credentials login.`);
+  const j = await res.json();
+  const token = j.token ?? j.access_token;
+  if (!token) throw new Error('Hub service login returned no token');
+  cache = { token, exp: jwtExp(token) || (Date.now() / 1000 + 3000) };
+  return token;
+}
+async function getToken(forceNew = false) {
+  if (!(AUTH_EMAIL && AUTH_PASSWORD)) return STATIC_TOKEN;
+  const now = Date.now() / 1000;
+  if (!forceNew && cache && cache.exp - 300 > now) return cache.token;
+  if (inFlight) return inFlight;
+  inFlight = login().finally(() => { inFlight = null; });
+  return inFlight;
+}
+
+async function hubGet(p, retried = false) {
+  const headers = { accept: 'application/json', 'x-requested-with': 'XMLHttpRequest', authorization: `Bearer ${await getToken()}`, 'user-agent': UA };
   if (COOKIE) headers.cookie = COOKIE;
   const res = await fetch(`${HUB_BASE}${p}`, { headers, redirect: 'manual' });
-  if (res.status === 401 || res.status === 419 || res.status === 302) throw new Error(p.startsWith('/api/') ? 'The hub rejected the token. HUB_API_TOKEN may have expired.' : 'The hub needs a browser session for questionnaire answers. Set HUB_COOKIE, or ask the hub team to expose the questionnaire under /api/admin.');
+  // A cached service token can be revoked early; log in again once before giving up
+  if (res.status === 401 && !retried && AUTH_EMAIL && AUTH_PASSWORD) { await getToken(true); return hubGet(p, true); }
+  if (res.status === 401 || res.status === 419 || res.status === 302) throw new Error(p.startsWith('/api/') ? 'The hub rejected the token. Check the hub credentials on the server.' : 'The hub needs a browser session for questionnaire answers. Set HUB_COOKIE, or ask the hub team to expose the questionnaire under /api/admin.');
   if (!res.ok) throw new Error(`Hub responded ${res.status} for ${p}`);
   const ct = res.headers.get('content-type') || '';
   if (!/json/i.test(ct)) throw new Error(`Hub returned ${ct.split(';')[0] || 'a non-JSON response'} for ${p}. The token may not be valid without a browser session.`);
@@ -79,11 +114,11 @@ export function normaliseCampaign(c) {
 }
 
 export function registerHubRoutes(app, { USE_R2, UPLOADS_DIR, r2Put }) {
-  app.get('/api/hub/status', (req, res) => res.json({ configured: hubConfigured(), sessionBridge: !!COOKIE, base: HUB_BASE }));
+  app.get('/api/hub/status', (req, res) => res.json({ configured: hubConfigured(), auth: hubAuthMode(), sessionBridge: !!COOKIE, base: HUB_BASE }));
 
   // Campaign list, newest questionnaire submissions first
   app.get('/api/hub/campaigns', async (req, res) => {
-    if (!hubConfigured()) return res.status(503).json({ error: 'Hub import is not set up. Add HUB_API_TOKEN to the environment.' });
+    if (!hubConfigured()) return res.status(503).json({ error: 'Hub import is not set up. Add HUB_AUTH_EMAIL and HUB_AUTH_PASSWORD (or HUB_API_TOKEN) to the environment.' });
     try {
       // Token-authenticated admin API, one list per status; fall back to the web route if it isn't there
       const statuses = ['incoming', 'social', 'press'];
@@ -107,7 +142,7 @@ export function registerHubRoutes(app, { USE_R2, UPLOADS_DIR, r2Put }) {
 
   // One questionnaire, normalised, with press-shot links
   app.get('/api/hub/campaigns/:id/questionnaire', async (req, res) => {
-    if (!hubConfigured()) return res.status(503).json({ error: 'Hub import is not set up. Add HUB_API_TOKEN to the environment.' });
+    if (!hubConfigured()) return res.status(503).json({ error: 'Hub import is not set up. Add HUB_AUTH_EMAIL and HUB_AUTH_PASSWORD (or HUB_API_TOKEN) to the environment.' });
     const id = String(req.params.id).replace(/\D/g, '');
     if (!id) return res.status(400).json({ error: 'Campaign id must be a number' });
     try {

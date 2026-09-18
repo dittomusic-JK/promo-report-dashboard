@@ -20,8 +20,16 @@ const q = { data: { id: 228, campaign_type_id: 3, questionnaire: [
 ] } };
 http.createServer((req, res) => {
   if (req.url.startsWith('/s3/')) { res.writeHead(200, { 'content-type': 'image/jpeg' }); return res.end(img); } // signed S3 links need no token
+  if (req.url === '/authentication_token' && req.method === 'POST') {
+    let body = ''; req.on('data', c => body += c); req.on('end', () => {
+      const { email, password } = JSON.parse(body || '{}');
+      if (email !== 'svc@example.com' || password !== 'pw') { res.writeHead(401, { 'content-type': 'application/json' }); return res.end('{"message":"Invalid credentials."}'); }
+      const payload = Buffer.from(JSON.stringify({ exp: Math.floor(Date.now() / 1000) + 31 * 86400, username: email, roles: ['ROLE_ADMIN'] })).toString('base64url');
+      res.writeHead(200, { 'content-type': 'application/json' }); res.end(JSON.stringify({ token: `mock.${payload}.sig` }));
+    }); return;
+  }
   const auth = req.headers.authorization || '';
-  if (!/^Bearer test$/.test(auth)) { res.writeHead(401, { 'content-type': 'application/json' }); return res.end('{"message":"Unauthenticated."}'); }
+  if (!/^Bearer (test|mock\.[A-Za-z0-9_-]+\.sig)$/.test(auth)) { res.writeHead(401, { 'content-type': 'application/json' }); return res.end('{"message":"Unauthenticated."}'); }
   const json = o => { res.writeHead(200, { 'content-type': 'application/json' }); res.end(JSON.stringify(o)); };
   if (req.url === '/campaigns') return json({ data: campaigns });
   if (req.url === '/api/admin/campaigns/incoming') return json(campaigns.filter(c => c.user_campaign_status_id < 3));

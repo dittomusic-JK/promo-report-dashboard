@@ -437,7 +437,7 @@ h1,h2,h3,h4{font-family:var(--display);font-weight:800;text-transform:uppercase;
     }
     if(!HUB.configured){
       state.textContent='Not connected';
-      body.innerHTML=`<div class="help">Set <b>HUB_API_TOKEN</b> on the server and this box lists submitted questionnaires so a handbook starts pre-filled. Until then, fill the fields by hand.</div>`;
+      body.innerHTML=`<div class="help">Once the hub service account is set on the server, this box lists submitted questionnaires so a handbook starts pre-filled. Until then, fill the fields by hand.</div>`;
       return;
     }
     state.textContent='Connected';
