@@ -32,24 +32,41 @@ export const hubConfigured = () => !!(STATIC_TOKEN || (AUTH_EMAIL && AUTH_PASSWO
 export const hubAuthMode = () => (AUTH_EMAIL && AUTH_PASSWORD) ? 'service-account' : STATIC_TOKEN ? 'static-token' : 'none';
 
 // ---- service-account login with an in-memory token cache
-let cache = null;      // { token, exp }
+// dashboard2 returns { token, refreshToken }. The JWT lasts about a month. Refresh tokens are
+// single-use and rotate on every refresh, so the newest one is kept here in memory only: this
+// service runs as one instance, and if the process restarts (or a refresh is refused) we simply
+// log in with the credentials again, which is the fallback the dashboard2 team recommends.
+const REFRESH_URL = process.env.HUB_REFRESH_URL || AUTH_URL.replace(/\/authentication_token$/, '/api/token/refresh');
+let cache = null;      // { token, exp, refreshToken }
 let inFlight = null;
 const jwtExp = jwt => { try { return JSON.parse(Buffer.from(jwt.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'), 'base64').toString()).exp || 0; } catch { return 0; } };
 async function login() {
   const res = await fetch(AUTH_URL, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json', 'user-agent': UA }, body: JSON.stringify({ email: AUTH_EMAIL, password: AUTH_PASSWORD }), signal: AbortSignal.timeout(15000) });
   if (!res.ok) throw new Error(`Hub service login failed (${res.status}). Check HUB_AUTH_EMAIL / HUB_AUTH_PASSWORD and that the account allows credentials login.`);
-  const j = await res.json();
+  return remember(await res.json(), 'login');
+}
+function remember(j, how) {
   const token = j.token ?? j.access_token;
-  if (!token) throw new Error('Hub service login returned no token');
-  cache = { token, exp: jwtExp(token) || (Date.now() / 1000 + 3000) };
+  if (!token) throw new Error(`Hub service ${how} returned no token`);
+  cache = { token, exp: jwtExp(token) || (Date.now() / 1000 + 3000), refreshToken: j.refreshToken || j.refresh_token || null };
   return token;
+}
+async function refresh() {
+  const res = await fetch(REFRESH_URL, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json', 'user-agent': UA }, body: JSON.stringify({ refreshToken: cache.refreshToken }), signal: AbortSignal.timeout(15000) });
+  if (!res.ok) throw new Error(`refresh refused (${res.status})`);
+  return remember(await res.json(), 'refresh');
+}
+// Renew: use the refresh token when we hold one, otherwise (or if it is refused) log in again
+async function renew() {
+  if (cache?.refreshToken) { try { return await refresh(); } catch (err) { console.warn('Hub token refresh failed, logging in again:', err.message); } }
+  return login();
 }
 async function getToken(forceNew = false) {
   if (!(AUTH_EMAIL && AUTH_PASSWORD)) return STATIC_TOKEN;
   const now = Date.now() / 1000;
   if (!forceNew && cache && cache.exp - 300 > now) return cache.token;
   if (inFlight) return inFlight;
-  inFlight = login().finally(() => { inFlight = null; });
+  inFlight = renew().finally(() => { inFlight = null; });
   return inFlight;
 }
 
@@ -65,6 +82,9 @@ async function hubGet(p, retried = false) {
   if (!/json/i.test(ct)) throw new Error(`Hub returned ${ct.split(';')[0] || 'a non-JSON response'} for ${p}. The token may not be valid without a browser session.`);
   return res.json();
 }
+
+// exposed for tests only
+export const _hubInternal = { getToken: (...a) => getToken(...a), peek: () => cache && ({ exp: cache.exp, hasRefresh: !!cache.refreshToken, via: (() => { try { return JSON.parse(Buffer.from(cache.token.split('.')[1], 'base64url').toString()).via || 'login'; } catch { return '?'; } })() }), breakRefresh: () => { if (cache) cache.refreshToken = 'consumed-elsewhere'; } };
 
 const isoDate = s => { const m = String(s || '').match(/^(\d{4}-\d{2}-\d{2})/); if (m) return m[1]; const d = new Date(s); return isNaN(d) ? '' : d.toISOString().slice(0, 10); };
 
