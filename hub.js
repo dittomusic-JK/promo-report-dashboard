@@ -23,8 +23,9 @@ import { v4 as uuidv4 } from 'uuid';
 
 const HUB_BASE = (process.env.HUB_BASE_URL || 'https://promo.dittomusic.com').replace(/\/$/, '');
 const STATIC_TOKEN = process.env.HUB_API_TOKEN || '';
-const AUTH_EMAIL = process.env.HUB_AUTH_EMAIL || '';
-const AUTH_PASSWORD = process.env.HUB_AUTH_PASSWORD || '';
+// The shared Ditto service account is fine here; its Trends variable names are accepted as-is
+const AUTH_EMAIL = process.env.HUB_AUTH_EMAIL || process.env.DITTO_TRENDS_EMAIL || '';
+const AUTH_PASSWORD = process.env.HUB_AUTH_PASSWORD || process.env.DITTO_TRENDS_PASSWORD || '';
 const AUTH_URL = process.env.HUB_AUTH_URL || 'https://dashboard2.dittomusic.com/authentication_token';
 const COOKIE = process.env.HUB_COOKIE || '';
 const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36';
